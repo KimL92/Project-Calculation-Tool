@@ -1,0 +1,13 @@
+package com.aljamour.pkveksamen;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class PkvEksamenApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(PkvEksamenApplication.class, args);
+    }
+
+}
