@@ -5,8 +5,18 @@ public class UserModel {
     private String userName;
     private String email;
     private String userPassword;
-    private String role;
+    private UserRole role;
 
+    public UserModel(){
+    }
+
+    public UserModel(String userName, String email, String userPassword, UserRole role){
+        this.userName = userName;
+        this.email = email;
+        this.userPassword = userPassword;
+        this.role = role;
+
+    }
 
     public long getUserID() {
         return userID;
@@ -40,11 +50,12 @@ public class UserModel {
         this.userPassword = userPassword;
     }
 
-    public String getRole() {
+    public UserRole getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(UserRole role) {
         this.role = role;
     }
+
 }

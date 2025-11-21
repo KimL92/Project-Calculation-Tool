@@ -1,5 +1,6 @@
 package com.aljamour.pkveksamen.Service;
 
+import com.aljamour.pkveksamen.Model.UserModel;
 import com.aljamour.pkveksamen.Repository.UserRepository;
 import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,8 @@ public class UserService {
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
+
 }
 
 
