@@ -29,8 +29,8 @@ public class UserController {
         model.addAttribute("user", new UserModel());
         return "create-user";
     }
-
-    @PostMapping
-    public String
+//
+//    @PostMapping
+//    public String
 
 }
