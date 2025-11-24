@@ -1,6 +1,7 @@
 package com.aljamour.pkveksamen.Controller;
 
 import com.aljamour.pkveksamen.Model.UserModel;
+import com.aljamour.pkveksamen.Model.UserRole;
 import com.aljamour.pkveksamen.Service.UserService;
 import org.apache.catalina.User;
 import org.springframework.stereotype.Controller;
@@ -19,18 +20,30 @@ public class UserController {
         this.userService  = userService;
 }
 
-    @GetMapping
-    public String GetLogin(){
-        return "/";
-    }
-
-    @GetMapping
+    @GetMapping("/create-user")
     public String createUser(Model model){
         model.addAttribute("user", new UserModel());
-        return "create-user";
+        return "create-user"; // matcher create-user.html i templates
     }
-//
-//    @PostMapping
-//    public String
+
+
+    @PostMapping("/create-user")
+    public String createUserpost(UserModel user, Model model) {
+        boolean success = userService.createUser(
+                user.getUserName(),
+                user.getEmail(),
+                user.getUserPassword(),
+                user.getRole()
+        );
+
+        if (!success) {
+            model.addAttribute("error", "Denne email er allerede i brug");
+            model.addAttribute("user", user);
+            return "create-user";  // 🔹 vis form igen med fejl
+        }
+
+        return "redirect:/homepage";  // 🔹 redirect efter succes
+    }
+
 
 }

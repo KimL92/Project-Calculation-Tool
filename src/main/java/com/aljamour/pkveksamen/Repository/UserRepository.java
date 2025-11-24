@@ -1,21 +1,25 @@
 package com.aljamour.pkveksamen.Repository;
 
+import com.aljamour.pkveksamen.Model.UserRole;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class UserRepository {
+
+
+    private final JdbcTemplate jdbcTemplate;
+
+    public UserRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public void createUser(String userName,String userPassword, String email, UserRole role) {
+        jdbcTemplate.update(
+                "INSERT INTO User(username, user_password, email, role) VALUES (?, ?, ?, ?)",
+                userName, userPassword, email, role.name()
+        );
+
+        System.out.println(userName + email + userPassword + role);
+    }
 }
-
-
-//    private final JdbcTemplate jdbcTemplate;
-//
-//    public UserRepository(JdbcTemplate jdbcTemplate) {
-//        this.jdbcTemplate = jdbcTemplate;
-//    }
-//
-//    public void createUser(String userName, String email, String userPassword, String role) {
-//        jdbcTemplate.update("INSERT INTO user(username, email, user_password) VALUES (?, ? , ?) ",
-//                userName, email, userPassword, role);
-//        System.out.println(userName + email + userPassword);
-//    }
-//}

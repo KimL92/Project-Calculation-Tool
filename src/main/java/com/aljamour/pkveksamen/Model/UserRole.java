@@ -12,6 +12,7 @@ public enum UserRole {
         this.displayName = displayName;
     }
 
+
     public String GetDisplayName(){
         return displayName;
     }

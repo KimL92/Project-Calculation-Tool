@@ -10,11 +10,12 @@ public class UserModel {
     public UserModel(){
     }
 
-    public UserModel(String userName, String email, String userPassword, UserRole role){
+    public UserModel( String userName, String email, String userPassword, UserRole role){
         this.userName = userName;
         this.email = email;
         this.userPassword = userPassword;
         this.role = role;
+
 
     }
 
