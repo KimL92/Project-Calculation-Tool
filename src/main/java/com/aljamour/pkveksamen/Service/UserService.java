@@ -4,6 +4,7 @@ import com.aljamour.pkveksamen.Model.UserModel;
 import com.aljamour.pkveksamen.Model.UserRole;
 import com.aljamour.pkveksamen.Repository.UserRepository;
 import org.apache.catalina.User;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.yaml.snakeyaml.constructor.DuplicateKeyException;
 
@@ -22,14 +23,16 @@ public class UserService {
             userRepository.createUser(userName, email, userPassword, role);
             System.out.println("Bruger oprettet: " + userName + " " + email);
             return true;
-        } catch (DuplicateKeyException e) {
-            System.out.println("Email allerede i brug: " + email);
+        }
+
+        catch (DataIntegrityViolationException e) {
+            System.out.println("Email allerede i brug (DataIntegrityViolation): " + email);
             e.printStackTrace();
             return false;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             System.out.println("Uventet fejl ved oprettelse af bruger: " + e.getMessage());
             e.printStackTrace();
-
             return false;
         }
 
