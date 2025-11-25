@@ -19,19 +19,23 @@ public class ProjectController {
         this.projectService = projectService;
     }
 
-    @GetMapping()
-    public String showAllProject(Model model){
-        List<ProjectModel> projectList = projectService.getAllProjectList();
-        model.addAttribute("projectList", projectList);
-        return "project";
-    }
+    // TODO VI SKAL LAVE OM PÅ DENNE HER METODE
+    //  FOR DEN TAGER ALLE PROJEKTER FRA ALLE LISTER.
+    // DEN SKAL KUN TAGE FRA EN LISTE.
+//    @GetMapping()
+//    public String showAllProject(Model model){
+//        List<ProjectModel> projectList = projectService.getAllProjectList();
+//        model.addAttribute("projectList", projectList);
+//        return "project";
+//    }
 
-    @GetMapping("/show-projects")
-    public String showProjectsByUserID(@RequestParam("id") long userID, Model model){
-        List<ProjectModel> projectList = projectService.showProjectsByUserID(userID);
-        model.addAttribute("projectList",projectList);
-        return "project";
-    }
+
+//    @GetMapping("/show-projects")
+//    public String showProjectsByUserID(@RequestParam("id") long userID, Model model){
+//        List<ProjectModel> projectList = projectService.showProjectsByUserID(userID);
+//        model.addAttribute("projectList",projectList);
+//        return "project";
+//    }
 
 
     @GetMapping("createproject")
@@ -41,12 +45,12 @@ public class ProjectController {
 
     }
 
-    @PostMapping("createproject")
-    public String createProject(@RequestParam String projectName, @RequestParam String projectDescription, @RequestParam LocalDate startDate,
-    @RequestParam LocalDate endDate, @RequestParam String projectCustomer, @RequestParam int projectDuration ){
-        projectService.createProject(projectName,projectDescription,startDate,endDate,projectCustomer,projectDuration);
-        return "redirect:/project";
-    }
+//    @PostMapping("createproject")
+//    public String createProject(@RequestParam String projectName, @RequestParam String projectDescription, @RequestParam LocalDate startDate,
+//    @RequestParam LocalDate endDate, @RequestParam String projectCustomer, @RequestParam int projectDuration ){
+//        projectService.createProject(projectName,projectDescription,startDate,endDate,projectCustomer,projectDuration);
+//        return "redirect:/project";
+//    }
 
 
     @PostMapping("/saveproject")

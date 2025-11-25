@@ -23,14 +23,14 @@ public class ProjectRepository {
     }
 
     public List<ProjectModel> getAllProjectList() {
-        String sql = "SELECT projectID, project_title, project_description, project_start_date, project_end_date, project_costumer, project_duration FROM project";
+        String sql = "SELECT project_id, project_title, project_description, project_start_date, project_end_date, project_costomer, project_duration FROM project";
         return jdbcTemplate.query(sql, (rs, rowNum) -> new ProjectModel(
                 rs.getLong("project_id"),
                 rs.getString("project_title"),
                 rs.getString("project_description"),
                 rs.getObject("project_start_date", LocalDate.class),
                 rs.getObject("project_end_date",LocalDate.class),
-                rs.getString("project_costumer"),
+                rs.getString("project_costomer"),
                 rs.getInt("project_duration")
                 ));
 
@@ -71,7 +71,7 @@ public class ProjectRepository {
         }
 
     public void saveProject(ProjectModel projectModel) {
-        String sql = "INSERT INTO project (project_title, project_description, project_start_date, project_end_date, project_costumer, project_duration ) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO project (project_title, project_description, project_start_date, project_end_date, project_costomer, project_duration ) VALUES (?, ?, ?, ?, ?, ?)";
 
         jdbcTemplate.update(sql,
                 projectModel.getProjectName(),
