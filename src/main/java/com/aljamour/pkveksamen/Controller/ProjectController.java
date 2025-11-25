@@ -1,6 +1,5 @@
 package com.aljamour.pkveksamen.Controller;
 
-import ch.qos.logback.core.model.Model;
 import com.aljamour.pkveksamen.Model.ProjectModel;
 import com.aljamour.pkveksamen.Service.ProjectService;
 import org.springframework.stereotype.Controller;
@@ -8,8 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-
+import org.springframework.ui.Model;
 import java.time.LocalDate;
 
 @Controller
@@ -26,6 +24,8 @@ public class ProjectController {
     public String showCreateform(Model model){
         model.addAttribute("project", new ProjectModel());
         return "createproject";
+
+
     }
 
     @PostMapping("createproject")
