@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/")
@@ -14,17 +15,21 @@ public class UserController {
 
     private final UserService userService;
 
-    public UserController(UserService userService){
-        this.userService  = userService;
-}
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/")
     public String homepage() {
         return "homepage";
     }
+    @GetMapping()
+    public String getLogin() {
+        return "login";
+    }
 
     @GetMapping("/create-user")
-    public String createUser(Model model){
+    public String createUser(Model model) {
         model.addAttribute("user", new UserModel());
         return "create-user";
     }
@@ -48,5 +53,18 @@ public class UserController {
         return "redirect:/project/createproject";
     }
 
+    @PostMapping("/validate-login")
+    public String validateLogin(@RequestParam("username") String userName, @RequestParam("password") String userPassword, Model model) {
+        Integer id = null;
+        id = userService.validateLogin(userName, userPassword);
 
+        if (id != null) {
+            return "redirect:....." + id;
+        } else {
+            model.addAttribute("error", "Brugernavn eller kode er forkert. Prøv igen!");
+            return "redirect:/login";
+        }
+
+
+    }
 }

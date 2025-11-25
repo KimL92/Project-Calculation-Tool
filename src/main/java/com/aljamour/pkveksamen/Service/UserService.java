@@ -23,23 +23,21 @@ public class UserService {
             userRepository.createUser(userName, email, userPassword, role);
             System.out.println("Bruger oprettet: " + userName + " " + email);
             return true;
-        }
-
-        catch (DataIntegrityViolationException e) {
+        } catch (DataIntegrityViolationException e) {
             System.out.println("Email allerede i brug (DataIntegrityViolation): " + email);
             e.printStackTrace();
             return false;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("Uventet fejl ved oprettelse af bruger: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
-
     }
-//     public int validateLogin(String username, String userPassword) {
-//        int id = 0;
-//        id = userRepository.validateLogin(username, userPassword);
-//        return id;
-//    }
+
+
+    public int validateLogin(String userName, String userPassword) {
+       int id = 0;
+        id = userRepository.validateLogin(userName, userPassword);
+       return id;
+   }
 }
