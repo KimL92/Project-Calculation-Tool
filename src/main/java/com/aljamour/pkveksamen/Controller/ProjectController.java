@@ -61,16 +61,16 @@ public class ProjectController {
         return "redirect:/project";
     }
 
-    @PostMapping("/edit")
-    public String editProject(@PathVariable String projectName,
-                              String projectDescription,
-                              LocalDate startDate,
-                              LocalDate endDate,
-                              String projectCustomer,
-                              int projectDuration, Model model){
-        projectService.editProject();
-        return "redirect:/project";
-    }
+//    @PostMapping("/edit")
+//    public String editProject(@PathVariable String projectName,
+//                              String projectDescription,
+//                              LocalDate startDate,
+//                              LocalDate endDate,
+//                              String projectCustomer,
+//                              int projectDuration, Model model){
+//        projectService.editProject();
+//        return "redirect:/project";
+//    }
 
 
 
