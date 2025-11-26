@@ -6,6 +6,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class UserRepository {
 
@@ -46,27 +48,35 @@ public class UserRepository {
         }
     }
 
-    public int validateLogin(String userName, String userPassword) {
-        int id = 0;
-        id = jdbcTemplate.queryForObject("SELECT user_id FROM user WHERE username = ? AND user_password = ?",
-                Integer.class, userName, userPassword);
+//    public int validateLogin(String userName, String userPassword) {
+//        int id = 0;
+//        id = jdbcTemplate.queryForObject("SELECT user_id FROM user WHERE username = ? AND user_password = ?",
+//                Integer.class, userName, userPassword);
+//
+//        return id;
+//    }
+//}
 
-        return id;
+    public Integer validateLogin(String userName, String userPassword) {
+        try {
+            String sql = "SELECT user_id FROM user WHERE username = ? AND user_password = ?";
+
+            List<Integer> result = jdbcTemplate.query(sql, (rs,rowNum) ->
+                 Integer.parseInt(rs.getString("user_id")),
+                 userName,
+                 userPassword);
+            if(!result.isEmpty())
+                return result.get(0);
+            else
+                return 0;
+            // queryForObject kaster en fejl, hvis data'en ikke eksisterer i databasen
+            /*return jdbcTemplate.queryForObject(
+                    "SELECT user_id FROM user WHERE username = ? AND user_password = ?",
+                    Integer.class,
+                    userName, userPassword
+            );   */
+        } catch (EmptyResultDataAccessException e) {
+            return null; // Brugeren findes ikke
+        }
     }
 }
-
-//    public int validateLogin(String userName, String userPassword) {
-//        String sql = "SELECT user_id FROM user WHERE username = ? AND user_password = ?";
-//
-//        var result = jdbcTemplate.query(
-//                sql,
-//                (rs, rowNum) -> rs.getInt("user_id"),
-//                userName,
-//                userPassword
-//        );
-//
-//        // Hvis ingen bruger findes, returner 0
-//        return result.isEmpty() ? 0 : result.get(0);
-//    }
-//
-//}

@@ -2,6 +2,8 @@ package com.aljamour.pkveksamen.Controller;
 
 import com.aljamour.pkveksamen.Model.User;
 import com.aljamour.pkveksamen.Service.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,17 +58,15 @@ public class UserController {
     // I UserController.java
 
     @PostMapping("/validate-login")
-    public String validateLogin(@RequestParam("username") String userName,
-                                @RequestParam("password") String userPassword, Model model) {
-        Integer id = userService.validateLogin(userName, userPassword);
+    public String validateLogin(@RequestParam("username") String userName, @RequestParam("password") String userPassword, Model model) {
+        Integer id = null;
+        id = userService.validateLogin(userName, userPassword);
 
-        if (id != null && id > 0) {
+        if (id >0) {
             return "redirect:/project/list/" + id;
         } else {
             model.addAttribute("error", "Brugernavn eller kode er forkert. Prøv igen!");
-
-            return "login";
+            return "redirect:/login";
         }
-
     }
 }
