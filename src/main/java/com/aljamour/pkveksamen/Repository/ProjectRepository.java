@@ -12,7 +12,7 @@ public class ProjectRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public ProjectRepository (JdbcTemplate jdbcTemplate){
+    public ProjectRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -30,7 +30,6 @@ public class ProjectRepository {
                 userId
         );
     }
-
 
 
 //    public List<ProjectModel> findProjectsByUserID(long userId) {
@@ -58,7 +57,7 @@ public class ProjectRepository {
                 rs.getString("project_title"),
                 rs.getString("project_description"),
                 rs.getObject("project_start_date", LocalDate.class),
-                rs.getObject("project_end_date",LocalDate.class),
+                rs.getObject("project_end_date", LocalDate.class),
                 rs.getString("project_costumer"),
                 rs.getInt("project_duration")
         ), userID);
@@ -83,6 +82,31 @@ public class ProjectRepository {
         jdbcTemplate.update("DELETE FROM project WHERE project_id = ?", projectID);
     }
 
-    public void editProject() {
+
+//    public void editProject() {
+//    }
+//}
+
+
+    public void editProject(Project project) {
+        String sql = "UPDATE project SET " +
+                "project_title = ?, " +
+                "project_description = ?, " +
+                "project_start_date = ?, " +
+                "project_end_date = ?, " +
+                "project_costumer = ?, " +
+                "project_duration = ? " +
+                "WHERE project_id = ?";
+
+        jdbcTemplate.update(sql,
+                project.getProjectName(),
+                project.getProjectDescription(),
+                project.getStartDate(),
+                project.getEndDate(),
+                project.getProjectCustomer(),
+                project.getProjectDuration(),
+                project.getProjectID()  // vigtigt: id for at opdatere korrekt projekt
+        );
     }
 }
+

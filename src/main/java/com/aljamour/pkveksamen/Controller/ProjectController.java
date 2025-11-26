@@ -23,19 +23,20 @@ public class ProjectController {
         this.userService = userService;
     }
 
-    @GetMapping("/list/{userId}")
-    public String showProjectsByUserID(@PathVariable long userId, Model model){
-        List<Project> projectList = projectService.showProjectsByUserID(userId);
-        model.addAttribute("projectList", projectList);
-        model.addAttribute("currentUserId", userId);
+//    @GetMapping("/list/{userId}")
+//    public String showProjectsByUserID(@PathVariable long userId, Model model){
+//        List<Project> projectList = projectService.showProjectsByUserID(userId);
+//        model.addAttribute("projectList", projectList);
+//        model.addAttribute("currentUserId", userId);
+//
+//        User user = userService.getUserById(userId);
+//        if (user != null) {
+//            model.addAttribute("userName", user.getUserName());
+//            model.addAttribute("userRole", user.getRole());
+//        }
+//        return "project";
+//    }
 
-        User user = userService.getUserById(userId);
-        if (user != null) {
-            model.addAttribute("userName", user.getUserName());
-            model.addAttribute("userRole", user.getRole());
-        }
-        return "project";
-    }
 
     @GetMapping("/createproject/{userId}")
     public String showCreateform(@PathVariable long userId, Model model){
@@ -56,7 +57,7 @@ public class ProjectController {
         projectService.deleteProject(id);
         return "redirect:/project/list/" + userId;
     }
-
+    // IK SLET DET TAK - ADEN KIGGER PÅ DET
 //    @PostMapping("/edit")
 //    public String editProject(@PathVariable String projectName,
 //                              String projectDescription,
@@ -65,11 +66,36 @@ public class ProjectController {
 //                              String projectCustomer,
 //                              int projectDuration, Model model){
 //        projectService.editProject();
-//        return "redirect:/project";
+//        return "redirect:/project/list";
 //    }
+//
 
+    @PostMapping("/edit/{projectId}")
+    public String editProject(@PathVariable long projectId,
+                              @ModelAttribute Project project,
+                              Model model) {
+        project.setProjectID(projectId); // sørg for id er sat
+        projectService.editProject(project);
+        return "redirect:/project/list/" + projectId;
+    }
 
+    //  MODTAG FORMULAR OG GEM NYT PROJEKT
+    @PostMapping("/create/{userId}")
+    public String createProject(@PathVariable long userId,
+                                @ModelAttribute Project project,
+                                Model model) {
 
+        projectService.createProject(
+                project.getProjectName(),
+                project.getProjectDescription(),
+                project.getStartDate(),
+                project.getEndDate(),
+                project.getProjectCustomer(),
+                project.getProjectDuration(),
+                userId
+        );
 
-
+        return "redirect:/project/list/" + userId; // tilbage til projektliste
+    }
 }
+

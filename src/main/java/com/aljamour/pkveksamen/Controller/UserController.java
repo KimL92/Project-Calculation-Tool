@@ -56,17 +56,34 @@ public class UserController {
     }
 
     // I UserController.java
+    // IK SLER DET, ADEN SKAL KIGGE PÅ DET
+//    @PostMapping("/validate-login")
+//    public String validateLogin(@RequestParam("username") String userName, @RequestParam("password") String userPassword, Model model) {
+//        Integer id = null;
+//        id = userService.validateLogin(userName, userPassword);
+//
+//        if (id >0) {
+//            return "redirect:/project/list/user" + id;
+//        } else {
+//            model.addAttribute("error", "Brugernavn eller kode er forkert. Prøv igen!");
+//            return "redirect:/login";
+//        }
+//    }
 
     @PostMapping("/validate-login")
-    public String validateLogin(@RequestParam("username") String userName, @RequestParam("password") String userPassword, Model model) {
-        Integer id = null;
-        id = userService.validateLogin(userName, userPassword);
+    public String validateLogin(@RequestParam("username") String userName,
+                                @RequestParam("password") String userPassword,
+                                Model model) {
+        Integer id = userService.validateLogin(userName, userPassword);
 
-        if (id >0) {
-            return "redirect:/project/list/" + id;
+        if (id != null && id > 0) {
+            return "redirect:/project/list/" + id; // login korrekt
         } else {
-            model.addAttribute("error", "Brugernavn eller kode er forkert. Prøv igen!");
-            return "redirect:/login";
+            model.addAttribute("error", "Brugernavn eller adgangskoden er forkert. Prøv igen!");
+            return "login"; // returner login.html direkte
         }
     }
+
+
+
 }
