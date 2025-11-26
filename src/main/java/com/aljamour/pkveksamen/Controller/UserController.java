@@ -23,18 +23,18 @@ public class UserController {
     public String homepage() {
         return "homepage";
     }
-    @GetMapping()
+    @GetMapping("login")
     public String getLogin() {
         return "login";
-    }
 
+    }
     @GetMapping("/create-user")
     public String createUser(Model model) {
         model.addAttribute("user", new User());
         return "create-user";
     }
 
-    // TODO man kan bruge sammen email, vi skal kigge på det
+
     @PostMapping("/create-user")
     public String createUserpost(User user, Model model) {
         boolean success = userService.createUser(
@@ -60,7 +60,7 @@ public class UserController {
         id = userService.validateLogin(userName, userPassword);
 
         if (id != null) {
-            return "redirect:project/...." + id;
+            return "redirect:project/showAllProject" + id;
         } else {
             model.addAttribute("error", "Brugernavn eller kode er forkert. Prøv igen!");
             return "redirect:/login";
