@@ -23,19 +23,19 @@ public class ProjectController {
         this.userService = userService;
     }
 
-//    @GetMapping("/list/{userId}")
-//    public String showProjectsByUserID(@PathVariable long userId, Model model){
-//        List<Project> projectList = projectService.showProjectsByUserID(userId);
-//        model.addAttribute("projectList", projectList);
-//        model.addAttribute("currentUserId", userId);
-//
-//        User user = userService.getUserById(userId);
-//        if (user != null) {
-//            model.addAttribute("userName", user.getUserName());
-//            model.addAttribute("userRole", user.getRole());
-//        }
-//        return "project";
-//    }
+    @GetMapping("/list/{userId}")
+    public String showProjectsByUserID(@PathVariable long userId, Model model){
+        List<Project> projectList = projectService.showProjectsByUserID(userId);
+        model.addAttribute("projectList", projectList);
+        model.addAttribute("currentUserId", userId);
+
+        User user = userService.getUserById(userId);
+        if (user != null) {
+            model.addAttribute("userName", user.getUserName());
+            model.addAttribute("userRole", user.getRole());
+        }
+        return "project";
+    }
 
 
     @GetMapping("/createproject/{userId}")
