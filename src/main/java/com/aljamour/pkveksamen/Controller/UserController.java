@@ -54,12 +54,13 @@ public class UserController {
     }
 
     @PostMapping("/validate-login")
-    public String validateLogin(@RequestParam("username") String userName, @RequestParam("password") String userPassword, Model model) {
+    public String validateLogin(@RequestParam("username") String userName,
+                                @RequestParam("password") String userPassword, Model model) {
         Integer id = null;
         id = userService.validateLogin(userName, userPassword);
 
         if (id != null) {
-            return "redirect:....." + id;
+            return "redirect:project/...." + id;
         } else {
             model.addAttribute("error", "Brugernavn eller kode er forkert. Prøv igen!");
             return "redirect:/login";
