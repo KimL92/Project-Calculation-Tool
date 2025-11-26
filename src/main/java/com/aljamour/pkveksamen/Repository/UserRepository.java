@@ -33,3 +33,19 @@ public class UserRepository {
         return id;
     }
 }
+
+//    public int validateLogin(String userName, String userPassword) {
+//        String sql = "SELECT user_id FROM user WHERE username = ? AND user_password = ?";
+//
+//        var result = jdbcTemplate.query(
+//                sql,
+//                (rs, rowNum) -> rs.getInt("user_id"),
+//                userName,
+//                userPassword
+//        );
+//
+//        // Hvis ingen bruger findes, returner 0
+//        return result.isEmpty() ? 0 : result.get(0);
+//    }
+//
+//}
