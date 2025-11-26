@@ -1,18 +1,18 @@
 package com.aljamour.pkveksamen.Model;
 
 public enum TaskPriority {
-    LAV("Lav"),
+    LOW("Low"),
     MEDIUM("Medium"),
-    HØJ ("Høj"),
-    KRITISK("Kritisk");
+    HIGH("High"),
+    CRITICAL("Critical");
 
     private final String displayName;
-
 
     TaskPriority(String displayName) {
         this.displayName = displayName;
     }
-    public String getDisplayName(){
+
+    public String getDisplayName() {
         return displayName;
     }
 }

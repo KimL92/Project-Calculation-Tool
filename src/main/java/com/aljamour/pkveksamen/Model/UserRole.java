@@ -1,10 +1,9 @@
 package com.aljamour.pkveksamen.Model;
 
 public enum UserRole {
-    PROJECTLEDER("Projectleder"),
-    TEAMMEDLEM("Teammedlem"),
+    PROJECT_MANAGER("Project Manager"),
+    TEAM_MEMBER("Team Member"),
     ADMIN("Administrator");
-
 
     private final String displayName;
 
@@ -12,9 +11,7 @@ public enum UserRole {
         this.displayName = displayName;
     }
 
-
-    public String GetDisplayName(){
+    public String getDisplayName() {
         return displayName;
     }
-
 }
