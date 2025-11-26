@@ -1,13 +1,10 @@
 package com.aljamour.pkveksamen.Controller;
 
-import com.aljamour.pkveksamen.Model.ProjectModel;
+import com.aljamour.pkveksamen.Model.Project;
 import com.aljamour.pkveksamen.Service.ProjectService;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
-import java.time.LocalDate;
-import java.util.List;
 
 @Controller
 @RequestMapping("project")
@@ -40,7 +37,7 @@ public class ProjectController {
 
     @GetMapping("createproject")
     public String showCreateform(Model model){
-        model.addAttribute("project", new ProjectModel());
+        model.addAttribute("project", new Project());
         return "createproject";
 
     }
@@ -54,7 +51,7 @@ public class ProjectController {
 
 
     @PostMapping("/saveproject")
-    public String saveProject(@ModelAttribute ProjectModel projectModel) {
+    public String saveProject(@ModelAttribute Project projectModel) {
         projectService.saveProject(projectModel);
         return "redirect:/project";
     }

@@ -2,7 +2,7 @@ package com.aljamour.pkveksamen.Model;
 
 import java.time.LocalDate;
 
-public class ProjectModel {
+public class Project {
 
     private long projectID;
     private String projectName;
@@ -17,11 +17,11 @@ public class ProjectModel {
     private String subProjectStatus;
     private int subProjectDuration;
 
-    public ProjectModel(){}
+    public Project(){}
 
-    public ProjectModel(long projectID, String projectName, String projectDescription, LocalDate startDate, LocalDate endDate,
-                        String projectCustomer, int projectDuration, long subProjectID, String subProjectName,
-                        String subProjectDescription, String subProjectStatus, int subProjectDuration) {
+    public Project(long projectID, String projectName, String projectDescription, LocalDate startDate, LocalDate endDate,
+                   String projectCustomer, int projectDuration, long subProjectID, String subProjectName,
+                   String subProjectDescription, String subProjectStatus, int subProjectDuration) {
         this.projectID = projectID;
         this.projectName = projectName;
         this.projectDescription = projectDescription;
@@ -37,8 +37,8 @@ public class ProjectModel {
     }
 
 
-    public ProjectModel(long projectID, String projectName, String projectDescription, LocalDate startDate, LocalDate endDate,
-                        String projectCustomer, int projectDuration) {
+    public Project(long projectID, String projectName, String projectDescription, LocalDate startDate, LocalDate endDate,
+                   String projectCustomer, int projectDuration) {
         this.projectID = projectID;
         this.projectName = projectName;
         this.projectDescription = projectDescription;

@@ -1,16 +1,16 @@
 package com.aljamour.pkveksamen.Model;
 
-public class UserModel {
+public class User {
     private long userID;
     private String userName;
     private String email;
     private String userPassword;
     private UserRole role;
 
-    public UserModel(){
+    public User(){
     }
 
-    public UserModel( String userName, String email, String userPassword, UserRole role){
+    public User(String userName, String email, String userPassword, UserRole role){
         this.userName = userName;
         this.email = email;
         this.userPassword = userPassword;

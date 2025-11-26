@@ -1,12 +1,9 @@
 package com.aljamour.pkveksamen.Service;
 
-import com.aljamour.pkveksamen.Model.UserModel;
 import com.aljamour.pkveksamen.Model.UserRole;
 import com.aljamour.pkveksamen.Repository.UserRepository;
-import org.apache.catalina.User;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import org.yaml.snakeyaml.constructor.DuplicateKeyException;
 
 @Service
 public class UserService {

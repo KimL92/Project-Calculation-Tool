@@ -1,6 +1,6 @@
 package com.aljamour.pkveksamen.Controller;
 
-import com.aljamour.pkveksamen.Model.UserModel;
+import com.aljamour.pkveksamen.Model.User;
 import com.aljamour.pkveksamen.Service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,13 +30,13 @@ public class UserController {
 
     @GetMapping("/create-user")
     public String createUser(Model model) {
-        model.addAttribute("user", new UserModel());
+        model.addAttribute("user", new User());
         return "create-user";
     }
 
     // TODO man kan bruge sammen email, vi skal kigge på det
     @PostMapping("/create-user")
-    public String createUserpost(UserModel user, Model model) {
+    public String createUserpost(User user, Model model) {
         boolean success = userService.createUser(
                 user.getUserName(),
                 user.getEmail(),

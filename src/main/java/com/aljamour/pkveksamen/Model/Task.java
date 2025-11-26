@@ -1,9 +1,8 @@
 package com.aljamour.pkveksamen.Model;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
-public class TaskModel {
+public class Task {
     private int taskID;
     private String taskName;
     private String taskDescription;
@@ -17,11 +16,11 @@ public class TaskModel {
     private String subTaskDescription;
     private String subTaskDuration;
 
-    public TaskModel(){}
+    public Task(){}
 
-    public TaskModel(int taskID, String taskName, String taskDescription, String taskStatus, String duration,
-                     String taskNote, LocalDate startDate, LocalDate endDate, long subTaskID,
-                     String subTaskName, String subTaskDescription, String subTaskDuration) {
+    public Task(int taskID, String taskName, String taskDescription, String taskStatus, String duration,
+                String taskNote, LocalDate startDate, LocalDate endDate, long subTaskID,
+                String subTaskName, String subTaskDescription, String subTaskDuration) {
         this.taskID = taskID;
         this.taskName = taskName;
         this.taskDescription = taskDescription;

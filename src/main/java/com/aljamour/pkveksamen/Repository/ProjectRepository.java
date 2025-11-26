@@ -1,6 +1,6 @@
 package com.aljamour.pkveksamen.Repository;
 
-import com.aljamour.pkveksamen.Model.ProjectModel;
+import com.aljamour.pkveksamen.Model.Project;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -22,9 +22,9 @@ public class ProjectRepository {
         projectName,projectDescription,startDate,endDate,projectCustomer,projectDuration);
     }
 
-    public List<ProjectModel> getAllProjectList() {
+    public List<Project> getAllProjectList() {
         String sql = "SELECT project_id, project_title, project_description, project_start_date, project_end_date, project_costomer, project_duration FROM project";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> new ProjectModel(
+        return jdbcTemplate.query(sql, (rs, rowNum) -> new Project(
                 rs.getLong("project_id"),
                 rs.getString("project_title"),
                 rs.getString("project_description"),
@@ -51,14 +51,14 @@ public class ProjectRepository {
 //        ), userId);
 //    }
 
-    public List<ProjectModel> showProjectsByUserID(long userID) {
+    public List<Project> showProjectsByUserID(long userID) {
         String sql = "SELECT p.project_id, p.project_title, p.project_description, p.project_start_date, p.project_end_date, p.project_costumer, p.project_duration "+
                 "FROM PROJECT p" +
                 "INNER JOIN project_user_role pur ON p.project_id = pur.project_id" +
                 "WHERE pur.user_id = ?";
         ;
 
-        return jdbcTemplate.query(sql, (rs, rowNum) -> new ProjectModel(
+        return jdbcTemplate.query(sql, (rs, rowNum) -> new Project(
                 rs.getLong("projectID"),
                 rs.getString("projectName"),
                 rs.getString("projectDescription"),
@@ -70,7 +70,7 @@ public class ProjectRepository {
 
         }
 
-    public void saveProject(ProjectModel projectModel) {
+    public void saveProject(Project projectModel) {
         String sql = "INSERT INTO project (project_title, project_description, project_start_date, project_end_date, project_costomer, project_duration ) VALUES (?, ?, ?, ?, ?, ?)";
 
         jdbcTemplate.update(sql,

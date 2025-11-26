@@ -1,6 +1,6 @@
 package com.aljamour.pkveksamen.Service;
 
-import com.aljamour.pkveksamen.Model.ProjectModel;
+import com.aljamour.pkveksamen.Model.Project;
 import com.aljamour.pkveksamen.Repository.ProjectRepository;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
@@ -25,11 +25,11 @@ public class ProjectService {
 //        return projectRepository.getAllProjectList();
 //    }
 
-    public List<ProjectModel> showProjectsByUserID(long userID) {
+    public List<Project> showProjectsByUserID(long userID) {
         return projectRepository.showProjectsByUserID(userID);
     }
 
-    public void saveProject(ProjectModel projectModel) {
+    public void saveProject(Project projectModel) {
         projectRepository.saveProject(projectModel);
     }
 
