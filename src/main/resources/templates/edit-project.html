@@ -265,7 +265,7 @@
     <div class="header">
         <h1>Rediger Projekt</h1>
         <div class="user-info">
-            <span th:text="${userName} + ' (' + ${userRole} + ')'"></span>
+            <span th:text="${userName} + ' (' + userRole + ')'"></span>
             <form th:action="@{/logout}" method="post">
                 <button type="submit" class="logout-button">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -284,7 +284,7 @@
     </div>
 
     <div class="form-card">
-        <form th:action="@{/project/edit/{projectId}(projectId=${project.projectID})}"
+        <form th:action="@{/project/edit/{userId}/{projectId}(userId=${currentUserId}, projectId=${project.projectID})}"
               th:object="${project}"
               method="post">
 

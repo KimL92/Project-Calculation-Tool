@@ -78,6 +78,12 @@ public class ProjectController {
         Project project = projectService.getProjectById(projectId);
         model.addAttribute("project", project);
         model.addAttribute("currentUserId", userId); // vigtigt for formularens action
+
+        User user = userService.getUserById(userId);
+        if (user != null) {
+            model.addAttribute("userName", user.getUserName());
+            model.addAttribute("userRole", user.getRole());
+        }
         return "edit-project"; // din redigerings-view
     }
 
