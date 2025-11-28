@@ -40,8 +40,5 @@ public class ProjectService {
     public Project getProjectById(long projectId) {
        return projectRepository.getProjectById(projectId);
     }
-    public void saveProject(Project project) {
-        // gem projekt i database eller liste
-    }
 
 }
