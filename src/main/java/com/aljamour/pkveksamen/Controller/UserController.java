@@ -43,8 +43,8 @@ public class UserController {
     public String createUserPost(User user, Model model) {
         boolean success = userService.createUser(
                 user.getUserName(),
-                user.getEmail(),
                 user.getUserPassword(),
+                user.getEmail(),
                 user.getRole()
         );
 
