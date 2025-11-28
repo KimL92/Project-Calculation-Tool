@@ -1,6 +1,7 @@
 package com.aljamour.pkveksamen.Model;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 public class Project {
 
@@ -16,6 +17,24 @@ public class Project {
     private String subProjectDescription;
     private String subProjectStatus;
     private int subProjectDuration;
+
+    public void recalculateDuration() {
+        if (startDate != null && endDate != null) {
+            long days = ChronoUnit.DAYS.between(startDate, endDate);
+
+            // Hvis I vil tælle begge dage med:
+            // days = days + 1;
+
+            if (days < 0) {
+                projectDuration = 0; // eller kast exception, hvis det er “ulovligt”
+            } else {
+                projectDuration = (int) days;
+            }
+        } else {
+            projectDuration = 0;
+        }
+    }
+
 
     public Project(){}
 

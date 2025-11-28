@@ -47,8 +47,9 @@ public class ProjectController {
     }
 
     @PostMapping("/saveproject/{userId}")
-    public String saveProject(@PathVariable long userId, @ModelAttribute Project projectModel) {
-        projectService.saveProject(projectModel, userId);
+    public String saveProject(@PathVariable long userId, @ModelAttribute Project project) {
+        project.recalculateDuration();
+        projectService.saveProject(project, userId);
         return "redirect:/project/list/" + userId;
     }
 
@@ -93,6 +94,8 @@ public class ProjectController {
                               @ModelAttribute Project project) {
 
         project.setProjectID(projectId);
+        project.recalculateDuration();
+
         projectService.editProject(project);
 
         return "redirect:/project/list/" + userId;
@@ -104,6 +107,8 @@ public class ProjectController {
     public String createProject(@PathVariable long userId,
                                 @ModelAttribute Project project,
                                 Model model) {
+
+        project.recalculateDuration();
 
         projectService.createProject(
                 project.getProjectName(),

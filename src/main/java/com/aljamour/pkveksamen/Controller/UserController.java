@@ -85,6 +85,7 @@ public class UserController {
             return "login"; // returner login.html direkte
         }
     }
+
     @PostMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate(); // Sletter session
