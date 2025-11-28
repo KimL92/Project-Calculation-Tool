@@ -41,7 +41,4 @@ public class ProjectService {
        return projectRepository.getProjectById(projectId);
     }
 
-    public void saveProject(Project project){
-
-    }
 }
