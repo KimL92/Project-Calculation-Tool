@@ -1,10 +1,6 @@
-package com.aljamour.pkveksamen.Service;
+package com.example.pkveksamen.Service;
 
-import com.aljamour.pkveksamen.Model.Task;
-import com.aljamour.pkveksamen.Repository.ProjectRepository;
-import com.aljamour.pkveksamen.Repository.TaskRepository;
-
-import java.util.List;
+import com.example.pkveksamen.Repository.TaskRepository;
 
 public class TaskService {
 
