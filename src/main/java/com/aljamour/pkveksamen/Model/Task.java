@@ -1,38 +1,51 @@
 package com.aljamour.pkveksamen.Model;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 public class Task {
     private int taskID;
     private String taskName;
     private String taskDescription;
-    private String taskStatus;
-    private String duration;
+    private int taskDuration;
     private String taskNote;
     private LocalDate startDate;
     private LocalDate endDate;
-    private long subTaskID;
-    private String subTaskName;
-    private String subTaskDescription;
-    private String subTaskDuration;
+    private TaskPriority taskPriority;
+    private TaskStatus taskStatus;
+
 
     public Task(){}
 
-    public Task(int taskID, String taskName, String taskDescription, String taskStatus, String duration,
-                String taskNote, LocalDate startDate, LocalDate endDate, long subTaskID,
-                String subTaskName, String subTaskDescription, String subTaskDuration) {
+
+
+    public Task(int taskID, String taskName, String taskDescription, TaskStatus taskStatus, int taskDuration,
+                String taskNote, LocalDate startDate, LocalDate endDate, TaskPriority taskPriority) {
         this.taskID = taskID;
         this.taskName = taskName;
         this.taskDescription = taskDescription;
         this.taskStatus = taskStatus;
-        this.duration = duration;
+        this.taskDuration = taskDuration;
         this.taskNote = taskNote;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.subTaskID = subTaskID;
-        this.subTaskName = subTaskName;
-        this.subTaskDescription = subTaskDescription;
-        this.subTaskDuration = subTaskDuration;
+        this.taskPriority = taskPriority;
+
+    }
+
+
+    public void recalculateDuration() {
+        if (startDate != null && endDate != null) {
+            long days = ChronoUnit.DAYS.between(startDate, endDate);
+
+            if (days < 0) {
+                taskDuration = 0;
+            } else {
+                taskDuration = (int) days;
+            }
+        } else {
+            taskDuration = 0;
+        }
     }
 
     public int getTaskID() {
@@ -58,20 +71,20 @@ public class Task {
         this.taskDescription = taskDescription;
     }
 
-    public String getTaskStatus() {
+    public TaskStatus getTaskStatus() {
         return taskStatus;
     }
 
-    public void setTaskStatus(String taskStatus) {
+    public void setTaskStatus(TaskStatus taskStatus) {
         this.taskStatus = taskStatus;
     }
 
-    public String getDuration() {
-        return duration;
+    public int getTaskDuration() {
+        return taskDuration;
     }
 
-    public void setDuration(String duration) {
-        this.duration = duration;
+    public void setTaskDuration(int taskDuration) {
+        this.taskDuration = taskDuration;
     }
 
     public String getTaskNote() {
@@ -98,35 +111,13 @@ public class Task {
         this.endDate = endDate;
     }
 
-    public long getSubTaskID() {
-        return subTaskID;
+    public TaskPriority getTaskPriority() {
+        return taskPriority;
     }
 
-    public void setSubTaskID(long subTaskID) {
-        this.subTaskID = subTaskID;
+    public void setTaskPriority(TaskPriority taskPriority) {
+        this.taskPriority = taskPriority;
     }
 
-    public String getSubTaskName() {
-        return subTaskName;
-    }
 
-    public void setSubTaskName(String subTaskName) {
-        this.subTaskName = subTaskName;
-    }
-
-    public String getSubTaskDescription() {
-        return subTaskDescription;
-    }
-
-    public void setSubTaskDescription(String subTaskDescription) {
-        this.subTaskDescription = subTaskDescription;
-    }
-
-    public String getSubTaskDuration() {
-        return subTaskDuration;
-    }
-
-    public void setSubTaskDuration(String subTaskDuration) {
-        this.subTaskDuration = subTaskDuration;
-    }
 }

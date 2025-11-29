@@ -1,9 +1,12 @@
 package com.aljamour.pkveksamen.Repository;
 
 import com.aljamour.pkveksamen.Model.Task;
+import com.aljamour.pkveksamen.Model.TaskPriority;
+import com.aljamour.pkveksamen.Model.TaskStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -14,21 +17,25 @@ public class TaskRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void createTask(Task task) {
-        String sql = "INSERT INTO task (employee_id, sub_project_id, task_title, task_description, task_status, " +
-                "task_start_date, task_end_date, task_duration, task_priority, task_note) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql,
-                null, // employee_id - map from task model if exists
-                null, // sub_project_id - map from task model if exists
-                task.getTaskName(),
-                task.getTaskDescription(),
-                task.getTaskStatus(),
-                task.getStartDate(),
-                task.getEndDate(),
-                task.getDuration() != null ? Integer.parseInt(task.getDuration()) : null,
-                null, // task_priority - not in current Task model
-                task.getTaskNote()
+    public void createTask(Integer employeeId, Integer subProjectId, String taskName, String taskDescription
+    , TaskStatus taskStatus, LocalDate startDate, LocalDate endDate, int taskDuration, TaskPriority taskPriority,String taskNote) {
+
+        jdbcTemplate.update(
+                "INSERT INTO task (employee_id, sub_project_id, task_title, task_description, task_status, " +
+                        "task_start_date, task_end_date, task_duration, task_priority, task_note) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+
+                employeeId,
+                subProjectId,
+                taskName,
+                taskDescription,
+                taskStatus,
+                startDate,
+                endDate,
+                taskDuration,
+                taskPriority,
+                taskNote
+
         );
     }
 
@@ -45,7 +52,7 @@ public class TaskRepository {
             task.setTaskNote(rs.getString("task_note"));
             task.setStartDate(rs.getObject("task_start_date", java.time.LocalDate.class));
             task.setEndDate(rs.getObject("task_end_date", java.time.LocalDate.class));
-            task.setDuration(rs.getObject("task_duration", Integer.class) != null ? rs.getObject("task_duration", Integer.class).toString() : null);
+            task.setTaskDuration(rs.getObject("task_duration", Integer.class) != null ? rs.getObject("task_duration", Integer.class).toString() : null);
             return task;
         }, subProjectId);
     }
@@ -63,7 +70,7 @@ public class TaskRepository {
             task.setTaskNote(rs.getString("task_note"));
             task.setStartDate(rs.getObject("task_start_date", java.time.LocalDate.class));
             task.setEndDate(rs.getObject("task_end_date", java.time.LocalDate.class));
-            task.setDuration(rs.getObject("task_duration", Integer.class) != null ? rs.getObject("task_duration", Integer.class).toString() : null);
+            task.setTaskDuration(rs.getObject("task_duration", Integer.class) != null ? rs.getObject("task_duration", Integer.class).toString() : null);
             return task;
         }, taskId);
     }
