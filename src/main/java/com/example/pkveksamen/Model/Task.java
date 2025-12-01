@@ -11,23 +11,23 @@ public class Task {
     private String taskNote;
     private LocalDate startDate;
     private LocalDate endDate;
-    private TaskPriority taskPriority;
-    private TaskStatus taskStatus;
+    private Priority priority;
+    private Status status;
 
 
     public Task(){}
 
-    public Task(int taskID, String taskName, String taskDescription, TaskStatus taskStatus, int taskDuration,
-                String taskNote, LocalDate startDate, LocalDate endDate, TaskPriority taskPriority) {
+    public Task(int taskID, String taskName, String taskDescription, Status status, int taskDuration,
+                String taskNote, LocalDate startDate, LocalDate endDate, Priority priority) {
         this.taskID = taskID;
         this.taskName = taskName;
         this.taskDescription = taskDescription;
-        this.taskStatus = taskStatus;
+        this.status = status;
         this.taskDuration = taskDuration;
         this.taskNote = taskNote;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.taskPriority = taskPriority;
+        this.priority = priority;
 
     }
 
@@ -69,12 +69,12 @@ public class Task {
         this.taskDescription = taskDescription;
     }
 
-    public TaskStatus getTaskStatus() {
-        return taskStatus;
+    public Status getTaskStatus() {
+        return status;
     }
 
-    public void setTaskStatus(TaskStatus taskStatus) {
-        this.taskStatus = taskStatus;
+    public void setTaskStatus(Status status) {
+        this.status = status;
     }
 
     public int getTaskDuration() {
@@ -109,12 +109,12 @@ public class Task {
         this.endDate = endDate;
     }
 
-    public TaskPriority getTaskPriority() {
-        return taskPriority;
+    public Priority getTaskPriority() {
+        return priority;
     }
 
-    public void setTaskPriority(TaskPriority taskPriority) {
-        this.taskPriority = taskPriority;
+    public void setTaskPriority(Priority priority) {
+        this.priority = priority;
     }
 
 

@@ -2,6 +2,7 @@ package com.example.pkveksamen.Controller;
 
 import com.example.pkveksamen.Model.Project;
 import com.example.pkveksamen.Model.Employee;
+import com.example.pkveksamen.Model.SubProject;
 import com.example.pkveksamen.Service.ProjectService;
 import com.example.pkveksamen.Service.EmployeeService;
 import org.springframework.stereotype.Controller;
@@ -36,11 +37,55 @@ public class ProjectController {
     }
 
     @GetMapping("/createproject/{employeeId}")
-    public String showCreateform(@PathVariable int employeeId, Model model){
+    public String showCreateProjectForm(@PathVariable int employeeId, Model model){
         model.addAttribute("project", new Project());
         model.addAttribute("currentEmployeeId", employeeId);
         return "createproject";
     }
+
+    @GetMapping("/createsubproject/{projectId}")
+    public String showCreateSubProjectForm(@PathVariable int projectId, Model model){
+        model.addAttribute("subProject", new SubProject());
+        model.addAttribute("currentProjectId", projectId);
+        return "createsubproject";
+    }
+
+    @PostMapping("/create/{employeeId}")
+    public String createProject(@PathVariable int employeeId,
+                                @ModelAttribute Project project,
+                                Model model) {
+        project.recalculateDuration();
+
+        projectService.createProject(
+                project.getProjectName(),
+                project.getProjectDescription(),
+                project.getStartDate(),
+                project.getEndDate(),
+                project.getProjectCustomer(),
+                employeeId
+        );
+
+        return "redirect:/project/list/" + employeeId;
+    }
+
+    @PostMapping("create/{projectId}")
+    public String createSubProject(@PathVariable int projectId,@ModelAttribute SubProject subProject, Model model){
+        subProject.recalculateDuration();
+
+
+        projectService.createSubProject(
+                subProject.getSubProjectName(),
+                subProject.getSubProjectDescription(),
+                subProject.getSubProjectStatus(),
+                subProject.getSubProjectDuration(),
+                subProject.getStartDate(),
+                subProject.getEndDate(),
+                projectId
+        );
+
+        return "redirect:/project/list/" + projectId;
+    }
+
 
     @PostMapping("/saveproject/{employeeId}")
     public String saveProject(@PathVariable int employeeId, @ModelAttribute Project project) {
@@ -81,21 +126,4 @@ public class ProjectController {
         return "redirect:/project/list/" + employeeId;
     }
 
-    @PostMapping("/create/{employeeId}")
-    public String createProject(@PathVariable int employeeId,
-                                @ModelAttribute Project project,
-                                Model model) {
-        project.recalculateDuration();
-
-        projectService.createProject(
-                project.getProjectName(),
-                project.getProjectDescription(),
-                project.getStartDate(),
-                project.getEndDate(),
-                project.getProjectCustomer(),
-                employeeId
-        );
-
-        return "redirect:/project/list/" + employeeId;
-    }
 }

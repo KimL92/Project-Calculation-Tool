@@ -1,13 +1,14 @@
 package com.example.pkveksamen.Model;
 
-public enum TaskStatus {
-    NOT_STARTED("Not started"),
-    IN_PROGRESS("In progress"),
-    COMPLETED("Completed");
+public enum Priority {
+    LOW("Low"),
+    MEDIUM("Medium"),
+    HIGH("High"),
+    CRITICAL("Critical");
 
     private final String displayName;
 
-    TaskStatus(String displayName) {
+    Priority(String displayName) {
         this.displayName = displayName;
     }
 

@@ -20,6 +20,11 @@ public class ProjectService {
         projectRepository.createProject(projectTitle, projectDescription, projectStartDate, projectEndDate, projectCustomer, employeeId);
     }
 
+    public void createSubProject(String subProjectName, String subProjectDescription, String subProjectStatus, int subProjectDuration, LocalDate startDate, LocalDate endDate,
+                                 long projectID){
+        projectRepository.createSubProject(subProjectName,subProjectDescription,subProjectStatus,subProjectDuration,startDate,endDate,projectID);
+    }
+
     public List<Project> showProjectsByEmployeeId(int employeeId) {
         return projectRepository.showProjectsByEmployeeId(employeeId);
     }

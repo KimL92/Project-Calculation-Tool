@@ -1,10 +1,10 @@
-//package com.aljamour.pkveksamen.Service;
+//package com.example.pkveksamen.Service;
 //
-//import com.aljamour.pkveksamen.Model.Task;
-//import com.aljamour.pkveksamen.Model.TaskPriority;
-//import com.aljamour.pkveksamen.Model.TaskStatus;
-//import com.aljamour.pkveksamen.Repository.ProjectRepository;
-//import com.aljamour.pkveksamen.Repository.TaskRepository;
+//import com.example.pkveksamen.Model.Task;
+//import com.example.pkveksamen.Model.TaskPriority;
+//import com.example.pkveksamen.Model.TaskStatus;
+//import com.example.pkveksamen.Repository.ProjectRepository;
+//import com.example.pkveksamen.Repository.TaskRepository;
 //import org.springframework.stereotype.Service;
 //
 //import java.time.LocalDate;

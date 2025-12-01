@@ -1,9 +1,9 @@
-//package com.aljamour.pkveksamen.Controller;
+//package com.example.pkveksamen.Controller;
 //
-//import com.aljamour.pkveksamen.Model.Task;
-//import com.aljamour.pkveksamen.Service.EmployeeService;
-//import com.aljamour.pkveksamen.Service.ProjectService;
-//import com.aljamour.pkveksamen.Service.TaskService;
+//import com.example.pkveksamen.Model.Task;
+//import com.example.pkveksamen.Service.EmployeeService;
+//import com.example.pkveksamen.Service.ProjectService;
+//import com.example.pkveksamen.Service.TaskService;
 //import org.springframework.stereotype.Controller;
 //import org.springframework.ui.Model;
 //import org.springframework.web.bind.annotation.*;

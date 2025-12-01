@@ -17,6 +17,23 @@ public class ProjectRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public void createSubProject(String subProjectName, String subProjectDescription, String subProjectStatus, int subProjectDuration, LocalDate startDate, LocalDate endDate,
+     long projectID){
+
+        jdbcTemplate.update(
+                "INSERT INTO subproject(sub_project_title,sub_project_description, sub_project_start_date, " +
+                        "sub_project_end_date, sub_project_duration,project_id) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?) ",
+                subProjectName,
+                subProjectDescription,
+                subProjectStatus,
+                subProjectDuration,
+                startDate,
+                endDate,
+                projectID
+        );
+    }
+
     public void createProject(String projectTitle, String projectDescription, LocalDate projectStartDate,
                               LocalDate projectEndDate, String projectCustomer, Integer employeeId) {
         jdbcTemplate.update(

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Opret Nyt subproject</title>
+    <link th:href="@{/createproject.css}" rel="stylesheet">
+</head>
+<body>
+
+<h1>Opret Nyt subProjekt</h1>
+
+<form th:action="@{/project/saveproject/{projectId}(projectId=${currentProjectId})}" th:object="${subProject}" method="post">
+    <div class="form-group">
+        <label for="subprojectName">SubProjekt Navn:</label>
+        <input type="text" id="subprojectName" name="subprojectName" th:field="*{subProjectName}" required/>
+    </div>
+
+    <div class="form-group">
+        <label for="subprojectDescription">Beskrivelse:</label>
+        <input type="text" id="subprojectDescription" name="subprojectDescription" th:field="*{subProjectDescription}" required/>
+    </div>
+
+    <div class="form-group">
+        <label for="startDate">Start Dato:</label>
+        <input type="date" id="startDate" name="startDate" th:field="*{startDate}" required/>
+    </div>
+
+    <div class="form-group">
+        <label for="endDate">Slut Dato:</label>
+        <input type="date" id="endDate" name="endDate" th:field="*{endDate}" required/>
+    </div>
+
+
+    <!--
+<div class="form-group">
+    <label for="projectDuration">Varighed (Dage):</label>
+    <input type="number" id="projectDuration" name="projectDuration" th:field="*{projectDuration}" required readonly/>
+</div>
+-->
+
+    <button type="submit">Opret subProjekt</button>
+
+</form>
+
+</body>
+</html>
