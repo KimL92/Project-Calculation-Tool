@@ -78,15 +78,15 @@
             <td>
                 <div class="action-buttons">
                     <!-- Rediger-knap (udkommenteret indtil du laver funktionaliteten) -->
-                    <!--                    <a th:href="@{/project/subproject/edit/{employeeId}/{projectId}/{subProjectId}(employeeId=${currentEmployeeId}, projectId=${currentProjectId}, subProjectId=${subproject.subProjectID})}"-->
-                    <!--                       class="edit-button">Rediger</a>-->
+                    <a th:href="@{/project/subproject/edit/{employeeId}/{projectId}/{subProjectId}(employeeId=${currentEmployeeId}, projectId=${currentProjectId}, subProjectId=${subproject.subProjectID})}"
+                       class="edit-button">Rediger</a>
 
                     <!-- Slet-knap (udkommenteret indtil du laver funktionaliteten) -->
-                    <!--                    <form th:action="@{/project/subproject/delete/{employeeId}/{projectId}/{subProjectId}(employeeId=${currentEmployeeId}, projectId=${currentProjectId}, subProjectId=${subproject.subProjectID})}" method="post" style="display:inline">-->
-                    <!--                        <button type="submit" class="delete-button" onclick="return confirm('Er du sikker på, du vil slette dette subprojekt?');">-->
-                    <!--                            Slet-->
-                    <!--                        </button>-->
-                    <!--                    </form>-->
+                    <form th:action="@{/project/subproject/delete/{employeeId}/{projectId}/{subProjectId}(employeeId=${currentEmployeeId}, projectId=${currentProjectId}, subProjectId=${subproject.subProjectID})}" method="post" style="display:inline">
+                        <button type="submit" class="delete-button" onclick="return confirm('Er du sikker på, du vil slette dette subprojekt?');">
+                            Slet
+                        </button>
+                    </form>
 
                     <!-- Opret task knap (tilføj URL når du har lavet task funktionaliteten) -->
                     <a th:href="@{/project/task/liste/{employeeId}/{projectId}/{subProjectId}(employeeId=${currentEmployeeId}, projectId=${currentProjectId}, subProjectId=${subproject.subProjectID})}"
