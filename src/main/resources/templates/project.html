@@ -84,6 +84,11 @@
                             Slet
                         </button>
                     </form>
+
+                    <!-- tilføj subproject knap -->
+                    <a th:href="@{/project/edit/{employeeId}/{projectId}(employeeId=${currentEmployeeId}, projectId=${project.projectID})}"
+                       class="control-bar">Opret SubProject</a>
+
                 </div>
             </td>
         </tr>

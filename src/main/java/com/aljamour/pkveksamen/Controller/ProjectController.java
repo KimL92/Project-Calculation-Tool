@@ -99,4 +99,30 @@ public class ProjectController {
 
         return "redirect:/project/list/" + employeeId;
     }
+
+    @GetMapping("/createsubproject/{employeeId}/{projectId}")
+    public String showCreateSubProjectForm(@PathVariable int employeeId,
+                               @PathVariable long projectId,
+                               Model model) {
+        Project project = projectService.getProjectById(projectId);
+        model.addAttribute("subproject", subproject);
+        model.addAttribute("currentEmployeeId", employeeId);
+
+        Employee employee = employeeService.getEmployeeById(employeeId);
+        if (employee != null) {
+            model.addAttribute("username", employee.getUsername());
+            model.addAttribute("employeeRole", employee.getRole());
+        }
+        return "edit-project";
+    }
+
+    @PostMapping("/edit/{employeeId}/{projectId}")
+    public String createSubProject(@PathVariable int employeeId,
+                              @PathVariable long projectId,
+                              @ModelAttribute Project project) {
+        project.setProjectID(projectId);
+        project.recalculateDuration();
+        projectService.editProject(project);
+        return "redirect:/project/list/" + employeeId;
+    }
 }
