@@ -43,9 +43,12 @@ public class ProjectController {
         return "createproject";
     }
 
-    @GetMapping("/createsubproject/{projectId}")
-    public String showCreateSubProjectForm(@PathVariable int projectId, Model model){
+    @GetMapping("/createsubproject/{employeeId}/{projectId}")
+    public String showCreateSubProjectForm(@PathVariable int employeeId,
+                                           @PathVariable long projectId,
+                                           Model model){
         model.addAttribute("subProject", new SubProject());
+        model.addAttribute("currentEmployeeId", employeeId);
         model.addAttribute("currentProjectId", projectId);
         return "createsubproject";
     }
@@ -68,29 +71,19 @@ public class ProjectController {
         return "redirect:/project/list/" + employeeId;
     }
 
-    @PostMapping("create/{projectId}")
-    public String createSubProject(@PathVariable int projectId,@ModelAttribute SubProject subProject, Model model){
-        subProject.recalculateDuration();
-
-
-        projectService.createSubProject(
-                subProject.getSubProjectName(),
-                subProject.getSubProjectDescription(),
-                subProject.getSubProjectStatus(),
-                subProject.getSubProjectDuration(),
-                subProject.getStartDate(),
-                subProject.getEndDate(),
-                projectId
-        );
-
-        return "redirect:/project/list/" + projectId;
-    }
-
-
     @PostMapping("/saveproject/{employeeId}")
     public String saveProject(@PathVariable int employeeId, @ModelAttribute Project project) {
         project.recalculateDuration();
         projectService.saveProject(project, employeeId);
+        return "redirect:/project/list/" + employeeId;
+    }
+
+    @PostMapping("/savesubproject/{employeeId}/{projectId}")
+    public String saveSubProject(@PathVariable int employeeId,
+                                 @PathVariable long projectId,
+                                 @ModelAttribute SubProject subProject){
+        subProject.recalculateDuration();
+        projectService.saveSubProject(subProject, projectId);
         return "redirect:/project/list/" + employeeId;
     }
 

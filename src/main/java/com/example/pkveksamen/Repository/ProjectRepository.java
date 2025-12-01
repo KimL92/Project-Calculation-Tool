@@ -3,6 +3,7 @@ package com.example.pkveksamen.Repository;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.example.pkveksamen.Model.SubProject;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -15,23 +16,6 @@ public class ProjectRepository {
 
     public ProjectRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-    }
-
-    public void createSubProject(String subProjectName, String subProjectDescription, String subProjectStatus, int subProjectDuration, LocalDate startDate, LocalDate endDate,
-     long projectID){
-
-        jdbcTemplate.update(
-                "INSERT INTO subproject(sub_project_title,sub_project_description, sub_project_start_date, " +
-                        "sub_project_end_date, sub_project_duration,project_id) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?) ",
-                subProjectName,
-                subProjectDescription,
-                subProjectStatus,
-                subProjectDuration,
-                startDate,
-                endDate,
-                projectID
-        );
     }
 
     public void createProject(String projectTitle, String projectDescription, LocalDate projectStartDate,
@@ -80,7 +64,26 @@ public class ProjectRepository {
                 employeeId
         );
     }
-//!
+
+    public void saveSubProject(SubProject subProject, long projectID) {
+        // Beregn varighed ud fra datoerne
+        subProject.recalculateDuration();
+
+        String sql = "INSERT INTO sub_project " +
+                "(project_id, sub_project_title, sub_project_description, sub_project_start_date, sub_project_end_date, sub_project_duration) " +
+                "VALUES (?,?,?,?,?,?)";
+
+        jdbcTemplate.update(sql,
+                projectID,                             // project_id
+                subProject.getSubProjectName(),        // sub_project_title
+                subProject.getSubProjectDescription(), // sub_project_description
+                subProject.getStartDate(),             // sub_project_start_date
+                subProject.getEndDate(),               // sub_project_end_date
+                subProject.getSubProjectDuration()     // sub_project_duration
+        );
+    }
+
+    //!
     public void deleteProject(long projectID) {
         jdbcTemplate.update("DELETE FROM project WHERE project_id = ?", projectID);
     }

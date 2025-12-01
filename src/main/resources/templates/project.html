@@ -84,6 +84,9 @@
                             Slet
                         </button>
                     </form>
+
+                    <a th:href="@{/project/createsubproject/{employeeId}/{projectId}(employeeId=${currentEmployeeId}, projectId=${project.projectID})}"
+                       class="create-subproject-button">Opret Subprojekt</a>
                 </div>
             </td>
         </tr>

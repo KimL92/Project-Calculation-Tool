@@ -12,7 +12,7 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.aljamour</groupId>
+    <groupId>com.example</groupId>
     <artifactId>PKV-Eksamen</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>PKV - Eksamen</name>

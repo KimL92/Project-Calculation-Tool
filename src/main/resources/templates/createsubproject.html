@@ -9,7 +9,8 @@
 
 <h1>Opret Nyt subProjekt</h1>
 
-<form th:action="@{/project/saveproject/{projectId}(projectId=${currentProjectId})}" th:object="${subProject}" method="post">
+<form th:action="@{/project/savesubproject/{employeeId}/{projectId}(employeeId=${currentEmployeeId}, projectId=${currentProjectId})}"
+      th:object="${subProject}" method="post">
     <div class="form-group">
         <label for="subprojectName">SubProjekt Navn:</label>
         <input type="text" id="subprojectName" name="subprojectName" th:field="*{subProjectName}" required/>
@@ -18,6 +19,11 @@
     <div class="form-group">
         <label for="subprojectDescription">Beskrivelse:</label>
         <input type="text" id="subprojectDescription" name="subprojectDescription" th:field="*{subProjectDescription}" required/>
+    </div>
+
+    <div class="form-group">
+        <label for="status">Status:</label>
+        <input type="text" id="status" name="status" th:field="*{subProjectStatus}" required/>
     </div>
 
     <div class="form-group">
@@ -31,12 +37,11 @@
     </div>
 
 
-    <!--
+
 <div class="form-group">
-    <label for="projectDuration">Varighed (Dage):</label>
-    <input type="number" id="projectDuration" name="projectDuration" th:field="*{projectDuration}" required readonly/>
+    <label for="subprojectDuration">Varighed (Dage):</label>
+    <input type="number" id="subprojectDuration" name="subprojectDuration" th:field="*{subProjectDuration}" required readonly/>
 </div>
--->
 
     <button type="submit">Opret subProjekt</button>
 
