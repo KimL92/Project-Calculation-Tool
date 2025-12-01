@@ -1,4 +1,4 @@
-package com.aljamour.pkveksamen.Model;
+package com.example.pkveksamen.Model;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -12,6 +12,11 @@ public class Project {
     private LocalDate endDate;
     private String projectCustomer;
     private int projectDuration;
+    private long subProjectID;
+    private String subProjectName;
+    private String subProjectDescription;
+    private String subProjectStatus;
+    private int subProjectDuration;
 
     public void recalculateDuration() {
         if (startDate != null && endDate != null) {
@@ -43,6 +48,11 @@ public class Project {
         this.endDate = endDate;
         this.projectCustomer = projectCustomer;
         this.projectDuration = projectDuration;
+        this.subProjectID = subProjectID;
+        this.subProjectName = subProjectName;
+        this.subProjectDescription = subProjectDescription;
+        this.subProjectStatus = subProjectStatus;
+        this.subProjectDuration = subProjectDuration;
     }
 
 

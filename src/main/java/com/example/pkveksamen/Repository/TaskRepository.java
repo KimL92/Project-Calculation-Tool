@@ -1,6 +1,6 @@
-package com.aljamour.pkveksamen.Repository;
+package com.example.pkveksamen.Repository;
 
-import com.aljamour.pkveksamen.Model.Task;
+import com.example.pkveksamen.Model.Task;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 

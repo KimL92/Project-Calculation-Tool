@@ -1,13 +1,7 @@
-package com.aljamour.pkveksamen.Controller;
+package com.example.pkveksamen.Controller;
 
-import com.aljamour.pkveksamen.Model.Task;
-import com.aljamour.pkveksamen.Service.TaskService;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/")

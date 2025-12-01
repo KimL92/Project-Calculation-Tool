@@ -1,14 +1,13 @@
-package com.aljamour.pkveksamen.Controller;
+package com.example.pkveksamen.Controller;
 
-import com.aljamour.pkveksamen.Model.Project;
-import com.aljamour.pkveksamen.Model.Employee;
-import com.aljamour.pkveksamen.Service.ProjectService;
-import com.aljamour.pkveksamen.Service.EmployeeService;
+import com.example.pkveksamen.Model.Project;
+import com.example.pkveksamen.Model.Employee;
+import com.example.pkveksamen.Service.ProjectService;
+import com.example.pkveksamen.Service.EmployeeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -97,32 +96,6 @@ public class ProjectController {
                 employeeId
         );
 
-        return "redirect:/project/list/" + employeeId;
-    }
-
-    @GetMapping("/createsubproject/{employeeId}/{projectId}")
-    public String showCreateSubProjectForm(@PathVariable int employeeId,
-                               @PathVariable long projectId,
-                               Model model) {
-        Project project = projectService.getProjectById(projectId);
-        model.addAttribute("subproject", subproject);
-        model.addAttribute("currentEmployeeId", employeeId);
-
-        Employee employee = employeeService.getEmployeeById(employeeId);
-        if (employee != null) {
-            model.addAttribute("username", employee.getUsername());
-            model.addAttribute("employeeRole", employee.getRole());
-        }
-        return "edit-project";
-    }
-
-    @PostMapping("/edit/{employeeId}/{projectId}")
-    public String createSubProject(@PathVariable int employeeId,
-                              @PathVariable long projectId,
-                              @ModelAttribute Project project) {
-        project.setProjectID(projectId);
-        project.recalculateDuration();
-        projectService.editProject(project);
         return "redirect:/project/list/" + employeeId;
     }
 }
