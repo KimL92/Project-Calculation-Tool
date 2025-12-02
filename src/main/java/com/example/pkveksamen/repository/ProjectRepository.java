@@ -1,13 +1,13 @@
-package com.example.pkveksamen.Repository;
+package com.example.pkveksamen.repository;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import com.example.pkveksamen.Model.SubProject;
+import com.example.pkveksamen.model.SubProject;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.example.pkveksamen.Model.Project;
+import com.example.pkveksamen.model.Project;
 
 @Repository
 public class ProjectRepository {

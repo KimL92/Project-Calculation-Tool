@@ -1,10 +1,10 @@
-package com.example.pkveksamen.Controller;
+package com.example.pkveksamen.controller;
 
-import com.example.pkveksamen.Model.Project;
-import com.example.pkveksamen.Model.Employee;
-import com.example.pkveksamen.Model.SubProject;
-import com.example.pkveksamen.Service.ProjectService;
-import com.example.pkveksamen.Service.EmployeeService;
+import com.example.pkveksamen.model.Project;
+import com.example.pkveksamen.model.Employee;
+import com.example.pkveksamen.model.SubProject;
+import com.example.pkveksamen.service.ProjectService;
+import com.example.pkveksamen.service.EmployeeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;

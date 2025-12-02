@@ -1,4 +1,4 @@
-package com.example.pkveksamen.Model;
+package com.example.pkveksamen.model;
 
 public enum EmployeeRole {
     // TODO: få den til at bruge attributnavnet i stedet for variabelnavnet

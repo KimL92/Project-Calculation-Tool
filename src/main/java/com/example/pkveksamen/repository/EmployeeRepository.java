@@ -1,6 +1,6 @@
-package com.example.pkveksamen.Repository;
+package com.example.pkveksamen.repository;
 
-import com.example.pkveksamen.Model.Employee;
+import com.example.pkveksamen.model.Employee;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;

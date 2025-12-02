@@ -1,8 +1,8 @@
-package com.example.pkveksamen.Service;
+package com.example.pkveksamen.service;
 
-import com.example.pkveksamen.Model.Project;
-import com.example.pkveksamen.Model.SubProject;
-import com.example.pkveksamen.Repository.ProjectRepository;
+import com.example.pkveksamen.model.Project;
+import com.example.pkveksamen.model.SubProject;
+import com.example.pkveksamen.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

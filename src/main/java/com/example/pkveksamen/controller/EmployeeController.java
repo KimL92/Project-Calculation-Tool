@@ -1,7 +1,7 @@
-package com.example.pkveksamen.Controller;
+package com.example.pkveksamen.controller;
 
-import com.example.pkveksamen.Model.Employee;
-import com.example.pkveksamen.Service.EmployeeService;
+import com.example.pkveksamen.model.Employee;
+import com.example.pkveksamen.service.EmployeeService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
