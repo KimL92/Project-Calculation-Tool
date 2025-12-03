@@ -26,45 +26,6 @@ public class TaskController {
     }
 
 
-    @GetMapping("/createtask/{projectId}/{subProjectId}")
-    public String showTaskCreateForm(@PathVariable long subProjectId,
-                                     @PathVariable long projectId ,
-                                     Model model) {
-        model.addAttribute("task", new Task());
-        model.addAttribute("currentProjectId", projectId);
-        model.addAttribute("currentSubProjectId", subProjectId);
-        return "createtask";
-    }
-
-    @PostMapping("/createtask/{subProjectId}")
-    public String createTask(@PathVariable Integer employeeId,
-                             @PathVariable long subProjectId,
-                             @RequestParam long projectId,
-                             @ModelAttribute Task task,
-                             Model model) {
-        // Calculate duration in days
-        if (task.getStartDate() != null && task.getEndDate() != null) {
-            long days = ChronoUnit.DAYS.between(task.getStartDate(), task.getEndDate());
-            task.setTaskDuration((int) days + 1); // +1 to include both start and end dates
-        } else {
-            task.setTaskDuration(0);
-        }
-
-        taskService.createTask(
-                employeeId,
-                subProjectId,
-                task.getTaskName(),
-                task.getTaskDescription(),
-                task.getTaskStatus(),
-                task.getStartDate(),
-                task.getEndDate(),
-                task.getTaskDuration(),
-                task.getTaskPriority(),
-                task.getTaskNote()
-        );
-
-        return "redirect:/project/task/liste/" + projectId + "/" + subProjectId + "/" + employeeId;
-    }
 
     @GetMapping("/project/task/liste/{projectId}/{subProjectId}/{employeeId}")
     public String showTaskByEmployeeId(@PathVariable int employeeId,
@@ -98,4 +59,55 @@ public class TaskController {
     }
 
 
+    @GetMapping("/project/task/createtask/{employeeId}/{projectId}/{subProjectId}")
+    public String showTaskCreateForm(@PathVariable int employeeId,
+                                     @PathVariable long projectId,
+                                     @PathVariable long subProjectId,
+                                     Model model) {
+        model.addAttribute("task", new Task());
+        model.addAttribute("currentEmployeeId", employeeId);
+        model.addAttribute("currentProjectId", projectId);
+        model.addAttribute("currentSubProjectId", subProjectId);
+
+        // Tilføj employee info til header
+        Employee employee = employeeService.getEmployeeById(employeeId);
+        if (employee != null) {
+            model.addAttribute("username", employee.getUsername());
+            model.addAttribute("employeeRole", employee.getRole());
+        }
+
+        return "createtask";
+    }
+
+    @PostMapping("/project/task/createtask/{employeeId}/{projectId}/{subProjectId}")
+    public String createTask(@PathVariable int employeeId,
+                             @PathVariable long projectId,
+                             @PathVariable long subProjectId,
+                             @ModelAttribute Task task,
+                             Model model) {
+        // Calculate duration in days
+        if (task.getStartDate() != null && task.getEndDate() != null) {
+            long days = ChronoUnit.DAYS.between(task.getStartDate(), task.getEndDate());
+            task.setTaskDuration((int) days + 1);
+        } else {
+            task.setTaskDuration(0);
+        }
+
+        taskService.createTask(
+                employeeId,
+                subProjectId,
+                task.getTaskName(),
+                task.getTaskDescription(),
+                task.getTaskStatus(),
+                task.getStartDate(),
+                task.getEndDate(),
+                task.getTaskDuration(),
+                task.getTaskPriority(),
+                task.getTaskNote()
+        );
+
+        return "redirect:/project/task/liste/" + employeeId + "/" + projectId + "/" + subProjectId;
+    }
 }
+
+
