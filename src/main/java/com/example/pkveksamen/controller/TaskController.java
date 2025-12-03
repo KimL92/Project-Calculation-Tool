@@ -27,6 +27,7 @@ public class TaskController {
 
 
 
+
     @GetMapping("/project/task/liste/{projectId}/{subProjectId}/{employeeId}")
     public String showTaskByEmployeeId(@PathVariable int employeeId,
                                        @PathVariable long projectId,
@@ -47,17 +48,6 @@ public class TaskController {
 
         return "task";
     }
-
-    @PostMapping("/savetask/{employeeId}/{projectId}/{subprojectID}")
-    public String saveTask(@PathVariable int employeeId,
-                           @PathVariable long projectId,
-                           @PathVariable long subprojectID,
-                           @ModelAttribute Task task) {
-        task.recalculateDuration();
-        taskService.saveTask(task, subprojectID);
-        return "redirect:/project/task/list/" + subprojectID + projectId + "?employeeId=" + employeeId;
-    }
-
 
     @GetMapping("/project/task/createtask/{employeeId}/{projectId}/{subProjectId}")
     public String showTaskCreateForm(@PathVariable int employeeId,
@@ -109,5 +99,4 @@ public class TaskController {
         return "redirect:/project/task/liste/" + employeeId + "/" + projectId + "/" + subProjectId;
     }
 }
-
 
