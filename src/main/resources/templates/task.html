@@ -91,8 +91,13 @@
                     <a th:href="@{/project/task/edit/{employeeId}/{projectId}/{subProjectId}/{taskId}(employeeId=${currentEmployeeId}, projectId=${currentProjectId}, subProjectId=${currentSubProjectId}, taskId=${task.taskID})}"
                        class="edit-button">Rediger</a>
 
-                    <!-- Slet-knap -->
-                    <form th:action="@{/project/task/delete/{employeeId}/{projectId}/{subProjectId}/{taskId}(employeeId=${currentEmployeeId}, projectId=${currentProjectId}, subProjectId=${currentSubProjectId}, taskId=${task.taskID})}"
+
+                    <!-- Slet task - knappen -->
+                    <form th:action="@{/task/delete/{employeeId}/{projectId}/{subProjectId}/{taskId}(
+                     employeeId=${currentEmployeeId},
+                     projectId=${currentProjectId},
+                     subProjectId=${currentSubProjectId},
+                     taskId=${task.taskID})}"
                           method="post" style="display:inline">
                         <button type="submit" class="delete-button"
                                 onclick="return confirm('Er du sikker på, du vil slette denne task?');">
