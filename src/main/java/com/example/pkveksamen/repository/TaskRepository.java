@@ -58,31 +58,68 @@ public class TaskRepository {
         }, employeeId);
     }
 
-    public void saveTask(Task task, long subProjectID) {
-        // Beregn varighed ud fra datoerne
-        task.recalculateDuration();
 
-        String sql = "INSERT INTO Task " +
-                "(task_id, employye_id,sub_project_id, task_title, task_description, task_status, task_start_date," +
-                "task_end_date,task_duration,task_priority,task_note) " +
-                "VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+        public void saveTask(Task task, int employeeId, long projectId, long subProjectId) {
+            String sql = "INSERT INTO task (user_id, sub_project_id, task_title, task_description, task_status, task_start_date, task_end_date, task_duration, task_priority, task_note) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        jdbcTemplate.update(sql,
-                subProjectID,
-                task.getTaskName(),
-                task.getTaskDescription(),
-                task.getTaskStatus(),
-                task.getStartDate(),
-                task.getEndDate(),
-                task.getTaskDuration(),
-                task.getTaskPriority(),
-                task.getTaskNote()
+            // Beregn varighed ud fra datoerne
+            task.recalculateDuration();
 
-        );
-    }
+            jdbcTemplate.update(sql,
+                    employeeId,
+                    subProjectId,
+                    task.getTaskName(),
+                    task.getTaskDescription(),
+                    task.getTaskStatus().name(),   // <-- .name()
+                    task.getStartDate(),
+                    task.getEndDate(),
+                    task.getTaskDuration(),
+                    task.getTaskPriority().name(), // <-- .name()
+                    task.getTaskNote()
+            );
+
+        }
 
     public void deleteTask(long taskId) {
         jdbcTemplate.update("DELETE FROM task WHERE task_id = ?", taskId);
     }
+
+    public void editTask(Task task) {
+        String sql = "UPDATE task SET task_title = ?, task_description = ?, task_status = ?, task_start_date = ?, task_end_date = ?, task_duration = ?, task_priority = ?, task_note = ? WHERE task_id = ?";
+
+        jdbcTemplate.update(sql,
+                task.getTaskName(),
+                task.getTaskDescription(),
+                task.getTaskStatus().name(),  // <-- .name() er vigtigt
+                task.getStartDate(),
+                task.getEndDate(),
+                task.getTaskDuration(),
+                task.getTaskPriority().name(), // <-- .name() er vigtigt
+                task.getTaskNote(),
+                task.getTaskID()
+        );
+    }
+
+
+    public Task getTaskById(long taskId) {
+        String sql = "SELECT task_id, employee_id, sub_project_id, task_title, task_description, task_status, " +
+                "task_start_date, task_end_date, task_duration, task_priority, task_note " +
+                "FROM task WHERE task_id = ?";
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+            Task task = new Task();
+            task.setTaskID(rs.getInt("task_id"));
+            task.setTaskName(rs.getString("task_title"));
+            task.setTaskDescription(rs.getString("task_description"));
+            task.setTaskStatus(Status.valueOf(rs.getString("task_status")));
+            task.setTaskNote(rs.getString("task_note"));
+            task.setStartDate(rs.getObject("task_start_date", java.time.LocalDate.class));
+            task.setEndDate(rs.getObject("task_end_date", java.time.LocalDate.class));
+            task.setTaskDuration(rs.getInt("task_duration"));
+            task.recalculateDuration();
+            return task;
+        }, taskId);
+    }
+
 
 }
