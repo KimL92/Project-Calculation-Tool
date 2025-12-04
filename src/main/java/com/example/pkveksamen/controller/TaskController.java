@@ -25,9 +25,6 @@ public class TaskController {
         this.projectService = projectService;
     }
 
-
-
-
     @GetMapping("/project/task/liste/{projectId}/{subProjectId}/{employeeId}")
     public String showTaskByEmployeeId(@PathVariable int employeeId,
                                        @PathVariable long projectId,
@@ -69,6 +66,7 @@ public class TaskController {
         return "createtask";
     }
 
+    // TODO: VURDER OM DENNE KAN SLETTES
     @PostMapping("/project/task/createtask/{employeeId}/{projectId}/{subProjectId}")
     public String createTask(@PathVariable int employeeId,
                              @PathVariable long projectId,
@@ -99,7 +97,6 @@ public class TaskController {
         return "redirect:/project/task/liste/" + projectId + "/" + subProjectId + "/" + employeeId;
 
     }
-
 
     @PostMapping("/task/delete/{employeeId}/{projectId}/{subProjectId}/{taskId}")
     public String deleteTask(@PathVariable int employeeId,

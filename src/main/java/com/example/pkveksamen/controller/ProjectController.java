@@ -73,6 +73,7 @@ public class ProjectController {
         return "createsubproject";
     }
 
+    // TODO: Vurder om denne kan slettes (kan nok godt)
     @PostMapping("/create/{employeeId}")
     public String createProject(@PathVariable int employeeId,
                                 @ModelAttribute Project project,
