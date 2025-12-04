@@ -99,5 +99,15 @@ public class TaskController {
         return "redirect:/project/task/liste/" + projectId + "/" + subProjectId + "/" + employeeId;
 
     }
+
+
+    @PostMapping("/task/delete/{employeeId}/{projectId}/{subProjectId}/{taskId}")
+    public String deleteTask(@PathVariable int employeeId,
+                                   @PathVariable long projectId,
+                                   @PathVariable long subProjectId,
+                                    @PathVariable long taskId) {
+        taskService.deleteTask(taskId);
+        return "redirect:/project/subproject/task/list/" + projectId +"/"+  subProjectId + "/" + employeeId;
+    }
 }
 

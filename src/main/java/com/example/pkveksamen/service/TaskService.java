@@ -31,7 +31,15 @@ public class TaskService {
     public void saveTask(Task task, long subprojectID) {
         taskRepository.saveTask(task,subprojectID);
     }
+
+
+    public void deleteTask(long taskId) {
+        taskRepository.deleteTask(taskId);
+    }
 }
+
+
+
 
 
 //    public List<Task> getTasksByTaskID(int taskID) {

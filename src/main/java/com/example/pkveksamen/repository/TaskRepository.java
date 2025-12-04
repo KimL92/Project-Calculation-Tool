@@ -81,4 +81,8 @@ public class TaskRepository {
         );
     }
 
+    public void deleteTask(long taskId) {
+        jdbcTemplate.update("DELETE FROM task WHERE task_id = ?", taskId);
+    }
+
 }
