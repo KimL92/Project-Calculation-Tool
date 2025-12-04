@@ -158,18 +158,6 @@ public class ProjectController {
 
         return "edit-subproject";
     }
-    /*
-    // TODO FINDE UD AF URL
-    @GetMapping("/subproject/edit/{employeeId}/{projectId}/{subprojectId}")
-    public String showSubProjectEditForm(@PathVariable long projectId,
-                                         @PathVariable long subProjectID,
-                                         Model model) {
-        SubProject subProject = projectService.getSubProjectBySubProjectID(subProjectID);
-        model.addAttribute("currentProjectID", projectId);
-        model.addAttribute("currentSubProjectID", subProjectID);
-
-        return "edit-subproject";
-    } */
 
     @PostMapping("/edit/{employeeId}/{projectId}")
     public String editProject(@PathVariable int employeeId,

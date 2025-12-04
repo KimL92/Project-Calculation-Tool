@@ -12,7 +12,8 @@
     <div class="header">
         <h1>Tasks</h1>
         <div class="user-info">
-            <span th:text="${username} + ' (' + ${employeeRole} + ')'"></span>
+            <!-- KORRIGERET: kun én ${...} expression -->
+            <span th:text="${username} + ' (' + employeeRole + ')'"></span>
             <form th:action="@{/logout}" method="post">
                 <button type="submit" class="logout-button">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
@@ -29,7 +30,8 @@
 
     <!-- Kontrol bar -->
     <div class="control-bar">
-        <a th:href="@{/project/subproject/list/{projectId}(projectId=${currentProjectId}, employeeId=${currentEmployeeId})}" class="back-button">
+        <a th:href="@{/project/subproject/list/{projectId}(projectId=${currentProjectId}, employeeId=${currentEmployeeId})}"
+           class="back-button">
             ← Tilbage til Subprojekter
         </a>
 
@@ -72,10 +74,14 @@
             <td>
                 <form th:action="@{/project/task/updatestatus/{taskId}(taskId=${task.taskID})}" method="post">
                     <select name="taskStatus">
-                        <option value="NOT_STARTED" th:selected="${task.taskStatus == 'NOT_STARTED'}">Ikke startet</option>
-                        <option value="IN_PROGRESS" th:selected="${task.taskStatus == 'IN_PROGRESS'}">I gang</option>
-                        <option value="COMPLETED" th:selected="${task.taskStatus == 'COMPLETED'}">Afsluttet</option>
+                        <option value="NOT_STARTED"
+                                th:selected="${task.taskStatus == 'NOT_STARTED'}">Ikke startet</option>
+                        <option value="IN_PROGRESS"
+                                th:selected="${task.taskStatus == 'IN_PROGRESS'}">I gang</option>
+                        <option value="COMPLETED"
+                                th:selected="${task.taskStatus == 'COMPLETED'}">Afsluttet</option>
                     </select>
+                    <!-- Hvis du vil auto-gemme ved ændring, kan du tilføje JS senere -->
                 </form>
             </td>
 
@@ -85,7 +91,6 @@
                     <!-- Rediger -->
                     <a th:href="@{/project/task/edit/{employeeId}/{projectId}/{subProjectId}/{taskId}(employeeId=${currentEmployeeId}, projectId=${currentProjectId}, subProjectId=${currentSubProjectId}, taskId=${task.taskID})}"
                        class="edit-button">Rediger</a>
-
 
                     <!-- Slet-knap -->
                     <form th:action="@{/project/task/delete/{employeeId}/{projectId}/{subProjectId}/{taskId}(employeeId=${currentEmployeeId}, projectId=${currentProjectId}, subProjectId=${currentSubProjectId}, taskId=${task.taskID})}"
@@ -103,3 +108,9 @@
                 </div>
             </td>
         </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
