@@ -27,9 +27,6 @@ public class TaskController {
         this.taskRepository = taskRepository;
     }
 
-
-
-
     @GetMapping("/project/task/liste/{projectId}/{subProjectId}/{employeeId}")
     public String showTaskByEmployeeId(@PathVariable int employeeId,
                                        @PathVariable long projectId,
@@ -99,7 +96,6 @@ public class TaskController {
         );
 
         return "redirect:/project/task/liste/" + projectId + "/" + subProjectId + "/" + employeeId;
-
     }
 
 
@@ -147,7 +143,6 @@ public class TaskController {
         return "edit-task"; // Thymeleaf template
     }
 
-
     @PostMapping("/project/task/edit/{employeeId}/{projectId}/{subProjectId}/{taskId}")
     public String editTask(@PathVariable int employeeId,
                            @PathVariable long projectId,
@@ -158,6 +153,7 @@ public class TaskController {
         taskService.editTask(task);
         return "redirect:/project/task/liste/" + projectId + "/" + subProjectId + "/" + employeeId;
     }
+
     @GetMapping("/project/subtask/createsubtask/{employeeId}/{projectId}/{subProjectId}/{taskId}")
     public String showSubTaskCreateForm(@PathVariable int employeeId,
                                         @PathVariable long projectId,
@@ -180,6 +176,31 @@ public class TaskController {
         return "subtask";
     }
 
+    @GetMapping("/project/subtask/liste/{projectId}/{subProjectId}/{taskId}{employeeId}")
+    public String showSubTaskByEmployeeId(@PathVariable int employeeId,
+                                       @PathVariable long projectId,
+                                       @PathVariable long subProjectId,
+                                       @PathVariable long taskId,
+                                       Model model) {
+        List<SubTask> subTaskList = taskService.showSubTaskByEmployeeId(employeeId);
+        model.addAttribute("subTaskList", subTaskList);
+        model.addAttribute("currentProjectId", projectId);
+        model.addAttribute("currentSubProjectId", subProjectId);
+        model.addAttribute("currentEmployeeId", employeeId);
+        model.addAttribute("taskId", taskId);
+        // Add employee details for the header
+        Employee employee = employeeService.getEmployeeById(employeeId);
+        if (employee != null) {
+            model.addAttribute("username", employee.getUsername());
+            model.addAttribute("employeeRole", employee.getRole());
+        }
+
+        return "subtask";
+    }
+
+
+
+
 
     @PostMapping("/task/subtask/create/{taskId}/{employeeId}/{projectId}/{subProjectId}")
     public String createSubTask(@PathVariable int employeeId,
@@ -199,6 +220,20 @@ public class TaskController {
         );
 
         return "redirect:/task/subtask/create/" + taskId + "/" + employeeId + "/" + projectId + "/" + subProjectId;
+    }
+
+    @PostMapping("/subtask/delete/{employeeId}/{projectId}/{subProjectId}/{taskId}/{subTaskId}")
+    public String saveSubTask(@PathVariable int employeeId,
+                              @PathVariable long projectId,
+                              @PathVariable long subProjectId,
+                              @PathVariable long taskId,
+                              @PathVariable long subTaskId,
+                              @ModelAttribute SubTask subTask) {
+        taskService.saveSubTask(subTask, subTaskId);
+        subTask.recalculateDuration();
+
+
+        return "redirect:/project/task/subtask/liste/" + projectId + "/" + subProjectId + "/" + taskId + "/" + employeeId;
     }
 }
 

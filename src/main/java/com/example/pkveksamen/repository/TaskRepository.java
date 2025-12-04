@@ -1,6 +1,7 @@
 
 package com.example.pkveksamen.repository;
 
+import com.example.pkveksamen.model.SubTask;
 import com.example.pkveksamen.model.Task;
 import com.example.pkveksamen.model.Priority;
 import com.example.pkveksamen.model.Status;
@@ -121,25 +122,69 @@ public class TaskRepository {
             return task;
         }, taskId);
     }
-    public void createSubTask(Integer employeeId, long projectId, long subProejctId, long taskId,
-                              String subTaskName, String subTaskDescription, String subTaskDuration) {
+
+    public void saveSubTask(SubTask subTask, long subTaskId) {
+        // Beregn varighed ud fra datoerne
+        subTask.recalculateDuration();
+
+        String sql = "INSERT INTO sub_task " +
+                "(sub_task_id, task_id, sub_task_title, sub_task_description, sub_task_status, sub_task_start_date, " +
+                "sub_task_end_date, sub_task_duration, sub_task_priority, sub_task_note) " +
+                "VALUES (?,?,?,?,?,?,?,?,?,?)";
+
+        jdbcTemplate.update(sql,
+                subTaskId,
+                subTask.getSubTaskName(),
+                subTask.getSubTaskDescription(),
+                subTask.getSubTaskStatus(),
+                subTask.getSubTaskStartDate(),
+                subTask.getSubTaskEndDate(),
+                subTask.getSubTaskDuration(),
+                subTask.getSubTaskPriority(),
+                subTask.getSubTaskNote()
+        );
+    }
+
+    public void createSubTask(Integer employeeId, long projectId, long subProjectId, long taskId,
+                              String subTaskName, String subTaskDescription, int subTaskDuration) {
 
         jdbcTemplate.update(
-                "INSERT INTO task (employee_id, project_id, sub_project_id, task_id, sub_task_title, sub_task_description, sub_task_status," +
+                "INSERT INTO sub_task (sub_task_id, task_id, sub_task_title, sub_task_description, sub_task_status," +
                         "sub_task_start_date, sub_task_end_date, sub_task_duration, sub_task_priority, sub_task_note) " +
                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 
                 employeeId,
                 projectId,
-                subProejctId,
+                subProjectId,
                 taskId,
                 subTaskName,
                 subTaskDescription,
                 subTaskDuration
 
-
         );
     }
+
+    // TODO: subtask er afghængig af task, derfor erstat employeeId med taskId
+    /*
+    public List<SubTask> showSubTaskByTaskId(long taskId) {
+        String sql = "SELECT task_id, sub_task_title, sub_task_description, sub_task_status," +
+                "sub_task_start_date, sub_task_end_date, sub_task_duration, sub_task_priority, sub_task_note" +
+                "FROM sub_task WHERE employee_id = ? ";
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Task task = new Task();
+            task.setTaskID(rs.getInt("task_id"));
+            task.setTaskName(rs.getString("task_title"));
+            task.setTaskDescription(rs.getString("task_description"));
+            task.setTaskStatus(Status.valueOf(rs.getString("task_status")));
+            task.setTaskNote(rs.getString("task_note"));
+            task.setStartDate(rs.getObject("task_start_date", java.time.LocalDate.class));
+            task.setEndDate(rs.getObject("task_end_date", java.time.LocalDate.class));
+            task.setTaskDuration(rs.getInt("task_duration"));
+            task.recalculateDuration();
+            return task;
+        }, employeeId);
+    } */
 }
 
 

@@ -3,6 +3,7 @@ package com.example.pkveksamen.service;
 
 import com.example.pkveksamen.model.Priority;
 import com.example.pkveksamen.model.Status;
+import com.example.pkveksamen.model.SubTask;
 import com.example.pkveksamen.model.Task;
 import com.example.pkveksamen.repository.TaskRepository;
 import org.springframework.stereotype.Service;
@@ -48,7 +49,16 @@ public class TaskService {
         return taskRepository.getTaskById(taskId);
 
     }
-    public void createSubTask(Integer employeeId, long projectId, long subProjectId, long taskId, String subTaskName, String subTaskDescription, String subTaskDuration) {
+
+    public void createSubTask(Integer employeeId, long projectId, long subProjectId, long taskId, String subTaskName, String subTaskDescription, int subTaskDuration) {
         taskRepository.createSubTask(employeeId, projectId, subProjectId, taskId, subTaskName, subTaskDescription, subTaskDuration);
+    }
+
+    public void saveSubTask(SubTask subTask, long subTaskId) {
+        taskRepository.saveSubTask(subTask, subTaskId);
+    }
+
+    public List<SubTask> showSubTaskByEmployeeId(int employeeId) {
+        return taskRepository.showSubTaskByEmployeeId(employeeId);
     }
 }
