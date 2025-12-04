@@ -96,7 +96,8 @@ public class TaskController {
                 task.getTaskNote()
         );
 
-        return "redirect:/project/task/liste/" + employeeId + "/" + projectId + "/" + subProjectId;
+        return "redirect:/project/task/liste/" + projectId + "/" + subProjectId + "/" + employeeId;
+
     }
 }
 

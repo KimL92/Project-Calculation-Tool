@@ -29,11 +29,11 @@ public class TaskRepository {
                 subProjectId,
                 taskName,
                 taskDescription,
-                status,
+                status.name(),
                 startDate,
                 endDate,
                 taskDuration,
-                priority,
+                priority.name(),
                 taskNote
 
         );
@@ -42,7 +42,7 @@ public class TaskRepository {
     public List<Task> showTaskByEmployeeId(int employeeId) {
         String sql = "SELECT task_id, employee_id, sub_project_id, task_title, task_description, task_status, " +
                 "task_start_date, task_end_date, task_duration, task_priority, task_note " +
-                "FROM task WHERE sub_project_id = ?";
+                "FROM task WHERE employee_id = ?";
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             Task task = new Task();
             task.setTaskID(rs.getInt("task_id"));
