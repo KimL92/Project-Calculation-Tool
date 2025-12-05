@@ -55,11 +55,6 @@
             </select>
         </div>
 
-        <div class="form-group">
-            <label for="taskNote">Note:</label>
-            <textarea id="taskNote" name="taskNote" th:field="*{taskNote}" class="form-control"></textarea>
-        </div>
-
         <div class="form-actions">
             <a th:href="@{/project/task/liste/{projectId}/{subProjectId}/{employeeId}(projectId=${currentProjectId}, subProjectId=${currentSubProjectId}, employeeId=${currentEmployeeId})}">
                 Annuller

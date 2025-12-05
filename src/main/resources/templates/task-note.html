@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="da">
+<head>
+    <meta charset="UTF-8">
+    <title>Rediger Note</title>
+    <link th:href="@{/task.css}" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Note til Task</h1>
+        <div class="user-info">
+            <span th:text="${username} + ' (' + ${employeeRole.displayName} + ')'"></span>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="logout-button">Log ud</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="control-bar">
+        <a th:href="@{/project/task/liste/{projectId}/{subProjectId}/{employeeId}(
+              projectId=${currentProjectId},
+              subProjectId=${currentSubProjectId},
+              employeeId=${currentEmployeeId})}"
+           class="back-button">
+            ← Tilbage til Tasks
+        </a>
+    </div>
+
+    <form th:action="@{/project/task/note/{employeeId}/{projectId}/{subProjectId}/{taskId}(
+              employeeId=${currentEmployeeId},
+              projectId=${currentProjectId},
+              subProjectId=${currentSubProjectId},
+              taskId=${task.taskID})}"
+          method="post"
+          class="note-form">
+
+        <h2 th:text="${task.taskName}"></h2>
+
+        <label for="taskNote">Note</label>
+        <textarea id="taskNote" name="taskNote" rows="6"
+                  th:text="${task.taskNote}"></textarea>
+
+        <button type="submit" class="save-button">Gem note</button>
+    </form>
+</div>
+</body>
+</html>

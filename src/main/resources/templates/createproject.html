@@ -9,6 +9,13 @@
 
 <h1>Opret Nyt Projekt</h1>
 
+    <div class="control-bar">
+    <!-- Tilbage til projekter knap -->
+    <a th:href="@{/project/list/{employeeId}(employeeId=${currentEmployeeId})}" class="back-button">
+        ← Tilbage til Projekter
+    </a>
+    </div>
+
     <form th:action="@{/project/saveproject/{employeeId}(employeeId=${currentEmployeeId})}" th:object="${project}" method="post">
     <div class="form-group">
         <label for="projectName">Projekt Navn:</label>

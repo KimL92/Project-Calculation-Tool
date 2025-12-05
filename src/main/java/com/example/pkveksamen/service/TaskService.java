@@ -41,7 +41,7 @@ public class TaskService {
         taskRepository.deleteTask(taskId);
     }
 
-    public static void editTask(Task task) {
+    public void editTask(Task task) {
         taskRepository.editTask(task);
     }
 
@@ -67,5 +67,9 @@ public class TaskService {
 
     public void deleteSubTask(long subTaskId) {
         taskRepository.deleteSubTask(subTaskId);
+    }
+
+    public void updateTaskNote(long taskId, String taskNote) {
+        taskRepository.updateTaskNote(taskId, taskNote);
     }
 }

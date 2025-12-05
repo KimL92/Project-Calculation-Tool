@@ -204,12 +204,12 @@ body {
 }
 
 .create-task-button {
-    background: #2563eb;
+    background: #3b8c58;
     color: #ffffff;
 }
 
 .create-task-button:hover {
-    background: #1d4ed8;
+    background: #2f6f46;
 }
 
 /* === RESPONSIVE === */

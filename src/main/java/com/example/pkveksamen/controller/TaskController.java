@@ -20,11 +20,20 @@ public class TaskController {
     private final ProjectService projectService;
     private final TaskRepository taskRepository;
 
-    public TaskController (TaskService taskService, EmployeeService employeeService, ProjectService projectService, TaskRepository taskRepository) {
+    public TaskController(TaskService taskService, EmployeeService employeeService, ProjectService projectService, TaskRepository taskRepository) {
         this.taskService = taskService;
         this.employeeService = employeeService;
         this.projectService = projectService;
         this.taskRepository = taskRepository;
+    }
+
+    // her laver vi metoderene på hvad de forskellig bruger skal kunne.
+    public boolean isManager(Employee employee) {
+        return employee != null && employee.getRole() == EmployeeRole.PROJECT_MANAGER;
+    }
+
+    public boolean isTeamMember(Employee employee) {
+        return employee != null && employee.getRole() == EmployeeRole.TEAM_MEMBER;
     }
 
     @GetMapping("/project/task/liste/{projectId}/{subProjectId}/{employeeId}")
@@ -109,8 +118,6 @@ public class TaskController {
     }
 
 
-
-
     @PostMapping("/task/delete/{employeeId}/{projectId}/{subProjectId}/{taskId}")
     public String deleteTask(@PathVariable int employeeId,
                              @PathVariable long projectId,
@@ -178,10 +185,10 @@ public class TaskController {
 
     @GetMapping("/project/subtask/liste/{projectId}/{subProjectId}/{taskId}/{employeeId}")
     public String showSubTasksByTaskId(@PathVariable int employeeId,
-                                          @PathVariable long projectId,
-                                          @PathVariable long subProjectId,
-                                          @PathVariable long taskId,
-                                          Model model) {
+                                       @PathVariable long projectId,
+                                       @PathVariable long subProjectId,
+                                       @PathVariable long taskId,
+                                       Model model) {
         // Ret dette: Hent subtasks for den specifikke task, ikke alle employee's subtasks
         List<SubTask> subTaskList = taskService.showSubTasksByTaskId(taskId);
 
@@ -251,17 +258,16 @@ public class TaskController {
                                 @PathVariable long projectId,
                                 @PathVariable long subProjectId,
                                 @PathVariable long taskId,
-                                @PathVariable long subTaskId){
+                                @PathVariable long subTaskId) {
         taskService.deleteSubTask(subTaskId);
         return "redirect:/project/subtask/liste/" + projectId + "/" + taskId + "/" + subProjectId + "/" + employeeId;
     }
-
 
 //
 //    // TODO: lav postmapping til opdater subtask status og opdater subtask prioritet
 //    @PostMapping("/project/subtask/updatestatus/{subTaskId}")
 //        public String updateSubTaskStatus(
-//                @PathVariable Long subTaskId,
+//                @PathVariable long subTaskId,
 //                @RequestParam(required = false) String subTaskPriority,
 //                @RequestParam(required = false) String subTaskStatus) {
 //
@@ -281,6 +287,75 @@ public class TaskController {
 //            // redirect tilbage til listen
 //            return "redirect:/task/subtask/list/" + subTaskIdetsTaskEllerProjectId;
 //        }
+
+    @GetMapping("/project/task/note/{employeeId}/{projectId}/{subProjectId}/{taskId}")
+    public String showTaskNoteForm(@PathVariable int employeeId,
+                                   @PathVariable long projectId,
+                                   @PathVariable long subProjectId,
+                                   @PathVariable long taskId,
+                                   Model model) {
+        Task task = taskService.getTaskById(taskId);
+
+        model.addAttribute("task", task);
+        model.addAttribute("currentEmployeeId", employeeId);
+        model.addAttribute("currentProjectId", projectId);
+        model.addAttribute("currentSubProjectId", subProjectId);
+
+        // Til header
+        Employee employee = employeeService.getEmployeeById(employeeId);
+        if (employee != null) {
+            model.addAttribute("username", employee.getUsername());
+            model.addAttribute("employeeRole", employee.getRole());
+        }
+
+        return "task-note"; // ny Thymeleaf-template
     }
+
+    @PostMapping("/project/task/note/{employeeId}/{projectId}/{subProjectId}/{taskId}")
+    public String saveTaskNote(@PathVariable int employeeId,
+                               @PathVariable long projectId,
+                               @PathVariable long subProjectId,
+                               @PathVariable long taskId,
+                               @RequestParam("taskNote") String taskNote) {
+
+        Task task = taskService.getTaskById(taskId);
+        task.setTaskNote(taskNote);
+        taskService.updateTaskNote(taskId, taskNote); // du har allerede en edit-metode
+
+        return "redirect:/project/task/liste/" + projectId + "/" + subProjectId + "/" + employeeId;
+    }
+
+    // TODO: lav save task status for teammember
+    /*
+    @PostMapping("/project/task/status/{employeeId}/{projectId}/{subProjectId}/{taskId}")
+    public String saveTaskStatusForTeamMember(@PathVariable int employeeId,
+                               @PathVariable long projectId,
+                               @PathVariable long subProjectId,
+                               @PathVariable long taskId,
+                               @RequestParam("taskStatus") String taskStatus) {
+
+        Task task = taskService.getTaskById(taskId);
+        task.setTaskNote(taskNote);
+        taskService.updateTaskNote(taskId, taskNote); // du har allerede en edit-metode
+
+        return "redirect:/project/task/liste/" + projectId + "/" + subProjectId + "/" + employeeId;
+    }
+
+    // TODO: lav save task priority for teammember
+    @PostMapping("/project/task/status/{employeeId}/{projectId}/{subProjectId}/{taskId}")
+    public String saveTaskPriorityForTeamMember(@PathVariable int employeeId,
+                                              @PathVariable long projectId,
+                                              @PathVariable long subProjectId,
+                                              @PathVariable long taskId,
+                                              @RequestParam("taskStatus") String taskStatus) {
+
+        Task task = taskService.getTaskById(taskId);
+        task.setTaskNote(taskNote);
+        taskService.updateTaskNote(taskId, taskNote); // du har allerede en edit-metode
+
+        return "redirect:/project/task/liste/" + projectId + "/" + subProjectId + "/" + employeeId;
+    }
+    */
+}
 
 

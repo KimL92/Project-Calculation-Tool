@@ -15,7 +15,7 @@
         <h1>Opret Ny SubTask</h1>
 
         <div class="user-info">
-            <span th:text="${username} + ' (' + ${employeeRole} + ')'"></span>
+            <span th:text="${username} + ' (' + ${employeeRole.displayName} + ')'"></span>
 
             <form th:action="@{/logout}" method="post">
                 <button type="submit" class="logout-button">
@@ -79,11 +79,6 @@
                 <option value="MEDIUM">Mellem</option>
                 <option value="HIGH">Høj</option>
             </select>
-        </div>
-
-        <div class="form-row">
-            <label>Note</label>
-            <textarea th:field="*{subTaskNote}" rows="3"></textarea>
         </div>
 
         <button type="submit" class="submit-button">Opret SubTask</button>

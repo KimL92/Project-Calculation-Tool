@@ -13,7 +13,7 @@
     <div class="header">
         <h1>Rediger Task</h1>
         <div class="user-info">
-            <span th:text="${username} + ' (' + ${employeeRole} + ')'"></span>
+            <span th:text="${username} + ' (' + ${employeeRole.displayName} + ')'"></span>
             <form th:action="@{/logout}" method="post">
                 <button type="submit" class="logout-button">
                     Log ud
@@ -24,7 +24,7 @@
 
     <!-- Breadcrumb -->
     <div class="breadcrumb">
-        <a th:href="@{/project/task/list/{subProjectId}(subProjectId=${currentSubProjectId}, employeeId=${currentEmployeeId})}">
+        <a th:href="@{/project/task/liste/{projectId}/{subProjectId}/{employeeId}(projectId=${currentProjectId}, subProjectId=${currentSubProjectId}, employeeId=${currentEmployeeId})}">
             ← Tilbage til Tasks
         </a>
     </div>
@@ -80,11 +80,6 @@
                                 th:text="${p.displayName}"></option>
                     </select>
                 </div>
-            </div>
-
-            <div class="form-group">
-                <label for="taskNote">Note</label>
-                <textarea id="taskNote" th:field="*{taskNote}" placeholder="Evt. note til task"></textarea>
             </div>
 
             <div class="button-group">

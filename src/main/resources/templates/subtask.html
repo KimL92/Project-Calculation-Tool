@@ -13,7 +13,7 @@
     <div class="header">
         <h1>Sub Tasks</h1>
         <div class="user-info">
-            <span th:text="${username} + ' (' + ${employeeRole} + ')'"></span>
+            <span th:text="${username} + ' (' + ${employeeRole.displayName} + ')'"></span>
             <form th:action="@{/logout}" method="post">
                 <button type="submit" class="logout-button">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
@@ -35,7 +35,9 @@
             ← Tilbage til Tasks
         </a>
 
-        <a th:href="@{/project/subtask/createsubtask/{employeeId}/{projectId}/{subProjectId}/{taskId}(employeeId=${currentEmployeeId}, projectId=${currentProjectId}, subProjectId=${currentSubProjectId}, taskId=${currentTaskId})}"
+        <a th:if="${employeeRole != null
+                                and employeeRole == T(com.example.pkveksamen.model.EmployeeRole).PROJECT_MANAGER}"
+           th:href="@{/project/subtask/createsubtask/{employeeId}/{projectId}/{subProjectId}/{taskId}(employeeId=${currentEmployeeId}, projectId=${currentProjectId}, subProjectId=${currentSubProjectId}, taskId=${currentTaskId})}"
            class="create-subTask-button">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                  stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -78,7 +80,9 @@
 
             <!-- PRIORITET (dropdown i sin egen kolonne) -->
             <td>
-                <form th:action="@{/project/subtask/updatestatus/{subTaskId}(subTaskId=${subTask.subTaskId})}" method="post">
+                <form th:if="${employeeRole != null
+                                and employeeRole == T(com.example.pkveksamen.model.EmployeeRole).PROJECT_MANAGER}"
+                      th:action="@{/project/subtask/updatestatus/{subTaskId}(subTaskId=${subTask.subTaskId})}" method="post">
                     <select name="subTaskPriority">
                         <option value="LOW"
                                 th:selected="${subTask.subTaskPriority == 'LOW'}">Lav</option>
@@ -109,21 +113,23 @@
             <!-- HANDLINGER -->
             <td>
                 <div class="action-buttons">
-                    <a th:href="@{/project/subtask/edit/{employeeId}/{projectId}/{subProjectId}/{taskId}/{subTaskId}(
+                    <a th:if="${employeeRole != null
+                                and employeeRole == T(com.example.pkveksamen.model.EmployeeRole).PROJECT_MANAGER}"
+                       th:href="@{/project/subtask/edit/{employeeId}/{projectId}/{subProjectId}/{taskId}/{subTaskId}(
                          employeeId=${currentEmployeeId},
                          projectId=${currentProjectId},
                          subProjectId=${currentSubProjectId},
                          taskId=${currentTaskId},
-                         subTaskId=${subTask.subTaskId})}"
-                       class="edit-button">Rediger</a>
+                         subTaskId=${subTask.subTaskId})}" class="edit-button">Rediger</a>
 
-                    <form th:action="@{/subtask/delete/{employeeId}/{projectId}/{subProjectId}/{taskId}/{subTaskId}(
-         employeeId=${currentEmployeeId},
-         projectId=${currentProjectId},
-         subProjectId=${currentSubProjectId},
-         taskId=${currentTaskId},
-         subTaskId=${subTask.subTaskId})}"
-                          method="post" style="display:inline">
+                    <form th:if="${employeeRole != null
+                                and employeeRole == T(com.example.pkveksamen.model.EmployeeRole).PROJECT_MANAGER}"
+                          th:action="@{/subtask/delete/{employeeId}/{projectId}/{subProjectId}/{taskId}/{subTaskId}(
+                            employeeId=${currentEmployeeId},
+                            projectId=${currentProjectId},
+                            subProjectId=${currentSubProjectId},
+                            taskId=${currentTaskId},
+                            subTaskId=${subTask.subTaskId})}" method="post" style="display:inline">
                         <button type="submit" class="delete-button"
                                 onclick="return confirm('Er du sikker på, du vil slette denne subtask?');">
                             Slet

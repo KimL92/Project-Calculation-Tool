@@ -193,7 +193,10 @@ public class TaskRepository {
         jdbcTemplate.update("DELETE FROM sub_task WHERE sub_task_id = ? ", subTaskId);
     }
 
-
+    public void updateTaskNote(long taskId, String taskNote) {
+        String sql = "UPDATE task SET task_note = ? WHERE task_id = ?";
+        jdbcTemplate.update(sql, taskNote, taskId);
+    }
 
     // TODO: subtask er afghængig af task, derfor erstat employeeId med taskId
     /*

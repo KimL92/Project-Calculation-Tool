@@ -32,7 +32,6 @@ public class ProjectController {
         return employee != null && employee.getRole() == EmployeeRole.TEAM_MEMBER;
     }
 
-
     @GetMapping("/list/{employeeId}")
     public String showProjectsByEmployeeId(@PathVariable int employeeId, Model model) {
         List<Project> projectList = projectService.showProjectsByEmployeeId(employeeId);
