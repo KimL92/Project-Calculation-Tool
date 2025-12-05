@@ -205,24 +205,35 @@ public class TaskController {
 
 
 
-    @PostMapping("/task/subtask/create/{taskId}/{employeeId}/{projectId}/{subProjectId}")
+    @PostMapping("/project/subtask/createsubtask/{employeeId}/{projectId}/{subProjectId}/{taskId}")
     public String createSubTask(@PathVariable int employeeId,
                                 @PathVariable long projectId,
                                 @PathVariable long subProjectId,
                                 @PathVariable long taskId,
-                                @ModelAttribute SubTask subTask) {
+                                @ModelAttribute SubTask subTask,
+                                Model model) {
+        // Calculate duration in days
+        if (subTask.getSubTaskStartDate() != null && subTask.getSubTaskEndDate() != null) {
+            long days = ChronoUnit.DAYS.between(subTask.getSubTaskStartDate(), subTask.getSubTaskEndDate());
+            subTask.setSubTaskDuration((int) days + 1);
+        } else {
+            subTask.setSubTaskDuration(0);
+        }
 
         taskService.createSubTask(
                 employeeId,
-                projectId,
-                subProjectId,
                 taskId,
                 subTask.getSubTaskName(),
                 subTask.getSubTaskDescription(),
-                subTask.getSubTaskDuration()
+                subTask.getSubTaskStatus().name(),
+                subTask.getSubTaskStartDate(),
+                subTask.getSubTaskEndDate(),
+                subTask.getSubTaskDuration(),
+                subTask.getSubTaskPriority().name(),
+                subTask.getSubTaskNote()
         );
 
-        return "redirect:/task/subtask/create/" + taskId + "/" + employeeId + "/" + projectId + "/" + subProjectId;
+        return "redirect:/project/subtask/liste/" + projectId + "/" + subProjectId + "/" + taskId + "/" + employeeId;
     }
 
     @PostMapping("/subtask/delete/{employeeId}/{projectId}/{subProjectId}/{taskId}/{subTaskId}")

@@ -55,17 +55,21 @@
 
         <div class="form-row">
             <label>Start Dato</label>
-            <input type="date" th:field="*{subTaskStartDate}">
+            <input type="date" th:field="*{subTaskStartDate}" required>
         </div>
 
         <div class="form-row">
             <label>Slut Dato</label>
-            <input type="date" th:field="*{subTaskEndDate}">
+            <input type="date" th:field="*{subTaskEndDate}" required>
         </div>
 
         <div class="form-row">
-            <label>Note</label>
-            <textarea th:field="*{subTaskNote}" rows="3"></textarea>
+            <label>Status</label>
+            <select th:field="*{subTaskStatus}">
+                <option value="NOT_STARTED">Ikke startet</option>
+                <option value="IN_PROGRESS">I gang</option>
+                <option value="COMPLETED">Afsluttet</option>
+            </select>
         </div>
 
         <div class="form-row">
@@ -75,6 +79,11 @@
                 <option value="MEDIUM">Mellem</option>
                 <option value="HIGH">Høj</option>
             </select>
+        </div>
+
+        <div class="form-row">
+            <label>Note</label>
+            <textarea th:field="*{subTaskNote}" rows="3"></textarea>
         </div>
 
         <button type="submit" class="submit-button">Opret SubTask</button>

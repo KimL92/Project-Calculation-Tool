@@ -145,22 +145,26 @@ public class TaskRepository {
         );
     }
 
-    public void createSubTask(Integer employeeId, long projectId, long subProjectId, long taskId,
-                              String subTaskName, String subTaskDescription, int subTaskDuration) {
+    public void createSubTask(int employeeId, long taskId, String subTaskName, String subTaskDescription,
+                              String subTaskStatus, LocalDate subTaskStartDate, LocalDate subTaskEndDate,
+                              int subTaskDuration, String subTaskPriority, String subTaskNote) {
 
-        jdbcTemplate.update(
-                "INSERT INTO sub_task (sub_task_id, task_id, sub_task_title, sub_task_description, sub_task_status," +
-                        "sub_task_start_date, sub_task_end_date, sub_task_duration, sub_task_priority, sub_task_note) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        String sql = "INSERT INTO sub_task (employee_id, task_id, sub_task_title, sub_task_description, " +
+                "sub_task_status, sub_task_start_date, sub_task_end_date, sub_task_duration, " +
+                "sub_task_priority, sub_task_note) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
+        jdbcTemplate.update(sql,
                 employeeId,
-                projectId,
-                subProjectId,
                 taskId,
                 subTaskName,
                 subTaskDescription,
-                subTaskDuration
-
+                subTaskStatus,
+                subTaskStartDate,
+                subTaskEndDate,
+                subTaskDuration,
+                subTaskPriority,
+                subTaskNote
         );
     }
 
