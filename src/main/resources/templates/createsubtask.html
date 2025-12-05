@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Opret SubTask</title>
-    <link th:href="@{/createtask.css}" rel="stylesheet">
+    <link th:href="@{/createsubtask.css}" rel="stylesheet">
 </head>
 
 <body>
@@ -38,8 +38,7 @@
     </div>
 
     <!-- FORM -->
-    <form th:action="@{/task/subtask/create/{taskId}/{employeeId}/{projectId}/{subProjectId}
-                      (taskId=${currentTaskId}, employeeId=${currentEmployeeId}, projectId=${currentProjectId}, subProjectId=${currentSubProjectId})}"
+    <form th:action="@{/project/subtask/createsubtask/{employeeId}/{projectId}/{subProjectId}/{taskId}(employeeId=${currentEmployeeId}, projectId=${currentProjectId}, subProjectId=${currentSubProjectId}, taskId=${currentTaskId})}"
           th:object="${subTask}"
           method="post"
           class="form-card">
