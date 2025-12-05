@@ -232,52 +232,55 @@ public class TaskController {
         return "redirect:/project/subtask/liste/" + projectId + "/" + subProjectId + "/" + taskId + "/" + employeeId;
     }
 
+//    @PostMapping("/subtask/save/{employeeId}/{projectId}/{subProjectId}/{taskId}/{subTaskId}")
+//    public String saveSubTask(@PathVariable int employeeId,
+//                              @PathVariable long projectId,
+//                              @PathVariable long subProjectId,
+//                              @PathVariable long taskId,
+//                              @PathVariable long subTaskId,
+//                              @ModelAttribute SubTask subTask) {
+//        taskService.saveSubTask(subTask, subTaskId);
+//        subTask.recalculateDuration();
+//
+//
+//        return "redirect:/project/task/subtask/liste/" + projectId + "/" + subProjectId + "/" + taskId + "/" + employeeId;
+//    }
+
     @PostMapping("/subtask/delete/{employeeId}/{projectId}/{subProjectId}/{taskId}/{subTaskId}")
-    public String saveSubTask(@PathVariable int employeeId,
-                              @PathVariable long projectId,
-                              @PathVariable long subProjectId,
-                              @PathVariable long taskId,
-                              @PathVariable long subTaskId,
-                              @ModelAttribute SubTask subTask) {
-        taskService.saveSubTask(subTask, subTaskId);
-        subTask.recalculateDuration();
-
-
-        return "redirect:/project/task/subtask/liste/" + projectId + "/" + subProjectId + "/" + taskId + "/" + employeeId;
-    }
-    @PostMapping("/task/delete/{employeeId}/{projectId}/{subProjectId}/{taskId}/{subTaskId}")
     public String deleteSubTask(@PathVariable int employeeId,
                                 @PathVariable long projectId,
                                 @PathVariable long subProjectId,
                                 @PathVariable long taskId,
                                 @PathVariable long subTaskId){
         taskService.deleteSubTask(subTaskId);
-        return "redirect:/project/subproject/task/subtask/list/" + projectId + "/" + taskId + "/" + subProjectId + "/" + employeeId;
+        return "redirect:/project/subtask/liste/" + projectId + "/" + taskId + "/" + subProjectId + "/" + employeeId;
     }
 
-    // TODO: lav postmapping til opdater subtask status og opdater subtask prioritet
-    @PostMapping("/project/subtask/updatestatus/{subTaskId}")
-        public String updateSubTaskStatus(
-                @PathVariable Long subTaskId,
-                @RequestParam(required = false) String subTaskPriority,
-                @RequestParam(required = false) String subTaskStatus) {
 
-            // hent subtask
-            SubTask subTask = taskService.getTaskById()
-
-            // opdater kun det der er sendt med
-            if (subTaskPriority != null) {
-                subTask.setSubTaskPriority(SubTaskPriority.valueOf(subTaskPriority));
-            }
-            if (subTaskStatus != null) {
-                subTask.setSubTaskStatus(SubTaskStatus.valueOf(subTaskStatus));
-            }
-
-            subTaskService.save(subTask);
-
-            // redirect tilbage til listen
-            return "redirect:/task/subtask/list/" + subTaskIdetsTaskEllerProjectId;
-        }
+//
+//    // TODO: lav postmapping til opdater subtask status og opdater subtask prioritet
+//    @PostMapping("/project/subtask/updatestatus/{subTaskId}")
+//        public String updateSubTaskStatus(
+//                @PathVariable Long subTaskId,
+//                @RequestParam(required = false) String subTaskPriority,
+//                @RequestParam(required = false) String subTaskStatus) {
+//
+//            // hent subtask
+//            SubTask subTask = taskService.getTaskById()
+//
+//            // opdater kun det der er sendt med
+//            if (subTaskPriority != null) {
+//                subTask.setSubTaskPriority(SubTaskPriority.valueOf(subTaskPriority));
+//            }
+//            if (subTaskStatus != null) {
+//                subTask.setSubTaskStatus(SubTaskStatus.valueOf(subTaskStatus));
+//            }
+//
+//            subTaskService.save(subTask);
+//
+//            // redirect tilbage til listen
+//            return "redirect:/task/subtask/list/" + subTaskIdetsTaskEllerProjectId;
+//        }
     }
 
 

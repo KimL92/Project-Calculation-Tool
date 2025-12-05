@@ -5,12 +5,12 @@ public class Employee {
     private String username;
     private String password;
     private String email;
-    private String role; // TEXT type in SQL
+    private EmployeeRole role; // TEXT type in SQL
 
     public Employee() {
     }
 
-    public Employee(String username, String password, String email, String role) {
+    public Employee(String username, String password, String email, EmployeeRole role) {
         this.username = username;
         this.password = password;
         this.email = email;
@@ -49,11 +49,11 @@ public class Employee {
         this.email = email;
     }
 
-    public String getRole() {
+    public EmployeeRole getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(EmployeeRole role) {
         this.role = role;
     }
 }

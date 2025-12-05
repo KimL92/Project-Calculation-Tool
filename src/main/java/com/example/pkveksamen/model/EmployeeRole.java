@@ -1,7 +1,5 @@
 package com.example.pkveksamen.model;
-
 public enum EmployeeRole {
-    // TODO: få den til at bruge attributnavnet i stedet for variabelnavnet
     PROJECT_MANAGER("Project Manager"),
     TEAM_MEMBER("Team Member");
 
@@ -13,5 +11,14 @@ public enum EmployeeRole {
 
     public String getDisplayName() {
         return displayName;
+    }
+
+    public static EmployeeRole fromDisplayName(String displayName) {
+        for (EmployeeRole role : EmployeeRole.values()) {
+            if (role.getDisplayName().equalsIgnoreCase(displayName)) {
+                return role;
+            }
+        }
+        throw new IllegalArgumentException("No enum constant with display name " + displayName);
     }
 }

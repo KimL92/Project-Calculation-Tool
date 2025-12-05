@@ -41,7 +41,7 @@ public class EmployeeController {
                 employee.getUsername(),
                 employee.getPassword(),
                 employee.getEmail(),
-                employee.getRole()
+                employee.getRole().getDisplayName()
         );
 
         if (!success) {

@@ -1,5 +1,6 @@
 package com.example.pkveksamen.controller;
 
+import com.example.pkveksamen.model.EmployeeRole;
 import com.example.pkveksamen.model.Project;
 import com.example.pkveksamen.model.Employee;
 import com.example.pkveksamen.model.SubProject;
@@ -21,6 +22,16 @@ public class ProjectController {
         this.projectService = projectService;
         this.employeeService = employeeService;
     }
+
+    // her laver vi metoderene på hvad de forskellig bruger skal kunne.
+    public boolean isManager(Employee employee){
+        return employee != null && employee.getRole() == EmployeeRole.PROJECT_MANAGER;
+    }
+
+    public boolean isTeamMember(Employee employee){
+        return employee != null && employee.getRole() == EmployeeRole.TEAM_MEMBER;
+    }
+
 
     @GetMapping("/list/{employeeId}")
     public String showProjectsByEmployeeId(@PathVariable int employeeId, Model model) {

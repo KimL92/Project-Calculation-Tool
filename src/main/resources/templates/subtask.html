@@ -79,7 +79,7 @@
             <!-- PRIORITET (dropdown i sin egen kolonne) -->
             <td>
                 <form th:action="@{/project/subtask/updatestatus/{subTaskId}(subTaskId=${subTask.subTaskId})}" method="post">
-                    <select name="subTaskPriority" class="priority-select" onchange="this.form.submit()">
+                    <select name="subTaskPriority">
                         <option value="LOW"
                                 th:selected="${subTask.subTaskPriority == 'LOW'}">Lav</option>
                         <option value="MEDIUM"
@@ -95,7 +95,7 @@
             <!-- STATUS (dropdown i sin egen kolonne) -->
             <td>
                 <form th:action="@{/project/subtask/updatestatus/{subTaskId}(subTaskId=${subTask.subTaskId})}" method="post">
-                    <select name="subTaskStatus" class="status-select" onchange="this.form.submit()">
+                    <select name="subTaskStatus">
                         <option value="NOT_STARTED"
                                 th:selected="${subTask.subTaskStatus == 'NOT_STARTED'}">Ikke startet</option>
                         <option value="IN_PROGRESS"
@@ -117,12 +117,12 @@
                          subTaskId=${subTask.subTaskId})}"
                        class="edit-button">Rediger</a>
 
-                    <form th:action="@{/task/delete/{employeeId}/{projectId}/{subProjectId}/{taskId}/{subTaskId}(
-                             employeeId=${currentEmployeeId},
-                             projectId=${currentProjectId},
-                             subProjectId=${currentSubProjectId},
-                             taskId=${currentTaskId},
-                             subTaskId=${subTask.subTaskId})}"
+                    <form th:action="@{/subtask/delete/{employeeId}/{projectId}/{subProjectId}/{taskId}/{subTaskId}(
+         employeeId=${currentEmployeeId},
+         projectId=${currentProjectId},
+         subProjectId=${currentSubProjectId},
+         taskId=${currentTaskId},
+         subTaskId=${subTask.subTaskId})}"
                           method="post" style="display:inline">
                         <button type="submit" class="delete-button"
                                 onclick="return confirm('Er du sikker på, du vil slette denne subtask?');">

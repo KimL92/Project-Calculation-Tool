@@ -1,6 +1,7 @@
 package com.example.pkveksamen.repository;
 
 import com.example.pkveksamen.model.Employee;
+import com.example.pkveksamen.model.EmployeeRole;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -33,7 +34,7 @@ public class EmployeeRepository {
                 employee.setUsername(rs.getString("username"));
                 employee.setPassword(rs.getString("password"));
                 employee.setEmail(rs.getString("email"));
-                employee.setRole(rs.getString("role"));
+                employee.setRole(EmployeeRole.fromDisplayName(rs.getString("role")));
                 return employee;
             }, employeeId);
         } catch (EmptyResultDataAccessException e) {
