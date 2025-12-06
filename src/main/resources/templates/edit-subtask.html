@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="da">
+<head>
+    <meta charset="UTF-8">
+    <title>Rediger SubTask</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link th:href="@{/edit-subproject.css}" rel="stylesheet">
+</head>
+
+<body>
+<div class="container">
+
+    <!-- Header -->
+    <div class="header">
+        <h1>Rediger SubTask</h1>
+
+        <div class="user-info">
+            <span th:text="${username} + ' (' + ${employeeRole.displayName} + ')'"></span>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="logout-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                        <polyline points="16 17 21 12 16 7"/>
+                        <line x1="21" x2="9" y1="12" y2="12"/>
+                    </svg>
+                    Log ud
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a th:href="@{/project/subtask/liste/{projectId}/{subProjectId}/{taskId}/{employeeId}(
+                    projectId=${currentProjectId},
+                    subProjectId=${currentSubProjectId},
+                    taskId=${currentTaskId},
+                    employeeId=${currentEmployeeId})}">
+            ← Tilbage til SubTasks
+        </a>
+    </div>
+
+
+    <!-- Form -->
+    <div class="form-card">
+
+        <form th:action="@{/project/subtask/edit/{employeeId}/{projectId}/{subProjectId}/{taskId}/{subTaskId}(
+                        employeeId=${currentEmployeeId},
+                        projectId=${currentProjectId},
+                        subProjectId=${currentSubProjectId},
+                        taskId=${currentTaskId},
+                        subTaskId=${subTask.subTaskId})}"
+              th:object="${subTask}"
+              method="post">
+
+            <!-- SUBTASK NAME -->
+            <div class="form-group">
+                <label for="subTaskName">Navn *</label>
+                <input type="text"
+                       id="subTaskName"
+                       th:field="*{subTaskName}"
+                       placeholder="Indtast navn"
+                       required>
+            </div>
+
+            <!-- DESCRIPTION -->
+            <div class="form-group">
+                <label for="subTaskDescription">Beskrivelse *</label>
+                <textarea id="subTaskDescription"
+                          th:field="*{subTaskDescription}"
+                          placeholder="Indtast beskrivelse"
+                          required></textarea>
+            </div>
+
+            <!-- STATUS -->
+            <div class="form-group">
+                <label for="subTaskStatus">Status *</label>
+                <select id="subTaskStatus" th:field="*{subTaskStatus}" required>
+                    <option th:each="status : ${T(com.example.pkveksamen.model.Status).values()}"
+                            th:value="${status}"
+                            th:text="${status.displayName}">
+                    </option>
+                </select>
+            </div>
+
+            <!-- DATES -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="subTaskStartDate">Start Dato *</label>
+                    <input type="date" id="subTaskStartDate" th:field="*{subTaskStartDate}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="subTaskEndDate">Slut Dato *</label>
+                    <input type="date" id="subTaskEndDate" th:field="*{subTaskEndDate}" required>
+                </div>
+            </div>
+
+            <!-- DURATION -->
+            <div class="form-group">
+                <label for="subTaskDuration">Varighed (dage)</label>
+                <input type="number"
+                       id="subTaskDuration"
+                       th:field="*{subTaskDuration}"
+                       min="1"
+                       readonly>
+            </div>
+
+            <!-- PRIORITY -->
+            <div class="form-group">
+                <label for="subTaskPriority">Prioritet *</label>
+                <select id="subTaskPriority" th:field="*{subTaskPriority}" required>
+                    <option th:each="priority : ${T(com.example.pkveksamen.model.Priority).values()}"
+                            th:value="${priority}"
+                            th:text="${priority.displayName}">
+                    </option>
+                </select>
+            </div>
+
+            <!-- NOTES -->
+            <div class="form-group">
+                <label for="subTaskNote">Noter</label>
+                <textarea id="subTaskNote" th:field="*{subTaskNote}" placeholder="Indtast noter"></textarea>
+            </div>
+
+            <!-- BUTTONS -->
+            <div class="button-group">
+                <a th:href="@{/project/subtask/liste/{projectId}/{subProjectId}/{taskId}/{employeeId}(
+      projectId=${currentProjectId},
+      subProjectId=${currentSubProjectId},
+      taskId=${currentTaskId},
+      employeeId=${currentEmployeeId})}"
+                   class="btn-secondary">
+                    Annuller
+                </a>
+
+
+                <button type="submit" class="create-project-button">
+                    Gem Ændringer
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+</body>
+</html>

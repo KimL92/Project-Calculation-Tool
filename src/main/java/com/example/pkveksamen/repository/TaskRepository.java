@@ -181,7 +181,7 @@ public class TaskRepository {
             subTask.setSubTaskDescription(rs.getString("sub_task_description"));
             subTask.setSubTaskStatus(Status.valueOf(rs.getString("sub_task_status")));
             subTask.setSubTaskNote(rs.getString("sub_task_note"));
-            subTask.setStartDate(rs.getObject("sub_task_start_date", java.time.LocalDate.class));
+            subTask.setSubTaskStartDate(rs.getObject("sub_task_start_date", java.time.LocalDate.class));
             subTask.setSubTaskEndDate(rs.getObject("sub_task_end_date", java.time.LocalDate.class));
             subTask.setSubTaskDuration(rs.getInt("sub_task_duration"));
             subTask.recalculateDuration();
@@ -197,6 +197,52 @@ public class TaskRepository {
         String sql = "UPDATE task SET task_note = ? WHERE task_id = ?";
         jdbcTemplate.update(sql, taskNote, taskId);
     }
+
+    public void editSubTask(SubTask subTask) {
+        subTask.recalculateDuration();
+
+        String sql = "UPDATE sub_task SET " +
+                "sub_task_description = ?, " +
+                "sub_task_status = ?, " +
+                "sub_task_start_date = ?, " +
+                "sub_task_end_date = ?, " +
+                "sub_task_duration = ? " +
+                "WHERE sub_task_id = ?";
+
+        jdbcTemplate.update(sql,
+                subTask.getSubTaskDescription(),
+                subTask.getSubTaskStatus().name(),
+                subTask.getSubTaskStartDate(),
+                subTask.getSubTaskEndDate(),
+                subTask.getSubTaskDuration(),
+                subTask.getSubTaskId()
+        );
+    }
+
+    public SubTask getSubTaskById(long subTaskId) {
+        String sql = "SELECT sub_task_id, task_id, sub_task_description, sub_task_status, " +
+                "sub_task_start_date, sub_task_end_date, sub_task_duration " +
+                "FROM sub_task WHERE sub_task_id = ?";
+
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+            SubTask subTask = new SubTask();
+
+            subTask.setSubTaskId(rs.getInt("sub_task_id"));
+            subTask.setSubTaskId(rs.getInt("task_id"));
+            subTask.setSubTaskDescription(rs.getString("sub_task_description"));
+            subTask.setSubTaskStatus(Status.valueOf(rs.getString("sub_task_status")));
+            subTask.setSubTaskStartDate(rs.getObject("sub_task_start_date", java.time.LocalDate.class));
+            subTask.setSubTaskEndDate(rs.getObject("sub_task_end_date", java.time.LocalDate.class));
+            subTask.setSubTaskDuration(rs.getInt("sub_task_duration"));
+
+            // hvis du har en metode til at genberegne varighed:
+            subTask.recalculateDuration();
+
+            return subTask;
+        }, subTaskId);
+    }
+
+
 
     // TODO: subtask er afghængig af task, derfor erstat employeeId med taskId
     /*

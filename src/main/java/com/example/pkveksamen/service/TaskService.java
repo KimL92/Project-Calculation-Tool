@@ -72,4 +72,12 @@ public class TaskService {
     public void updateTaskNote(long taskId, String taskNote) {
         taskRepository.updateTaskNote(taskId, taskNote);
     }
+
+    public void editSubTask(SubTask subTask) {
+        taskRepository.editSubTask(subTask);
+    }
+
+    public SubTask getSubTaskById(long subTaskId) {
+        return taskRepository.getSubTaskById(subTaskId);
+    }
 }

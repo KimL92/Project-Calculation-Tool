@@ -173,7 +173,6 @@ public class TaskController {
         model.addAttribute("currentSubProjectId", subProjectId);
         model.addAttribute("currentTaskId", taskId);
 
-        // Tilføj employee info til header
         Employee employee = employeeService.getEmployeeById(employeeId);
         if (employee != null) {
             model.addAttribute("username", employee.getUsername());
@@ -182,6 +181,7 @@ public class TaskController {
 
         return "createsubtask";
     }
+
 
     @GetMapping("/project/subtask/liste/{projectId}/{subProjectId}/{taskId}/{employeeId}")
     public String showSubTasksByTaskId(@PathVariable int employeeId,
@@ -215,6 +215,20 @@ public class TaskController {
                                 @PathVariable long taskId,
                                 @ModelAttribute SubTask subTask,
                                 Model model) {
+
+        // TILFØJ DENNE TRY-CATCH
+        try {
+            Task parentTask = taskService.getTaskById(taskId);
+            if (parentTask == null) {
+                System.out.println("ERROR - Task findes ikke: taskId=" + taskId);
+                return "redirect:/project/task/liste/" + projectId + "/" + subProjectId + "/" + employeeId;
+            }
+        } catch (Exception e) {
+            System.out.println("ERROR - Task findes ikke i databasen: taskId=" + taskId);
+            System.out.println("Tjek din task.html - linket sender forkert taskId!");
+            return "redirect:/project/task/liste/" + projectId + "/" + subProjectId + "/" + employeeId;
+        }
+
         // Calculate duration in days
         if (subTask.getSubTaskStartDate() != null && subTask.getSubTaskEndDate() != null) {
             long days = ChronoUnit.DAYS.between(subTask.getSubTaskStartDate(), subTask.getSubTaskEndDate());
@@ -262,6 +276,51 @@ public class TaskController {
         taskService.deleteSubTask(subTaskId);
         return "redirect:/project/subtask/liste/" + projectId + "/" + taskId + "/" + subProjectId + "/" + employeeId;
     }
+
+    @GetMapping("/project/subtask/edit/{employeeId}/{projectId}/{subProjectId}/{taskId}/{subTaskId}")
+    public String showEditSubTaskForm(@PathVariable int employeeId,
+                                      @PathVariable long projectId,
+                                      @PathVariable long subProjectId,
+                                      @PathVariable long taskId,
+                                      @PathVariable long subTaskId,
+                                      Model model) {
+
+        SubTask subTask = taskService.getSubTaskById(subTaskId);
+        model.addAttribute("subTask", subTask);
+
+        model.addAttribute("currentEmployeeId", employeeId);
+        model.addAttribute("currentProjectId", projectId);
+        model.addAttribute("currentSubProjectId", subProjectId);
+        model.addAttribute("currentTaskId", taskId);
+
+        Employee employee = employeeService.getEmployeeById(employeeId);
+        if (employee != null) {
+            model.addAttribute("username", employee.getUsername());
+            model.addAttribute("employeeRole", employee.getRole());
+        }
+
+        return "edit-subtask"; // Thymeleaf HTML-fil
+    }
+
+
+    @PostMapping("/project/subtask/edit/{employeeId}/{projectId}/{subProjectId}/{taskId}/{subTaskId}")
+    public String editSubTask(@PathVariable int employeeId,
+                              @PathVariable long projectId,
+                              @PathVariable long subProjectId,
+                              @PathVariable long taskId,
+                              @PathVariable long subTaskId,
+                              @ModelAttribute SubTask subTask) {
+
+        subTask.setSubTaskId(subTaskId);
+        taskService.editSubTask(subTask);
+
+        return "redirect:/project/subtask/liste/"
+                + projectId + "/" + subProjectId + "/" + taskId + "/" + employeeId;
+    }
+
+
+
+
 
 //
 //    // TODO: lav postmapping til opdater subtask status og opdater subtask prioritet

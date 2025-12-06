@@ -95,10 +95,10 @@ public class SubTask {
     }
 
     public LocalDate getSubTaskStartDate() {
-        return subTaskEndDate;
+        return subTaskStartDate;
     }
 
-    public void setStartDate(LocalDate subTaskStartDate) {
+    public void setSubTaskStartDate(LocalDate subTaskStartDate) {
         this.subTaskStartDate = subTaskStartDate;
     }
 
