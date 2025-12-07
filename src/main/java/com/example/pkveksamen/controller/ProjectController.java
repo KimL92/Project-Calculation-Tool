@@ -70,6 +70,8 @@ public class ProjectController {
     public String showCreateProjectForm(@PathVariable int employeeId, Model model) {
         model.addAttribute("project", new Project());
         model.addAttribute("currentEmployeeId", employeeId);
+//        List<Employee> teamMembers = projectService.getAllTeamMembers();
+//        model.addAttribute("teamMembers", teamMembers);
         return "createproject";
     }
 
@@ -103,11 +105,14 @@ public class ProjectController {
     }
 
     @PostMapping("/saveproject/{employeeId}")
-    public String saveProject(@PathVariable int employeeId, @ModelAttribute Project project) {
+    public String saveProject(@PathVariable int employeeId,
+                              @ModelAttribute Project project) {
         project.recalculateDuration();
         projectService.saveProject(project, employeeId);
+//        projectService.assignEmployeeToProject(selectedEmployeeId, project.getProjectID());
         return "redirect:/project/list/" + employeeId;
     }
+
 
     @PostMapping("/savesubproject/{employeeId}/{projectId}")
     public String saveSubProject(@PathVariable int employeeId,
@@ -190,4 +195,32 @@ public class ProjectController {
         projectService.editSubProject(subProject);
         return "redirect:/project/subproject/list/" + projectId + "?employeeId=" + employeeId;
     }
+
+
+//    @GetMapping("/assign/{employeeId}/{projectId}")
+//    public String showAssignMemberForm(@PathVariable int employeeId,
+//                                       @PathVariable long projectId,
+//                                       Model model) {
+//
+//        Project project = projectService.getProjectById(projectId);
+//        List<Employee> teamMembers = projectService.getAllTeamMembers();
+//
+//        model.addAttribute("projectId", projectId);
+//        model.addAttribute("teamMembers", teamMembers);
+//        model.addAttribute("currentEmployeeId", employeeId);
+//
+//        return "assign-member";
+//    }
+//
+//
+//    @PostMapping("/assign/{employeeId}/{projectId}")
+//    public String assignMember(@PathVariable int employeeId,
+//                               @PathVariable long projectId,
+//                               @RequestParam int selectedEmployeeId) {
+//
+//        projectService.assignEmployeeToProject(selectedEmployeeId, projectId);
+//
+//        return "redirect:/project/edit/" + employeeId + "/" + projectId;
+//    }
+
 }

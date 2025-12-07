@@ -1,5 +1,6 @@
 package com.example.pkveksamen.service;
 
+import com.example.pkveksamen.model.Employee;
 import com.example.pkveksamen.model.Project;
 import com.example.pkveksamen.model.SubProject;
 import com.example.pkveksamen.model.Task;
@@ -61,4 +62,13 @@ public class ProjectService {
     public void deleteSubProject(long subProjectId) {
         projectRepository.deleteSubProject(subProjectId);
     }
+//
+//    public List<Employee> getAllTeamMembers() {
+//        return projectRepository.getAllTeamMembers();
+//    }
+//
+//
+//    public void assignEmployeeToProject(int employeeId, long projectId) {
+//        projectRepository.assignEmployeeToProject(employeeId, projectId);
+//    }
 }

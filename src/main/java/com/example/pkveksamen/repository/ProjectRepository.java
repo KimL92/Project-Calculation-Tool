@@ -3,6 +3,7 @@ package com.example.pkveksamen.repository;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.example.pkveksamen.model.Employee;
 import com.example.pkveksamen.model.SubProject;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -193,5 +194,8 @@ public class ProjectRepository {
     }
 
 
+//    public List<Employee> getAllTeamMembers() {
+//
+//    }
 }
 

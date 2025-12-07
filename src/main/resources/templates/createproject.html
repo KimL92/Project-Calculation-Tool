@@ -42,12 +42,25 @@
         <input type="text" id="projectCustomer" name="projectCustomer" th:field="*{projectCustomer}" required/>
     </div>
 
+
         <!--
     <div class="form-group">
         <label for="projectDuration">Varighed (Dage):</label>
         <input type="number" id="projectDuration" name="projectDuration" th:field="*{projectDuration}" required readonly/>
     </div>
     -->
+
+        <div class="form-group">
+            <h3>Assign Members</h3>
+            <label for="selectedEmployeeId">Vælg Team Medlem:</label>
+            <select id="selectedEmployeeId" name="selectedEmployeeId">
+                <option th:each="member : ${teamMembers}"
+                        th:value="${member.employeeId}"
+                        th:text="${member.username}">
+                    Medlem
+                </option>
+            </select>
+        </div>
 
     <button type="submit">Opret Projekt</button>
 
