@@ -93,11 +93,11 @@ public class TaskRepository {
         jdbcTemplate.update(sql,
                 task.getTaskName(),
                 task.getTaskDescription(),
-                task.getTaskStatus().name(),  // <-- .name() er vigtigt
+                task.getTaskStatus().name(),
                 task.getStartDate(),
                 task.getEndDate(),
                 task.getTaskDuration(),
-                task.getTaskPriority().name(), // <-- .name() er vigtigt
+                task.getTaskPriority().name(),
                 task.getTaskNote(),
                 task.getTaskID()
         );
