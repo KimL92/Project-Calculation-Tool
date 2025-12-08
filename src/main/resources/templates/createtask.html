@@ -9,14 +9,12 @@
 
 <div class="header">
     <h1>Opret ny Task</h1>
-
-    </form>
-</div>
 </div>
 
 <div class="form-container">
     <form th:action="@{/project/task/createtask/{employeeId}/{projectId}/{subProjectId}(employeeId=${currentEmployeeId}, projectId=${currentProjectId}, subProjectId=${currentSubProjectId})}"
           th:object="${task}" method="post" class="project-form" id="taskForm">
+
         <div class="form-group">
             <label for="taskName">Task Navn:</label>
             <input type="text" id="taskName" name="taskName" th:field="*{taskName}" required/>
@@ -25,6 +23,18 @@
         <div class="form-group">
             <label for="taskDescription">Beskrivelse:</label>
             <textarea id="taskDescription" name="taskDescription" th:field="*{taskDescription}" required></textarea>
+        </div>
+
+        <!-- NY SEKTION: Tildel til teammedlem -->
+        <div class="form-group">
+            <label for="assignedToEmployeeId">Tildel til teammedlem:</label>
+            <select id="assignedToEmployeeId" name="assignedToEmployeeId" class="form-control" required>
+                <option value="">-- Vælg teammedlem --</option>
+                <option th:each="member : ${teamMembers}"
+                        th:value="${member.employeeId}"
+                        th:text="${member.username}">
+                </option>
+            </select>
         </div>
 
         <div class="form-group">
