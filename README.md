@@ -85,3 +85,4 @@ Tak til alle som har bidraget til projektet:
 - [@aljamour](https://github.com/aljamour)
 - [@Junes2003](https://github.com/Junes2003)
 - [@moha4733](https://github.com/moha4733)
+h
