@@ -18,15 +18,16 @@ public class TaskRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void createTask(Integer employeeId, long subProjectId, String taskName, String taskDescription,
-                           Status status, LocalDate startDate, LocalDate endDate, int taskDuration,
-                           Priority priority, String taskNote) {
+    public void createTask(Integer assignedToEmployeeId, Integer createdByEmployeeId, long subProjectId,
+                           String taskName, String taskDescription, Status status, LocalDate startDate,
+                           LocalDate endDate, int taskDuration, Priority priority, String taskNote) {
 
         jdbcTemplate.update(
-                "INSERT INTO task (employee_id, sub_project_id, task_title, task_description, task_status, " +
+                "INSERT INTO task (employee_id, created_by_employee_id, sub_project_id, task_title, task_description, task_status, " +
                         "task_start_date, task_end_date, task_duration, task_priority, task_note) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                employeeId,
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                assignedToEmployeeId,
+                createdByEmployeeId,
                 subProjectId,
                 taskName,
                 taskDescription,
@@ -40,12 +41,17 @@ public class TaskRepository {
     }
 
     public List<Task> showTaskByEmployeeId(int employeeId) {
-        String sql = "SELECT task_id, employee_id, sub_project_id, task_title, task_description, task_status, " +
-                "task_start_date, task_end_date, task_duration, task_priority, task_note " +
-                "FROM task WHERE employee_id = ?";
+        String sql = "SELECT t.task_id, t.employee_id, t.created_by_employee_id, t.sub_project_id, " +
+                "t.task_title, t.task_description, t.task_status, t.task_start_date, t.task_end_date, " +
+                "t.task_duration, t.task_priority, t.task_note, e.username AS assigned_to_username " +
+                "FROM task t " +
+                "LEFT JOIN employee e ON t.employee_id = e.employee_id " +
+                "WHERE t.employee_id = ? OR t.created_by_employee_id = ?";
+
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             Task task = new Task();
             task.setTaskID(rs.getInt("task_id"));
+            task.setCreatedByEmployeeId(rs.getInt("created_by_employee_id"));
             task.setTaskName(rs.getString("task_title"));
             task.setTaskDescription(rs.getString("task_description"));
             task.setTaskStatus(Status.fromDisplayName(rs.getString("task_status")));
@@ -53,9 +59,11 @@ public class TaskRepository {
             task.setStartDate(rs.getObject("task_start_date", LocalDate.class));
             task.setEndDate(rs.getObject("task_end_date", LocalDate.class));
             task.setTaskDuration(rs.getInt("task_duration"));
+            task.setTaskPriority(Priority.valueOf(rs.getString("task_priority")));
+            task.setAssignedToUsername(rs.getString("assigned_to_username")); // NY LINJE
             task.recalculateDuration();
             return task;
-        }, employeeId);
+        }, employeeId, employeeId);
     }
 
     public void saveTask(Task task, int employeeId, long projectId, long subProjectId) {
@@ -96,12 +104,14 @@ public class TaskRepository {
     }
 
     public Task getTaskById(long taskId) {
-        String sql = "SELECT task_id, employee_id, sub_project_id, task_title, task_description, task_status, " +
+        String sql = "SELECT task_id, employee_id, created_by_employee_id, sub_project_id, task_title, task_description, task_status, " +
                 "task_start_date, task_end_date, task_duration, task_priority, task_note " +
                 "FROM task WHERE task_id = ?";
+
         return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
             Task task = new Task();
             task.setTaskID(rs.getInt("task_id"));
+            task.setCreatedByEmployeeId(rs.getInt("created_by_employee_id"));
             task.setTaskName(rs.getString("task_title"));
             task.setTaskDescription(rs.getString("task_description"));
             task.setTaskStatus(Status.fromDisplayName(rs.getString("task_status")));

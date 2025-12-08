@@ -58,6 +58,7 @@
         <tr>
             <th>Task Navn</th>
             <th>Beskrivelse</th>
+            <th>Tildelt til</th>
             <th>Start Dato</th>
             <th>Slut Dato</th>
             <th>Status</th>
@@ -72,13 +73,23 @@
 
         <!-- Ingen tasks -->
         <tr th:if="${taskList == null or #lists.isEmpty(taskList)}">
-            <td colspan="9">Du har ingen tasks endnu. Klik på "Opret Ny Task" for at starte.</td>
+            <td colspan="10">Du har ingen tasks endnu. Klik på "Opret Ny Task" for at starte.</td>
         </tr>
 
         <!-- Iteration -->
         <tr th:each="task : ${taskList}">
             <td th:text="${task.taskName}"></td>
             <td th:text="${task.taskDescription}"></td>
+
+            <!-- NY KOLONNE: Viser hvem tasken er tildelt til -->
+            <td>
+                <span th:if="${task.assignedToUsername != null}"
+                      th:text="${task.assignedToUsername}"
+                      class="assigned-user"></span>
+                <span th:if="${task.assignedToUsername == null}"
+                      class="no-assignment">Ikke tildelt</span>
+            </td>
+
             <td th:text="${task.startDate}"></td>
             <td th:text="${task.endDate}"></td>
 

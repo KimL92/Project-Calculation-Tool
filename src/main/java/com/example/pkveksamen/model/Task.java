@@ -14,11 +14,15 @@ public class Task {
     private Priority priority;
     private Status status;
     private EmployeeRole employeeRole;
+    private int createdByEmployeeId;
+    private String assignedToUsername;
 
-    public Task(){}
+    public Task() {
+    }
 
     public Task(int taskID, String taskName, String taskDescription, Status status, int taskDuration,
-                String taskNote, LocalDate startDate, LocalDate endDate, Priority priority, EmployeeRole employeeRole) {
+                String taskNote, LocalDate startDate, LocalDate endDate, Priority priority, EmployeeRole employeeRole,
+                int createdByEmployeeId, String assignedToUsername) {
         this.taskID = taskID;
         this.taskName = taskName;
         this.taskDescription = taskDescription;
@@ -29,6 +33,8 @@ public class Task {
         this.endDate = endDate;
         this.priority = priority;
         this.employeeRole = employeeRole;
+        this.createdByEmployeeId = createdByEmployeeId;
+        this.assignedToUsername = assignedToUsername;
     }
 
     public void recalculateDuration() {
@@ -52,6 +58,7 @@ public class Task {
     public void setTaskID(int taskID) {
         this.taskID = taskID;
     }
+
     public String getTaskName() {
         return taskName;
     }
@@ -116,5 +123,13 @@ public class Task {
         this.priority = priority;
     }
 
+    public void setCreatedByEmployeeId(int createdByEmployeeId) {
+        this.createdByEmployeeId = createdByEmployeeId;
+    }
 
+    public void setAssignedToUsername(String assignedToUsername) {
+        this.assignedToUsername = assignedToUsername;
+
+
+    }
 }

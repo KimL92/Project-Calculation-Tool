@@ -20,10 +20,11 @@ public class TaskService {
         this.taskRepository = taskRepository;
     }
 
-    public void createTask(Integer employeeId, long subProjectId, String taskName, String taskDescription
-            , Status status, LocalDate startDate, LocalDate endDate, int taskDuration, Priority priority, String taskNote) {
-        taskRepository.createTask( employeeId, subProjectId, taskName, taskDescription, status,
-                startDate, endDate, taskDuration, priority, taskNote);
+    public void createTask(Integer assignedToEmployeeId, Integer createdByEmployeeId, long subProjectId,
+                           String taskName, String taskDescription, Status status, LocalDate startDate,
+                           LocalDate endDate, int taskDuration, Priority priority, String taskNote) {
+        taskRepository.createTask(assignedToEmployeeId, createdByEmployeeId, subProjectId, taskName,
+                taskDescription, status, startDate, endDate, taskDuration, priority, taskNote);
     }
 
     public List<Task> showTaskByEmployeeId(int employeeId) {

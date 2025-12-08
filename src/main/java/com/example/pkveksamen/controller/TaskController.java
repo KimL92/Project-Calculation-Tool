@@ -88,17 +88,16 @@ public class TaskController {
     public String createTask(@PathVariable int employeeId,
                              @PathVariable long projectId,
                              @PathVariable long subProjectId,
-                             @RequestParam("assignedToEmployeeId") int assignedToEmployeeId, // NY PARAMETER
+                             @RequestParam("assignedToEmployeeId") int assignedToEmployeeId,
                              @ModelAttribute Task task,
                              Model model) {
-        // Tjek om brugeren er projektleder
+
         Employee currentEmployee = employeeService.getEmployeeById(employeeId);
 
         if (!isManager(currentEmployee)) {
             return "redirect:/project/task/liste/" + projectId + "/" + subProjectId + "/" + employeeId;
         }
 
-        // Beregn varighed
         if (task.getStartDate() != null && task.getEndDate() != null) {
             long days = ChronoUnit.DAYS.between(task.getStartDate(), task.getEndDate());
             task.setTaskDuration((int) days + 1);
@@ -106,9 +105,10 @@ public class TaskController {
             task.setTaskDuration(0);
         }
 
-        // Gem task med den valgte medarbejder (ikke den indloggede projektleder)
+        // NU MED createdByEmployeeId (projektlederen)
         taskService.createTask(
-                assignedToEmployeeId,  // ÆNDRET: Nu bruger vi den valgte employee
+                assignedToEmployeeId,      // hvem skal udføre tasken
+                employeeId,                // hvem oprettede tasken (projektlederen)
                 subProjectId,
                 task.getTaskName(),
                 task.getTaskDescription(),
