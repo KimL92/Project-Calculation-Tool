@@ -59,7 +59,7 @@ public class TaskRepository {
     }
 
     public void saveTask(Task task, int employeeId, long projectId, long subProjectId) {
-        String sql = "INSERT INTO task (user_id, sub_project_id, task_title, task_description, task_status, task_start_date, task_end_date, task_duration, task_priority, task_note) " +
+        String sql = "INSERT INTO task (employee_id, sub_project_id, task_title, task_description, task_status, task_start_date, task_end_date, task_duration, task_priority, task_note) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         task.recalculateDuration();
         jdbcTemplate.update(sql,
