@@ -80,8 +80,3 @@ Tak til alle som har bidraget til projektet:
   <img src="https://contrib.rocks/image?repo=KimL92/Project-Calculation-Tool" />
 </a>
 
-### Individuelle GitHub-profiler
-- [@aden0020](https://github.com/Aden0020)
-- [@aljamour](https://github.com/aljamour)
-- [@Junes2003](https://github.com/Junes2003)
-- [@moha4733](https://github.com/moha4733)
