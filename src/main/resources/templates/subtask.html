@@ -60,7 +60,7 @@
         </a>
     </div>
 
-    <!-- SubTask tabel -->
+    <!-- Sub task Tabel -->
     <table class="task-table">
         <thead>
         <tr>
@@ -68,53 +68,27 @@
             <th>Beskrivelse</th>
             <th>Start Dato</th>
             <th>Slut Dato</th>
-            <th>Varighed</th>
-            <th>Note</th>
-            <th>Prioritet</th>
             <th>Status</th>
+            <th>Priority</th>
+            <th>Note</th>
+            <th>Varighed</th>
             <th>Handlinger</th>
         </tr>
         </thead>
 
         <tbody>
 
-        <!-- Ingen subtasks -->
+        <!-- Ingen tasks -->
         <tr th:if="${subTaskList == null or #lists.isEmpty(subTaskList)}">
-            <td colspan="9">Du har ingen subtasks endnu. Klik på "Opret Ny SubTask" for at starte.</td>
+            <td colspan="9">Du har ingen subtasks endnu. Klik på "Opret Ny Sub Task" for at starte.</td>
         </tr>
 
-        <!-- Iterer -->
+        <!-- Iteration -->
         <tr th:each="subTask : ${subTaskList}">
             <td th:text="${subTask.subTaskName}"></td>
             <td th:text="${subTask.subTaskDescription}"></td>
             <td th:text="${subTask.subTaskStartDate}"></td>
             <td th:text="${subTask.subTaskEndDate}"></td>
-            <td><span th:text="${subTask.subTaskDuration}"></span> dage</td>
-            <td th:text="${subTask.subTaskNote}"></td>
-
-            <!-- PRIORITY -->
-            <td>
-                <!-- Project Manager KAN ændre -->
-                <form th:if="${employeeRole == T(com.example.pkveksamen.model.EmployeeRole).PROJECT_MANAGER}"
-                      th:action="@{/project/subtask/updatepriority/{subTaskId}(subTaskId=${subTask.subTaskId})}"
-                      method="post">
-
-                    <select name="subTaskPriority" onchange="this.form.submit()">
-                        <option value="LOW"      th:selected="${subTask.subTaskPriority == 'LOW'}">Lav</option>
-                        <option value="MEDIUM"   th:selected="${subTask.subTaskPriority == 'MEDIUM'}">Medium</option>
-                        <option value="HIGH"     th:selected="${subTask.subTaskPriority == 'HIGH'}">Høj</option>
-                        <option value="CRITICAL" th:selected="${subTask.subTaskPriority == 'CRITICAL'}">Kritisk</option>
-                    </select>
-                </form>
-
-                <!-- Team Member kan IKKE ændre -->
-                <select th:if="${employeeRole == T(com.example.pkveksamen.model.EmployeeRole).TEAM_MEMBER}" disabled>
-                    <option value="LOW"      th:selected="${subTask.subTaskPriority == 'LOW'}">Lav</option>
-                    <option value="MEDIUM"   th:selected="${subTask.subTaskPriority == 'MEDIUM'}">Medium</option>
-                    <option value="HIGH"     th:selected="${subTask.subTaskPriority == 'HIGH'}">Høj</option>
-                    <option value="CRITICAL" th:selected="${subTask.subTaskPriority == 'CRITICAL'}">Kritisk</option>
-                </select>
-            </td>
 
             <!-- STATUS -->
             <td>
@@ -136,6 +110,42 @@
                     <option value="IN_PROGRESS" th:selected="${subTask.subTaskStatus == 'IN_PROGRESS'}">I gang</option>
                     <option value="COMPLETED"   th:selected="${subTask.subTaskStatus == 'COMPLETED'}">Afsluttet</option>
                 </select>
+            </td>
+
+            <!-- PRIORITY -->
+            <td>
+                <!-- Project Manager KAN ændre -->
+                <form th:if="${employeeRole == T(com.example.pkveksamen.model.EmployeeRole).PROJECT_MANAGER}"
+                      th:action="@{/project/subtask/updatepriority/{subTaskId}(subTaskId=${subTask.subTaskId})}"
+                      method="post">
+
+                    <select name="subTaskPriority">
+                        <option value="LOW"      th:selected="${subTask.subTaskPriority == 'LOW'}">Lav</option>
+                        <option value="MEDIUM"   th:selected="${subTask.subTaskPriority == 'MEDIUM'}">Medium</option>
+                        <option value="HIGH"     th:selected="${subTask.subTaskPriority == 'HIGH'}">Høj</option>
+                    </select>
+                </form>
+
+                <!-- Team Member kan IKKE ændre -->
+                <select th:if="${employeeRole == T(com.example.pkveksamen.model.EmployeeRole).TEAM_MEMBER}" disabled>
+                    <option value="LOW"      th:selected="${subTask.subTaskPriority == 'LOW'}">Lav</option>
+                    <option value="MEDIUM"   th:selected="${subTask.subTaskPriority == 'MEDIUM'}">Medium</option>
+                    <option value="HIGH"     th:selected="${subTask.subTaskPriority == 'HIGH'}">Høj</option>
+                </select>
+            </td>
+            <!-- NOTE -->
+            <td>
+                <a th:if="${employeeRole == T(com.example.pkveksamen.model.EmployeeRole).TEAM_MEMBER}"
+                   th:href="@{/project/subtask/note/{employeeId}/{projectId}/{subProjectId}/{subTaskId}(
+                            employeeId=${currentEmployeeId},
+                            projectId=${currentProjectId},
+                            subProjectId=${currentSubProjectId},
+                            subTaskId=${subTask.subTaskId})}"
+                   class="note-button">Tilføj note</a>
+            </td>
+
+            <td>
+                <span th:text="${subTask.subTaskDuration}"></span> dage
             </td>
 
             <!-- Handlinger -->
@@ -167,6 +177,7 @@
 
                 </div>
             </td>
+
         </tr>
         </tbody>
 

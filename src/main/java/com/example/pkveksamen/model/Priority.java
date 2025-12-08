@@ -3,8 +3,7 @@ package com.example.pkveksamen.model;
 public enum Priority {
     LOW("Low"),
     MEDIUM("Medium"),
-    HIGH("High"),
-    CRITICAL("Critical");
+    HIGH("High");
 
     private final String displayName;
 

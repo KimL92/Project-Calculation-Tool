@@ -394,22 +394,23 @@ public class TaskController {
         return "redirect:/project/task/liste/" + projectId + "/" + subProjectId + "/" + employeeId;
     }
 
-    // TODO: lav save task status for teammember
+//    TODO: lav save task status for teammember
+//    @PostMapping("/project/task/updatestatus/{taskId}")
+//    public String updateTaskStatus(
+//            @PathVariable int employeeId,
+//            @PathVariable long projectId,
+//            @PathVariable long subProjectId,
+//            @PathVariable long taskId,
+//            @RequestParam("taskStatus") String taskStatus) {
+//
+//        taskService.updateTaskStatus(taskId, taskStatus);
+//
+//        // Redirect tilbage til siden med tasks – ret til din egen URL
+//        return "redirect:/project/task/liste/" + projectId + "/" + subProjectId + "/" + employeeId;
+//
+//    }
+
     /*
-    @PostMapping("/project/task/status/{employeeId}/{projectId}/{subProjectId}/{taskId}")
-    public String saveTaskStatusForTeamMember(@PathVariable int employeeId,
-                               @PathVariable long projectId,
-                               @PathVariable long subProjectId,
-                               @PathVariable long taskId,
-                               @RequestParam("taskStatus") String taskStatus) {
-
-        Task task = taskService.getTaskById(taskId);
-        task.setTaskNote(taskNote);
-        taskService.updateTaskNote(taskId, taskNote); // du har allerede en edit-metode
-
-        return "redirect:/project/task/liste/" + projectId + "/" + subProjectId + "/" + employeeId;
-    }
-
     // TODO: lav save task priority for teammember
     @PostMapping("/project/task/status/{employeeId}/{projectId}/{subProjectId}/{taskId}")
     public String saveTaskPriorityForTeamMember(@PathVariable int employeeId,

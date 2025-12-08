@@ -16,8 +16,10 @@ public enum Status {
     }
 
     public static Status fromDisplayName(String displayName) {
+        String normalizedInput = displayName.replace("_", " ").trim();
+
         for (Status status : Status.values()) {
-            if (status.getDisplayName().equalsIgnoreCase(displayName)) {
+            if (status.getDisplayName().equalsIgnoreCase(normalizedInput)) {
                 return status;
             }
         }
