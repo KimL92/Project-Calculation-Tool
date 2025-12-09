@@ -1,11 +1,14 @@
 package com.example.pkveksamen.model;
 
+import java.util.List;
+
 public class Employee {
     private int employeeId;
     private String username;
     private String password;
     private String email;
     private EmployeeRole role; // TEXT type in SQL
+    private AlphaRole skill;
 
     public Employee() {
     }
@@ -55,5 +58,13 @@ public class Employee {
 
     public void setRole(EmployeeRole role) {
         this.role = role;
+    }
+
+    public AlphaRole getSkill() {
+        return skill;
+    }
+
+    public void setSkill(AlphaRole skill) {
+        this.skill = skill;
     }
 }

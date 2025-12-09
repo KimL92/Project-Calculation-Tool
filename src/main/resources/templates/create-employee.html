@@ -20,9 +20,19 @@
     <label>Email</label>
     <input type="email" th:field="*{email}" placeholder="Enter email" required>
 
+    <!-- rolle vises -->
     <label for="employeeRole">Choose role</label>
     <select id="employeeRole" th:field="*{role}" required>
         <option th:each="r : ${roles}"
+                th:value="${r}"
+                th:text="${#strings.capitalize(#strings.replace(r.name().toLowerCase(), '_', ' '))}">
+        </option>
+    </select>
+
+    <!-- skill/alpha role vises -->
+    <label for="skill">Choose skill</label>
+    <select id="skill" th:field="*{}" required>
+        <option th:each=" : ${skills}"
                 th:value="${r}"
                 th:text="${#strings.capitalize(#strings.replace(r.name().toLowerCase(), '_', ' '))}">
         </option>

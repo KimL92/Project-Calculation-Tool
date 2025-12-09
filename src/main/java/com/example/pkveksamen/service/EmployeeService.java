@@ -40,8 +40,11 @@ public class EmployeeService {
         return employeeRepository.findEmployeeById(employeeId);
     }
 
-    // Tilføj til EmployeeService.java
     public List<Employee> getAllTeamMembers() {
         return employeeRepository.getAllTeamMembers();
+    }
+
+    public List<Employee> getAllEmployees() {
+        return employeeRepository.getAllEmployees();
     }
 }

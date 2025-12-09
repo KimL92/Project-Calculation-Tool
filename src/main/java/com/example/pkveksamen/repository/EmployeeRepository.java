@@ -1,5 +1,6 @@
 package com.example.pkveksamen.repository;
 
+import com.example.pkveksamen.model.AlphaRole;
 import com.example.pkveksamen.model.Employee;
 import com.example.pkveksamen.model.EmployeeRole;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -59,6 +60,18 @@ public class EmployeeRepository {
         }
     }
 
+    private List<AlphaRole> findAlphaRolesByEmployeeId(int employeeId) {
+        String sql = "SELECT r.role_name " +
+                "FROM role r " +
+                "JOIN employee_role er ON r.role_id = er.role_id " +
+                "WHERE er.employee_id = ?";
+
+        return jdbcTemplate.query(sql, (rs, rowNum) ->
+                        AlphaRole.fromDisplayName(rs.getString("role_name")),
+                employeeId
+        );
+    }
+
     public List<Employee> getAllTeamMembers() {
         String sql = "SELECT employee_id, username, password, email, role " +
                 "FROM employee WHERE role = ?";
@@ -73,4 +86,37 @@ public class EmployeeRepository {
             return employee;
         }, EmployeeRole.TEAM_MEMBER.getDisplayName());
     }
+
+    /*
+    public List<Employee> getAllEmployees() {
+        String sql = "SELECT employee_id, username, email, role " +
+                "FROM employee";
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Employee employee = new Employee();
+            employee.setEmployeeId(rs.getInt("employee_id"));
+            employee.setUsername(rs.getString("username"));
+            employee.setEmail(rs.getString("email"));
+            employee.setRole(EmployeeRole.fromDisplayName(rs.getString("role")));
+            return employee;
+        });
+    }
+    */
+
+    public List<Employee> getAllEmployees() {
+        String sql = "SELECT employee_id, username, email, role FROM employee";
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Employee employee = new Employee();
+            int employeeId = rs.getInt("employee_id");
+
+            employee.setEmployeeId(employeeId);
+            employee.setUsername(rs.getString("username"));
+            employee.setEmail(rs.getString("email"));
+            employee.setRole(EmployeeRole.fromDisplayName(rs.getString("role")));
+
+            return employee;
+        });
+    }
+
 }

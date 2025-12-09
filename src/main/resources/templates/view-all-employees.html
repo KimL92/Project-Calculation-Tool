@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1 class="title">All Employees</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Skill</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="employee : ${employees}">
+        <td th:text="${employee.username}"></td>
+        <td th:text="${employee.email}"></td>
+        <td th:text="${employee.role.displayName}"></td>
+
+        <!-- AlphaRoles (Developer, Tester, osv.) -->
+        <td>
+        <span th:each="ar : ${employee.alphaRoles}"
+              th:text="${ar.displayName}"
+              th:append="${!${arStat.last}} ? ', ' : ''"
+              th:with="arStat=${#lists.indexOf(employee.alphaRoles, ar)}">
+        </span>
+        </td>
+    </tr>
+
+    </tbody>
+</table>
+</body>
+</html>

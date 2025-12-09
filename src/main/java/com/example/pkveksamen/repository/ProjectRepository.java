@@ -186,9 +186,6 @@ public class ProjectRepository {
         }, subProjectID);
     }
 
-
-
-
     public void deleteSubProject(long subProjectId) {
         jdbcTemplate.update("DELETE FROM sub_project WHERE sub_project_id = ?", subProjectId);
     }

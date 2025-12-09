@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -23,6 +24,7 @@ public class ProjectController {
         this.employeeService = employeeService;
     }
 
+    /* VI BRUGER DEN IKKE
     // her laver vi metoderene på hvad de forskellig bruger skal kunne.
     public boolean isManager(Employee employee){
         return employee != null && employee.getRole() == EmployeeRole.PROJECT_MANAGER;
@@ -30,6 +32,25 @@ public class ProjectController {
 
     public boolean isTeamMember(Employee employee){
         return employee != null && employee.getRole() == EmployeeRole.TEAM_MEMBER;
+    }
+    */
+
+    // TODO: få vist medlemmer for det specifikke projekt
+    /*
+    @GetMapping("/employees")
+    public String showProjectMembers() {
+
+        return "view-project-members";
+    }
+    */
+
+    // få vist alle medlemmer på en side for sig selv
+    @GetMapping("/all-employees")
+    public String showAllEmployees(Model model) {
+        List<Employee> employeeList = employeeService.getAllTeamMembers();
+        model.addAttribute("employees", employeeList);
+
+        return "view-all-employees";
     }
 
     @GetMapping("/list/{employeeId}")
