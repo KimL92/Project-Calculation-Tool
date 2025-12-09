@@ -56,7 +56,7 @@
                 <option value="">-- Choose team member --</option>
                 <option th:each="member : ${teamMembers}"
                         th:value="${member.employeeId}"
-                        th:text="${member.username + ' (' + (member.alphaRoles != null and !#lists.isEmpty(member.alphaRoles) ? #strings.listJoin(member.alphaRoles, ', ', 'displayName') : 'No skills') + ')'}">
+                        th:text="${member.username + (member.alphaRoles != null and !#lists.isEmpty(member.alphaRoles) ? ' (' + #lists.size(member.alphaRoles) + ' skills)' : ' (No skills)')}">
                 </option>
             </select>
         </div>
@@ -76,9 +76,10 @@
         <div class="form-group">
             <label for="taskPriority">Priority:</label>
             <select id="taskPriority" name="taskPriority" th:field="*{taskPriority}" class="form-control" required>
-                <option value="LOW">Low</option>
-                <option value="MEDIUM">Medium</option>
-                <option value="HIGH">High</option>
+                <option th:each="priority : ${T(com.example.pkveksamen.model.Priority).values()}"
+                        th:value="${priority}"
+                        th:text="${priority.displayName}">
+                </option>
             </select>
         </div>
 

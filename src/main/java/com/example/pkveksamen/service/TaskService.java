@@ -92,6 +92,22 @@ public class TaskService {
         taskRepository.updateTaskNote(taskId, taskNote);
     }
 
+    public void updateTaskStatus(long taskId, Status status) {
+        taskRepository.updateTaskStatus(taskId, status.getDisplayName());
+    }
+
+    public void updateTaskPriority(long taskId, Priority priority) {
+        taskRepository.updateTaskPriority(taskId, priority.getDisplayName());
+    }
+
+    public void updateSubTaskStatus(long subTaskId, Status status) {
+        taskRepository.updateSubTaskStatus(subTaskId, status.getDisplayName());
+    }
+
+    public void updateSubTaskPriority(long subTaskId, Priority priority) {
+        taskRepository.updateSubTaskPriority(subTaskId, priority.getDisplayName());
+    }
+
     public void editSubTask(SubTask subTask) {
         taskRepository.editSubTask(subTask);
     }

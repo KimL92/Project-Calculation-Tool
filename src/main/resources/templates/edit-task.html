@@ -69,7 +69,7 @@
                     <option th:each="member : ${teamMembers}"
                             th:value="${member.employeeId}"
                             th:selected="${task.assignedEmployee != null and task.assignedEmployee.employeeId == member.employeeId}"
-                            th:text="${member.username + ' (' + #strings.listJoin(member.alphaRoles, ', ', 'displayName') + ')'}">
+                            th:text="${member.username + (member.alphaRoles != null and !#lists.isEmpty(member.alphaRoles) ? ' (' + #lists.size(member.alphaRoles) + ' skills)' : ' (No skills)')}">
                     </option>
                 </select>
             </div>

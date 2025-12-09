@@ -474,21 +474,63 @@ public class TaskController {
         return "redirect:/project/task/liste/" + projectId + "/" + subProjectId + "/" + employeeId;
     }
 
-//    TODO: lav save task status for teammember
-//    @PostMapping("/project/task/updatestatus/{taskId}")
-//    public String updateTaskStatus(
-//            @PathVariable int employeeId,
-//            @PathVariable long projectId,
-//            @PathVariable long subProjectId,
-//            @PathVariable long taskId,
-//            @RequestParam("taskStatus") String taskStatus) {
-//
-//        taskService.updateTaskStatus(taskId, taskStatus);
-//
-//        // Redirect tilbage til siden med tasks – ret til din egen URL
-//        return "redirect:/project/task/liste/" + projectId + "/" + subProjectId + "/" + employeeId;
-//
-//    }
+    @PostMapping("/project/task/updatestatus/{taskId}")
+    public String updateTaskStatus(
+            @PathVariable long taskId,
+            @RequestParam("taskStatus") String taskStatus,
+            @RequestParam("employeeId") int employeeId,
+            @RequestParam("projectId") long projectId,
+            @RequestParam("subProjectId") long subProjectId) {
+
+        Status status = Status.valueOf(taskStatus);
+        taskService.updateTaskStatus(taskId, status);
+
+        return "redirect:/project/task/liste/" + projectId + "/" + subProjectId + "/" + employeeId;
+    }
+
+    @PostMapping("/project/task/updatepriority/{taskId}")
+    public String updateTaskPriority(
+            @PathVariable long taskId,
+            @RequestParam("taskPriority") String taskPriority,
+            @RequestParam("employeeId") int employeeId,
+            @RequestParam("projectId") long projectId,
+            @RequestParam("subProjectId") long subProjectId) {
+
+        Priority priority = Priority.valueOf(taskPriority);
+        taskService.updateTaskPriority(taskId, priority);
+
+        return "redirect:/project/task/liste/" + projectId + "/" + subProjectId + "/" + employeeId;
+    }
+
+    @PostMapping("/project/subtask/updatestatus/{subTaskId}")
+    public String updateSubTaskStatus(
+            @PathVariable long subTaskId,
+            @RequestParam("subTaskStatus") String subTaskStatus,
+            @RequestParam("employeeId") int employeeId,
+            @RequestParam("projectId") long projectId,
+            @RequestParam("subProjectId") long subProjectId,
+            @RequestParam("taskId") long taskId) {
+
+        Status status = Status.valueOf(subTaskStatus);
+        taskService.updateSubTaskStatus(subTaskId, status);
+
+        return "redirect:/project/subtask/liste/" + projectId + "/" + subProjectId + "/" + taskId + "/" + employeeId;
+    }
+
+    @PostMapping("/project/subtask/updatepriority/{subTaskId}")
+    public String updateSubTaskPriority(
+            @PathVariable long subTaskId,
+            @RequestParam("subTaskPriority") String subTaskPriority,
+            @RequestParam("employeeId") int employeeId,
+            @RequestParam("projectId") long projectId,
+            @RequestParam("subProjectId") long subProjectId,
+            @RequestParam("taskId") long taskId) {
+
+        Priority priority = Priority.valueOf(subTaskPriority);
+        taskService.updateSubTaskPriority(subTaskId, priority);
+
+        return "redirect:/project/subtask/liste/" + projectId + "/" + subProjectId + "/" + taskId + "/" + employeeId;
+    }
 
     /*
     // TODO: lav save task priority for teammember

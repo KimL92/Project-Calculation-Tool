@@ -14,4 +14,13 @@ public enum Priority {
     public String getDisplayName() {
         return displayName;
     }
+    
+    public static Priority fromDisplayName(String displayName) {
+        for (Priority priority : values()) {
+            if (priority.displayName.equalsIgnoreCase(displayName)) {
+                return priority;
+            }
+        }
+        throw new IllegalArgumentException("No enum constant with display name: " + displayName);
+    }
 }

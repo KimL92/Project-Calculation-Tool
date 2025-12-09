@@ -102,19 +102,21 @@
                 <form th:if="${employeeRole == T(com.example.pkveksamen.model.EmployeeRole).TEAM_MEMBER}"
                       th:action="@{/project/task/updatestatus/{taskId}(taskId=${task.taskID})}"
                       method="post">
-
+                    <input type="hidden" name="employeeId" th:value="${currentEmployeeId}">
+                    <input type="hidden" name="projectId" th:value="${currentProjectId}">
+                    <input type="hidden" name="subProjectId" th:value="${currentSubProjectId}">
                     <select name="taskStatus" onchange="this.form.submit()">
-                        <option value="NOT_STARTED"  th:selected="${task.taskStatus == 'NOT_STARTED'}">Not started</option>
-                        <option value="IN_PROGRESS"  th:selected="${task.taskStatus == 'IN_PROGRESS'}">In progress</option>
-                        <option value="COMPLETED"    th:selected="${task.taskStatus == 'COMPLETED'}">Completed</option>
+                        <option value="NOT_STARTED"  th:selected="${task.taskStatus.name() == 'NOT_STARTED'}">Not started</option>
+                        <option value="IN_PROGRESS"  th:selected="${task.taskStatus.name() == 'IN_PROGRESS'}">In progress</option>
+                        <option value="COMPLETED"    th:selected="${task.taskStatus.name() == 'COMPLETED'}">Completed</option>
                     </select>
                 </form>
 
-                <!-- PROJECT MANAGER: kan ikke ændre -->
+                <!-- PROJECT MANAGER: kan ikke ændre - kun se -->
                 <select th:if="${employeeRole == T(com.example.pkveksamen.model.EmployeeRole).PROJECT_MANAGER}" disabled>
-                    <option value="NOT_STARTED"  th:selected="${task.taskStatus == 'NOT_STARTED'}">Not started</option>
-                    <option value="IN_PROGRESS"  th:selected="${task.taskStatus == 'IN_PROGRESS'}">In progress</option>
-                    <option value="COMPLETED"    th:selected="${task.taskStatus == 'COMPLETED'}">Completed</option>
+                    <option value="NOT_STARTED"  th:selected="${task.taskStatus.name() == 'NOT_STARTED'}">Not started</option>
+                    <option value="IN_PROGRESS"  th:selected="${task.taskStatus.name() == 'IN_PROGRESS'}">In progress</option>
+                    <option value="COMPLETED"    th:selected="${task.taskStatus.name() == 'COMPLETED'}">Completed</option>
                 </select>
             </td>
 
@@ -124,11 +126,13 @@
                 <form th:if="${employeeRole == T(com.example.pkveksamen.model.EmployeeRole).PROJECT_MANAGER}"
                       th:action="@{/project/task/updatepriority/{taskId}(taskId=${task.taskID})}"
                       method="post">
-
+                    <input type="hidden" name="employeeId" th:value="${currentEmployeeId}">
+                    <input type="hidden" name="projectId" th:value="${currentProjectId}">
+                    <input type="hidden" name="subProjectId" th:value="${currentSubProjectId}">
                     <select name="taskPriority" onchange="this.form.submit()">
-                        <option value="LOW"       th:selected="${task.taskPriority == 'LOW'}">Low</option>
-                        <option value="MEDIUM"    th:selected="${task.taskPriority == 'MEDIUM'}">Medium</option>
-                        <option value="HIGH"      th:selected="${task.taskPriority == 'HIGH'}">High</option>
+                        <option value="LOW"       th:selected="${task.taskPriority.name() == 'LOW'}">Low</option>
+                        <option value="MEDIUM"    th:selected="${task.taskPriority.name() == 'MEDIUM'}">Medium</option>
+                        <option value="HIGH"      th:selected="${task.taskPriority.name() == 'HIGH'}">High</option>
                     </select>
                 </form>
 

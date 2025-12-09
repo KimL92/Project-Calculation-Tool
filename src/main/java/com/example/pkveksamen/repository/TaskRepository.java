@@ -95,7 +95,7 @@ public class TaskRepository {
             task.setTaskDuration(rs.getInt("task_duration"));
             String priorityStr = rs.getString("task_priority");
             if (priorityStr != null) {
-                task.setTaskPriority(Priority.valueOf(priorityStr));
+                task.setTaskPriority(Priority.fromDisplayName(priorityStr));
             }
             task.recalculateDuration();
             
@@ -173,7 +173,7 @@ public class TaskRepository {
             task.setTaskDuration(rs.getInt("task_duration"));
             String priorityStr = rs.getString("task_priority");
             if (priorityStr != null) {
-                task.setTaskPriority(Priority.valueOf(priorityStr));
+                task.setTaskPriority(Priority.fromDisplayName(priorityStr));
             }
             task.recalculateDuration();
             
@@ -240,11 +240,18 @@ public class TaskRepository {
             subTask.setSubTaskId(rs.getLong("sub_task_id"));
             subTask.setSubTaskName(rs.getString("sub_task_title"));
             subTask.setSubTaskDescription(rs.getString("sub_task_description"));
-            subTask.setSubTaskStatus(Status.fromDisplayName(rs.getString("sub_task_status")));
+            String statusStr = rs.getString("sub_task_status");
+            if (statusStr != null) {
+                subTask.setSubTaskStatus(Status.fromDisplayName(statusStr));
+            }
             subTask.setSubTaskNote(rs.getString("sub_task_note"));
             subTask.setSubTaskStartDate(rs.getObject("sub_task_start_date", LocalDate.class));
             subTask.setSubTaskDeadline(rs.getObject("sub_task_deadline", LocalDate.class));
             subTask.setSubTaskDuration(rs.getInt("sub_task_duration"));
+            String priorityStr = rs.getString("sub_task_priority");
+            if (priorityStr != null) {
+                subTask.setSubTaskPriority(Priority.fromDisplayName(priorityStr));
+            }
             subTask.recalculateDuration();
             return subTask;
         }, taskId);
@@ -258,6 +265,28 @@ public class TaskRepository {
         String sql = "UPDATE task SET task_note = ? WHERE task_id = ?";
         jdbcTemplate.update(sql, taskNote, taskId);
     }
+
+    public void updateTaskStatus(long taskId, String taskStatus) {
+        String sql = "UPDATE task SET task_status = ? WHERE task_id = ?";
+        jdbcTemplate.update(sql, taskStatus, taskId);
+    }
+
+    public void updateTaskPriority(long taskId, String taskPriority) {
+        String sql = "UPDATE task SET task_priority = ? WHERE task_id = ?";
+        jdbcTemplate.update(sql, taskPriority, taskId);
+    }
+
+    public void updateSubTaskStatus(long subTaskId, String subTaskStatus) {
+        String sql = "UPDATE sub_task SET sub_task_status = ? WHERE sub_task_id = ?";
+        jdbcTemplate.update(sql, subTaskStatus, subTaskId);
+    }
+
+    public void updateSubTaskPriority(long subTaskId, String subTaskPriority) {
+        String sql = "UPDATE sub_task SET sub_task_priority = ? WHERE sub_task_id = ?";
+        jdbcTemplate.update(sql, subTaskPriority, subTaskId);
+    }
+
+
 
     public void editSubTask(SubTask subTask) {
         subTask.recalculateDuration();
@@ -290,7 +319,10 @@ public class TaskRepository {
             subTask.setSubTaskStartDate(rs.getObject("sub_task_start_date", LocalDate.class));
             subTask.setSubTaskDeadline(rs.getObject("sub_task_deadline", LocalDate.class));
             subTask.setSubTaskDuration(rs.getInt("sub_task_duration"));
-            subTask.setSubTaskPriority(Priority.valueOf(rs.getString("sub_task_priority")));
+            String subTaskPriorityStr = rs.getString("sub_task_priority");
+            if (subTaskPriorityStr != null) {
+                subTask.setSubTaskPriority(Priority.fromDisplayName(subTaskPriorityStr));
+            }
             subTask.setSubTaskNote(rs.getString("sub_task_note"));
             subTask.recalculateDuration();
             return subTask;
