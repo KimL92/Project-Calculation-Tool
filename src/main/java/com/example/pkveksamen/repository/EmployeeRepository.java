@@ -5,8 +5,12 @@ import com.example.pkveksamen.model.Employee;
 import com.example.pkveksamen.model.EmployeeRole;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 
 @Repository
@@ -18,11 +22,39 @@ public class EmployeeRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void createEmployee(String username, String password, String email, String role) {
-        jdbcTemplate.update(
-                "INSERT INTO employee(username, password, email, role) VALUES (?, ?, ?, ?)",
-                username, password, email, role
-        );
+    public void createEmployee(String username, String password, String email, String role, String alphaRoleDisplayName) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        String insertEmployeeSql = "INSERT INTO employee(username, password, email, role) VALUES (?, ?, ?, ?)";
+        
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(insertEmployeeSql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, username);
+            ps.setString(2, password);
+            ps.setString(3, email);
+            ps.setString(4, role);
+            return ps;
+        }, keyHolder);
+        
+        Integer employeeId = keyHolder.getKey().intValue();
+        
+        String getRoleIdSql = "SELECT role_id FROM role WHERE role_name = ?";
+        Integer roleId;
+        try {
+            roleId = jdbcTemplate.queryForObject(getRoleIdSql, Integer.class, alphaRoleDisplayName);
+        } catch (EmptyResultDataAccessException e) {
+            KeyHolder roleKeyHolder = new GeneratedKeyHolder();
+            String insertRoleSql = "INSERT INTO role(role_name, role_description) VALUES (?, ?)";
+            jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(insertRoleSql, Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, alphaRoleDisplayName);
+                ps.setString(2, alphaRoleDisplayName);
+                return ps;
+            }, roleKeyHolder);
+            roleId = roleKeyHolder.getKey().intValue();
+        }
+        
+        String insertEmployeeRoleSql = "INSERT INTO employee_role(employee_id, role_id) VALUES (?, ?)";
+        jdbcTemplate.update(insertEmployeeRoleSql, employeeId, roleId);
     }
 
     public Employee findEmployeeById(int employeeId) {
@@ -31,11 +63,13 @@ public class EmployeeRepository {
         try {
             return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
                 Employee employee = new Employee();
-                employee.setEmployeeId(rs.getInt("employee_id"));
+                int id = rs.getInt("employee_id");
+                employee.setEmployeeId(id);
                 employee.setUsername(rs.getString("username"));
                 employee.setPassword(rs.getString("password"));
                 employee.setEmail(rs.getString("email"));
                 employee.setRole(EmployeeRole.fromDisplayName(rs.getString("role")));
+                employee.setAlphaRoles(findAlphaRolesByEmployeeId(id));
                 return employee;
             }, employeeId);
         } catch (EmptyResultDataAccessException e) {
@@ -60,7 +94,7 @@ public class EmployeeRepository {
         }
     }
 
-    private List<AlphaRole> findAlphaRolesByEmployeeId(int employeeId) {
+    public List<AlphaRole> findAlphaRolesByEmployeeId(int employeeId) {
         String sql = "SELECT r.role_name " +
                 "FROM role r " +
                 "JOIN employee_role er ON r.role_id = er.role_id " +
@@ -78,11 +112,13 @@ public class EmployeeRepository {
 
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             Employee employee = new Employee();
-            employee.setEmployeeId(rs.getInt("employee_id"));
+            int employeeId = rs.getInt("employee_id");
+            employee.setEmployeeId(employeeId);
             employee.setUsername(rs.getString("username"));
             employee.setPassword(rs.getString("password"));
             employee.setEmail(rs.getString("email"));
             employee.setRole(EmployeeRole.fromDisplayName(rs.getString("role")));
+            employee.setAlphaRoles(findAlphaRolesByEmployeeId(employeeId));
             return employee;
         }, EmployeeRole.TEAM_MEMBER.getDisplayName());
     }
@@ -114,6 +150,7 @@ public class EmployeeRepository {
             employee.setUsername(rs.getString("username"));
             employee.setEmail(rs.getString("email"));
             employee.setRole(EmployeeRole.fromDisplayName(rs.getString("role")));
+            employee.setAlphaRoles(findAlphaRolesByEmployeeId(employeeId));
 
             return employee;
         });

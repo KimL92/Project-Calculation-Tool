@@ -30,11 +30,12 @@
     </select>
 
     <!-- skill/alpha role vises -->
-    <label for="skill">Choose skill</label>
-    <select id="skill" th:field="*{}" required>
-        <option th:each=" : ${skills}"
-                th:value="${r}"
-                th:text="${#strings.capitalize(#strings.replace(r.name().toLowerCase(), '_', ' '))}">
+    <label for="skill">Choose skill (Alpha Role)</label>
+    <select id="skill" th:field="*{skill}" required>
+        <option value="">-- Select Alpha Role --</option>
+        <option th:each="skill : ${skills}"
+                th:value="${skill}"
+                th:text="${skill.displayName}">
         </option>
     </select>
 

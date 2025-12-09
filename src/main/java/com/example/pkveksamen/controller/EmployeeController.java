@@ -39,16 +39,27 @@ public class EmployeeController {
 
     @PostMapping("/create-employee")
     public String createEmployeePost(Employee employee, Model model) {
+        if (employee.getSkill() == null) {
+            model.addAttribute("error", "Vælg venligst en Alpha Role");
+            model.addAttribute("employee", employee);
+            model.addAttribute("roles", EmployeeRole.values());
+            model.addAttribute("skills", AlphaRole.values());
+            return "create-employee";
+        }
+        
         boolean success = employeeService.createEmployee(
                 employee.getUsername(),
                 employee.getPassword(),
                 employee.getEmail(),
-                employee.getRole().getDisplayName()
+                employee.getRole().getDisplayName(),
+                employee.getSkill().getDisplayName()
         );
 
         if (!success) {
             model.addAttribute("error", "Denne email er allerede i brug");
             model.addAttribute("employee", employee);
+            model.addAttribute("roles", EmployeeRole.values());
+            model.addAttribute("skills", AlphaRole.values());
             return "create-employee";
         }
 

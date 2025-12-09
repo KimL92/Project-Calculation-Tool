@@ -1,5 +1,6 @@
 package com.example.pkveksamen.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Employee {
@@ -7,10 +8,12 @@ public class Employee {
     private String username;
     private String password;
     private String email;
-    private EmployeeRole role; // TEXT type in SQL
+    private EmployeeRole role;
     private AlphaRole skill;
+    private List<AlphaRole> alphaRoles;
 
     public Employee() {
+        this.alphaRoles = new ArrayList<>();
     }
 
     public Employee(String username, String password, String email, EmployeeRole role) {
@@ -18,6 +21,7 @@ public class Employee {
         this.password = password;
         this.email = email;
         this.role = role;
+        this.alphaRoles = new ArrayList<>();
     }
 
     public int getEmployeeId() {
@@ -66,5 +70,13 @@ public class Employee {
 
     public void setSkill(AlphaRole skill) {
         this.skill = skill;
+    }
+
+    public List<AlphaRole> getAlphaRoles() {
+        return alphaRoles;
+    }
+
+    public void setAlphaRoles(List<AlphaRole> alphaRoles) {
+        this.alphaRoles = alphaRoles;
     }
 }

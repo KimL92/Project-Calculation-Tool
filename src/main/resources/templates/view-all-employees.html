@@ -25,11 +25,14 @@
 
         <!-- AlphaRoles (Developer, Tester, osv.) -->
         <td>
-        <span th:each="ar : ${employee.alphaRoles}"
-              th:text="${ar.displayName}"
-              th:append="${!${arStat.last}} ? ', ' : ''"
-              th:with="arStat=${#lists.indexOf(employee.alphaRoles, ar)}">
-        </span>
+            <span th:if="${employee.alphaRoles != null and !employee.alphaRoles.isEmpty()}">
+                <span th:each="ar, iterStat : ${employee.alphaRoles}"
+                      th:text="${ar.displayName} + (${iterStat.last} ? '' : ', ')">
+                </span>
+            </span>
+            <span th:if="${employee.alphaRoles == null or employee.alphaRoles.isEmpty()}">
+                -
+            </span>
         </td>
     </tr>
 

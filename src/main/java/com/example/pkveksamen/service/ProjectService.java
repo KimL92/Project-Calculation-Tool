@@ -62,13 +62,20 @@ public class ProjectService {
     public void deleteSubProject(long subProjectId) {
         projectRepository.deleteSubProject(subProjectId);
     }
-//
-//    public List<Employee> getAllTeamMembers() {
-//        return projectRepository.getAllTeamMembers();
-//    }
-//
-//
-//    public void assignEmployeeToProject(int employeeId, long projectId) {
-//        projectRepository.assignEmployeeToProject(employeeId, projectId);
-//    }
+
+    public List<Employee> getProjectMembers(long projectId) {
+        return projectRepository.getProjectMembers(projectId);
+    }
+
+    public List<Employee> getAvailableEmployeesToAdd(long projectId) {
+        return projectRepository.getAvailableEmployeesToAdd(projectId);
+    }
+
+    public void addEmployeeToProject(int employeeId, long projectId) {
+        projectRepository.addEmployeeToProject(employeeId, projectId);
+    }
+
+    public void removeEmployeeFromProject(int employeeId, long projectId) {
+        projectRepository.removeEmployeeFromProject(employeeId, projectId);
+    }
 }

@@ -5,6 +5,7 @@ import com.example.pkveksamen.model.Priority;
 import com.example.pkveksamen.model.Status;
 import com.example.pkveksamen.model.SubTask;
 import com.example.pkveksamen.model.Task;
+import com.example.pkveksamen.repository.EmployeeRepository;
 import com.example.pkveksamen.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +15,12 @@ import java.util.List;
 @Service
 public class TaskService {
 
-    private static TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
+    private final EmployeeRepository employeeRepository;
 
-    public TaskService(TaskRepository taskRepository) {
+    public TaskService(TaskRepository taskRepository, EmployeeRepository employeeRepository) {
         this.taskRepository = taskRepository;
+        this.employeeRepository = employeeRepository;
     }
 
     public void createTask(Integer employeeId, long subProjectId, String taskName, String taskDescription
@@ -27,7 +30,23 @@ public class TaskService {
     }
 
     public List<Task> showTaskByEmployeeId(int employeeId) {
-        return taskRepository.showTaskByEmployeeId(employeeId);
+        List<Task> tasks = taskRepository.showTaskByEmployeeId(employeeId);
+        for (Task task : tasks) {
+            if (task.getAssignedEmployee() != null) {
+                task.getAssignedEmployee().setAlphaRoles(employeeRepository.findAlphaRolesByEmployeeId(task.getAssignedEmployee().getEmployeeId()));
+            }
+        }
+        return tasks;
+    }
+
+    public List<Task> showTasksBySubProjectId(long subProjectId) {
+        List<Task> tasks = taskRepository.showTasksBySubProjectId(subProjectId);
+        for (Task task : tasks) {
+            if (task.getAssignedEmployee() != null) {
+                task.getAssignedEmployee().setAlphaRoles(employeeRepository.findAlphaRolesByEmployeeId(task.getAssignedEmployee().getEmployeeId()));
+            }
+        }
+        return tasks;
     }
 
     public void saveTask(Task task, int employeeId, long projectId, long subProjectId) {

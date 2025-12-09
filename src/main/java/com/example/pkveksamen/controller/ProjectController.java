@@ -32,19 +32,49 @@ public class ProjectController {
     }
     */
 
-    // TODO: få vist medlemmer for det specifikke projekt
-    /*
-    @GetMapping("/employees")
-    public String showProjectMembers() {
+    @GetMapping("/employees/{employeeId}/{projectId}")
+    public String showProjectMembers(@PathVariable int employeeId,
+                                     @PathVariable long projectId,
+                                     Model model) {
+        Project project = projectService.getProjectById(projectId);
+        List<Employee> projectMembers = projectService.getProjectMembers(projectId);
+        List<Employee> availableEmployees = projectService.getAvailableEmployeesToAdd(projectId);
+
+        model.addAttribute("project", project);
+        model.addAttribute("projectMembers", projectMembers);
+        model.addAttribute("availableEmployees", availableEmployees);
+        model.addAttribute("currentEmployeeId", employeeId);
+        model.addAttribute("currentProjectId", projectId);
+
+        Employee employee = employeeService.getEmployeeById(employeeId);
+        if (employee != null) {
+            model.addAttribute("username", employee.getUsername());
+            model.addAttribute("employeeRole", employee.getRole());
+        }
 
         return "view-project-members";
     }
-    */
 
-    // få vist alle medlemmer på en side for sig selv
+    @PostMapping("/employees/{employeeId}/{projectId}/add")
+    public String addEmployeeToProject(@PathVariable int employeeId,
+                                       @PathVariable long projectId,
+                                       @RequestParam("selectedEmployeeId") int selectedEmployeeId) {
+        projectService.addEmployeeToProject(selectedEmployeeId, projectId);
+        return "redirect:/project/employees/" + employeeId + "/" + projectId;
+    }
+
+    @PostMapping("/employees/{employeeId}/{projectId}/remove")
+    public String removeEmployeeFromProject(@PathVariable int employeeId,
+                                            @PathVariable long projectId,
+                                            @RequestParam("employeeIdToRemove") int employeeIdToRemove) {
+        projectService.removeEmployeeFromProject(employeeIdToRemove, projectId);
+        return "redirect:/project/employees/" + employeeId + "/" + projectId;
+    }
+
+
     @GetMapping("/all-employees")
     public String showAllEmployees(Model model) {
-        List<Employee> employeeList = employeeService.getAllTeamMembers();
+        List<Employee> employeeList = employeeService.getAllEmployees();
         model.addAttribute("employees", employeeList);
 
         return "view-all-employees";

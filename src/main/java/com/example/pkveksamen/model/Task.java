@@ -14,6 +14,7 @@ public class Task {
     private Priority priority;
     private Status status;
     private EmployeeRole employeeRole;
+    private Employee assignedEmployee;
 
     public Task(){}
 
@@ -116,5 +117,12 @@ public class Task {
         this.priority = priority;
     }
 
+    public Employee getAssignedEmployee() {
+        return assignedEmployee;
+    }
+
+    public void setAssignedEmployee(Employee assignedEmployee) {
+        this.assignedEmployee = assignedEmployee;
+    }
 
 }

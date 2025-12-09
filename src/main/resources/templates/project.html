@@ -117,7 +117,7 @@
                 </div>
             </td>
             <td>
-                <a th:href="@{/project/employees}"
+                <a th:href="@{/project/employees/{employeeId}/{projectId}(employeeId=${currentEmployeeId}, projectId=${project.projectID})}"
                    class="view-project-members">View project members</a>
             </td>
         </tr>

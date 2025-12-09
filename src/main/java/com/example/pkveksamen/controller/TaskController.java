@@ -41,17 +41,23 @@ public class TaskController {
                                        @PathVariable long projectId,
                                        @PathVariable long subProjectId,
                                        Model model) {
-        List<Task> taskList = taskService.showTaskByEmployeeId(employeeId);
+        Employee currentEmployee = employeeService.getEmployeeById(employeeId);
+        List<Task> taskList;
+        
+        if (isManager(currentEmployee)) {
+            taskList = taskService.showTasksBySubProjectId(subProjectId);
+        } else {
+            taskList = taskService.showTaskByEmployeeId(employeeId);
+        }
+        
         model.addAttribute("taskList", taskList);
         model.addAttribute("currentProjectId", projectId);
         model.addAttribute("currentSubProjectId", subProjectId);
         model.addAttribute("currentEmployeeId", employeeId);
 
-        // Add employee details for the header
-        Employee employee = employeeService.getEmployeeById(employeeId);
-        if (employee != null) {
-            model.addAttribute("username", employee.getUsername());
-            model.addAttribute("employeeRole", employee.getRole());
+        if (currentEmployee != null) {
+            model.addAttribute("username", currentEmployee.getUsername());
+            model.addAttribute("employeeRole", currentEmployee.getRole());
         }
 
         return "task";
@@ -62,19 +68,19 @@ public class TaskController {
                                      @PathVariable long projectId,
                                      @PathVariable long subProjectId,
                                      Model model) {
-        // Tjek om brugeren er projektleder
         Employee currentEmployee = employeeService.getEmployeeById(employeeId);
 
         if (!isManager(currentEmployee)) {
-            // Hvis ikke projektleder, send tilbage
             return "redirect:/project/task/liste/" + projectId + "/" + subProjectId + "/" + employeeId;
         }
 
-        // Hent alle teammedlemmer til dropdown
-        List<Employee> teamMembers = employeeService.getAllTeamMembers();
+        List<Employee> projectMembers = projectService.getProjectMembers(projectId);
+        for (Employee member : projectMembers) {
+            member.setAlphaRoles(employeeService.getEmployeeById(member.getEmployeeId()).getAlphaRoles());
+        }
 
         model.addAttribute("task", new Task());
-        model.addAttribute("teamMembers", teamMembers);
+        model.addAttribute("teamMembers", projectMembers);
         model.addAttribute("currentEmployeeId", employeeId);
         model.addAttribute("currentProjectId", projectId);
         model.addAttribute("currentSubProjectId", subProjectId);
@@ -89,8 +95,8 @@ public class TaskController {
                              @PathVariable long projectId,
                              @PathVariable long subProjectId,
                              @ModelAttribute Task task,
+                             @RequestParam(value = "assignedToEmployeeId", required = false) Integer assignedToEmployeeId,
                              Model model) {
-        // Calculate duration in days
         if (task.getTaskStartDate() != null && task.getTaskDeadline() != null) {
             long days = ChronoUnit.DAYS.between(task.getTaskStartDate(), task.getTaskDeadline());
             task.setTaskDuration((int) days + 1);
@@ -98,13 +104,10 @@ public class TaskController {
             task.setTaskDuration(0);
         }
 
-        // Simpel range-check
         if (task.getTaskStartDate() != null) {
             int year = task.getTaskStartDate().getYear();
             if (year < 2000 || year > 2100) {
-                // her kunne du fx sætte en fejlbesked i model og vise formen igen
                 model.addAttribute("error", "Start date year must be between 2000 and 2100");
-                // husk at lægge de samme model-attributter på som i GET-metoden
                 return "createtask";
             }
         }
@@ -117,7 +120,6 @@ public class TaskController {
             }
         }
 
-        // default status & priority hvis de er null
         if (task.getTaskStatus() == null) {
             task.setTaskStatus(Status.NOT_STARTED);
         }
@@ -125,8 +127,10 @@ public class TaskController {
             task.setTaskPriority(Priority.MEDIUM);
         }
 
+        Integer employeeIdToAssign = assignedToEmployeeId != null ? assignedToEmployeeId : employeeId;
+
         taskService.createTask(
-                employeeId,
+                employeeIdToAssign,
                 subProjectId,
                 task.getTaskName(),
                 task.getTaskDescription(),
@@ -170,7 +174,17 @@ public class TaskController {
                                    @PathVariable long taskId,
                                    Model model) {
         Task task = taskService.getTaskById(taskId);
+        if (task.getAssignedEmployee() != null) {
+            task.getAssignedEmployee().setAlphaRoles(employeeService.getEmployeeById(task.getAssignedEmployee().getEmployeeId()).getAlphaRoles());
+        }
+        
+        List<Employee> projectMembers = projectService.getProjectMembers(projectId);
+        for (Employee member : projectMembers) {
+            member.setAlphaRoles(employeeService.getEmployeeById(member.getEmployeeId()).getAlphaRoles());
+        }
+        
         model.addAttribute("task", task);
+        model.addAttribute("teamMembers", projectMembers);
         model.addAttribute("currentEmployeeId", employeeId);
         model.addAttribute("currentProjectId", projectId);
         model.addAttribute("currentSubProjectId", subProjectId);
@@ -181,7 +195,7 @@ public class TaskController {
             model.addAttribute("employeeRole", employee.getRole());
         }
 
-        return "edit-task"; // Thymeleaf template
+        return "edit-task";
     }
 
     @PostMapping("/project/task/edit/{employeeId}/{projectId}/{subProjectId}/{taskId}")
@@ -189,8 +203,14 @@ public class TaskController {
                            @PathVariable long projectId,
                            @PathVariable long subProjectId,
                            @PathVariable int taskId,
-                           @ModelAttribute Task task) {
+                           @ModelAttribute Task task,
+                           @RequestParam(value = "assignedToEmployeeId", required = false) Integer assignedToEmployeeId) {
         task.setTaskID(taskId);
+        if (assignedToEmployeeId != null) {
+            Employee assignedEmployee = new Employee();
+            assignedEmployee.setEmployeeId(assignedToEmployeeId);
+            task.setAssignedEmployee(assignedEmployee);
+        }
         taskService.editTask(task);
         return "redirect:/project/task/liste/" + projectId + "/" + subProjectId + "/" + employeeId;
     }

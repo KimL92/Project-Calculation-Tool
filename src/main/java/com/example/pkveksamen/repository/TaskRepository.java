@@ -1,5 +1,7 @@
 package com.example.pkveksamen.repository;
 
+import com.example.pkveksamen.model.Employee;
+import com.example.pkveksamen.model.EmployeeRole;
 import com.example.pkveksamen.model.SubTask;
 import com.example.pkveksamen.model.Task;
 import com.example.pkveksamen.model.Priority;
@@ -40,9 +42,12 @@ public class TaskRepository {
     }
 
     public List<Task> showTaskByEmployeeId(int employeeId) {
-        String sql = "SELECT task_id, employee_id, sub_project_id, task_title, task_description, task_status, " +
-                "task_start_date, task_deadline, task_duration, task_priority, task_note " +
-                "FROM task WHERE employee_id = ?";
+        String sql = "SELECT t.task_id, t.employee_id, t.sub_project_id, t.task_title, t.task_description, t.task_status, " +
+                "t.task_start_date, t.task_deadline, t.task_duration, t.task_priority, t.task_note, " +
+                "e.employee_id as assigned_employee_id, e.username, e.email, e.role " +
+                "FROM task t " +
+                "LEFT JOIN employee e ON t.employee_id = e.employee_id " +
+                "WHERE t.employee_id = ?";
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             Task task = new Task();
             task.setTaskID(rs.getInt("task_id"));
@@ -54,8 +59,60 @@ public class TaskRepository {
             task.setTaskDeadline(rs.getObject("task_deadline", LocalDate.class));
             task.setTaskDuration(rs.getInt("task_duration"));
             task.recalculateDuration();
+            
+            if (rs.getObject("assigned_employee_id") != null) {
+                Employee employee = new Employee();
+                employee.setEmployeeId(rs.getInt("assigned_employee_id"));
+                employee.setUsername(rs.getString("username"));
+                employee.setEmail(rs.getString("email"));
+                String roleStr = rs.getString("role");
+                if (roleStr != null) {
+                    employee.setRole(EmployeeRole.fromDisplayName(roleStr));
+                }
+                task.setAssignedEmployee(employee);
+            }
+            
             return task;
         }, employeeId);
+    }
+
+    public List<Task> showTasksBySubProjectId(long subProjectId) {
+        String sql = "SELECT t.task_id, t.employee_id, t.sub_project_id, t.task_title, t.task_description, t.task_status, " +
+                "t.task_start_date, t.task_deadline, t.task_duration, t.task_priority, t.task_note, " +
+                "e.employee_id as assigned_employee_id, e.username, e.email, e.role " +
+                "FROM task t " +
+                "LEFT JOIN employee e ON t.employee_id = e.employee_id " +
+                "WHERE t.sub_project_id = ?";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Task task = new Task();
+            task.setTaskID(rs.getInt("task_id"));
+            task.setTaskName(rs.getString("task_title"));
+            task.setTaskDescription(rs.getString("task_description"));
+            task.setTaskStatus(Status.fromDisplayName(rs.getString("task_status")));
+            task.setTaskNote(rs.getString("task_note"));
+            task.setTaskStartDate(rs.getObject("task_start_date", LocalDate.class));
+            task.setTaskDeadline(rs.getObject("task_deadline", LocalDate.class));
+            task.setTaskDuration(rs.getInt("task_duration"));
+            String priorityStr = rs.getString("task_priority");
+            if (priorityStr != null) {
+                task.setTaskPriority(Priority.valueOf(priorityStr));
+            }
+            task.recalculateDuration();
+            
+            if (rs.getObject("assigned_employee_id") != null) {
+                Employee employee = new Employee();
+                employee.setEmployeeId(rs.getInt("assigned_employee_id"));
+                employee.setUsername(rs.getString("username"));
+                employee.setEmail(rs.getString("email"));
+                String roleStr = rs.getString("role");
+                if (roleStr != null) {
+                    employee.setRole(EmployeeRole.fromDisplayName(roleStr));
+                }
+                task.setAssignedEmployee(employee);
+            }
+            
+            return task;
+        }, subProjectId);
     }
 
     public void saveTask(Task task, int employeeId, long projectId, long subProjectId) {
@@ -81,7 +138,8 @@ public class TaskRepository {
     }
 
     public void editTask(Task task) {
-        String sql = "UPDATE task SET task_title = ?, task_description = ?, task_status = ?, task_start_date = ?, task_deadline = ?, task_duration = ?, task_priority = ?, task_note = ? WHERE task_id = ?";
+        String sql = "UPDATE task SET task_title = ?, task_description = ?, task_status = ?, task_start_date = ?, task_deadline = ?, task_duration = ?, task_priority = ?, task_note = ?, employee_id = ? WHERE task_id = ?";
+        Integer employeeId = task.getAssignedEmployee() != null ? task.getAssignedEmployee().getEmployeeId() : null;
         jdbcTemplate.update(sql,
                 task.getTaskName(),
                 task.getTaskDescription(),
@@ -91,14 +149,18 @@ public class TaskRepository {
                 task.getTaskDuration(),
                 task.getTaskPriority().name(),
                 task.getTaskNote(),
+                employeeId,
                 task.getTaskID()
         );
     }
 
     public Task getTaskById(long taskId) {
-        String sql = "SELECT task_id, employee_id, sub_project_id, task_title, task_description, task_status, " +
-                "task_start_date, task_deadline, task_duration, task_priority, task_note " +
-                "FROM task WHERE task_id = ?";
+        String sql = "SELECT t.task_id, t.employee_id, t.sub_project_id, t.task_title, t.task_description, t.task_status, " +
+                "t.task_start_date, t.task_deadline, t.task_duration, t.task_priority, t.task_note, " +
+                "e.employee_id as assigned_employee_id, e.username, e.email, e.role " +
+                "FROM task t " +
+                "LEFT JOIN employee e ON t.employee_id = e.employee_id " +
+                "WHERE t.task_id = ?";
         return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
             Task task = new Task();
             task.setTaskID(rs.getInt("task_id"));
@@ -109,7 +171,24 @@ public class TaskRepository {
             task.setTaskStartDate(rs.getObject("task_start_date", LocalDate.class));
             task.setTaskDeadline(rs.getObject("task_deadline", LocalDate.class));
             task.setTaskDuration(rs.getInt("task_duration"));
+            String priorityStr = rs.getString("task_priority");
+            if (priorityStr != null) {
+                task.setTaskPriority(Priority.valueOf(priorityStr));
+            }
             task.recalculateDuration();
+            
+            if (rs.getObject("assigned_employee_id") != null) {
+                Employee employee = new Employee();
+                employee.setEmployeeId(rs.getInt("assigned_employee_id"));
+                employee.setUsername(rs.getString("username"));
+                employee.setEmail(rs.getString("email"));
+                String roleStr = rs.getString("role");
+                if (roleStr != null) {
+                    employee.setRole(EmployeeRole.fromDisplayName(roleStr));
+                }
+                task.setAssignedEmployee(employee);
+            }
+            
             return task;
         }, taskId);
     }

@@ -16,10 +16,10 @@ public class EmployeeService {
         this.employeeRepository = employeeRepository;
     }
 
-    public boolean createEmployee(String username, String password, String email, String role) {
+    public boolean createEmployee(String username, String password, String email, String role, String alphaRoleDisplayName) {
         try {
-            employeeRepository.createEmployee(username, password, email, role);
-            System.out.println("Bruger oprettet: " + username + " " + email);
+            employeeRepository.createEmployee(username, password, email, role, alphaRoleDisplayName);
+            System.out.println("Bruger oprettet: " + username + " " + email + " med alphaRole: " + alphaRoleDisplayName);
             return true;
         } catch (DataIntegrityViolationException e) {
             System.out.println("Email allerede i brug: " + email);

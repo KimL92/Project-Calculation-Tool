@@ -58,6 +58,8 @@
         <tr>
             <th>Title</th>
             <th>Description</th>
+            <th>Assigned to</th>
+            <th>Skills</th>
             <th>Start date</th>
             <th>Deadline</th>
             <th>Status</th>
@@ -72,13 +74,25 @@
 
         <!-- Ingen tasks -->
         <tr th:if="${taskList == null or #lists.isEmpty(taskList)}">
-            <td colspan="9">You have no tasks yet. Click "Create new task" for an overview.</td>
+            <td colspan="11">You have no tasks yet. Click "Create new task" for an overview.</td>
         </tr>
 
         <!-- Iteration -->
         <tr th:each="task : ${taskList}">
             <td th:text="${task.taskName}"></td>
             <td th:text="${task.taskDescription}"></td>
+            <td>
+                <span th:if="${task.assignedEmployee != null}" th:text="${task.assignedEmployee.username}"></span>
+                <span th:if="${task.assignedEmployee == null}" class="text-muted">Not assigned</span>
+            </td>
+            <td>
+                <span th:if="${task.assignedEmployee != null and task.assignedEmployee.alphaRoles != null and !#lists.isEmpty(task.assignedEmployee.alphaRoles)}">
+                    <span th:each="role, iterStat : ${task.assignedEmployee.alphaRoles}" 
+                          th:text="${role.displayName} + (${iterStat.last} ? '' : ', ')"></span>
+                </span>
+                <span th:if="${task.assignedEmployee == null or task.assignedEmployee.alphaRoles == null or #lists.isEmpty(task.assignedEmployee.alphaRoles)}" 
+                      class="text-muted">-</span>
+            </td>
             <td th:text="${task.taskStartDate}"></td>
             <td th:text="${task.taskDeadline}"></td>
 

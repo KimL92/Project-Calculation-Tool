@@ -3,6 +3,8 @@ package com.example.pkveksamen.repository;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.example.pkveksamen.model.Employee;
+import com.example.pkveksamen.model.EmployeeRole;
 import com.example.pkveksamen.model.SubProject;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -33,9 +35,14 @@ public class ProjectRepository {
     }
 
     public List<Project> showProjectsByEmployeeId(int employeeId) {
-        String sql = "SELECT project_id, employee_id, project_title, project_description, project_start_date, project_deadline, project_customer " +
-                "FROM project " +
-                "WHERE employee_id = ?";
+        String sql = "SELECT DISTINCT p.project_id, p.employee_id, p.project_title, p.project_description, p.project_start_date, p.project_deadline, p.project_customer " +
+                "FROM project p " +
+                "WHERE p.employee_id = ? " +
+                "UNION " +
+                "SELECT DISTINCT p.project_id, p.employee_id, p.project_title, p.project_description, p.project_start_date, p.project_deadline, p.project_customer " +
+                "FROM project p " +
+                "INNER JOIN project_employee pe ON p.project_id = pe.project_id " +
+                "WHERE pe.employee_id = ?";
 
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             Project project = new Project();
@@ -45,10 +52,9 @@ public class ProjectRepository {
             project.setProjectStartDate(rs.getObject("project_start_date", LocalDate.class));
             project.setProjectDeadline(rs.getObject("project_deadline", LocalDate.class));
             project.setProjectCustomer(rs.getString("project_customer"));
-            // Beregn varigheden automatisk
             project.recalculateDuration();
             return project;
-        }, employeeId);
+        }, employeeId, employeeId);
     }
 
     public List<SubProject> showSubProjectsByProjectId(long projectID) {
@@ -208,9 +214,61 @@ public class ProjectRepository {
         jdbcTemplate.update("DELETE FROM sub_project WHERE sub_project_id = ?", subProjectId);
     }
 
+    public List<Employee> getProjectMembers(long projectId) {
+        String sql = "SELECT DISTINCT e.employee_id, e.username, e.email, e.role " +
+                "FROM employee e " +
+                "INNER JOIN project p ON e.employee_id = p.employee_id " +
+                "WHERE p.project_id = ? " +
+                "UNION " +
+                "SELECT DISTINCT e.employee_id, e.username, e.email, e.role " +
+                "FROM employee e " +
+                "INNER JOIN project_employee pe ON e.employee_id = pe.employee_id " +
+                "WHERE pe.project_id = ?";
 
-//    public List<Employee> getAllTeamMembers() {
-//
-//    }
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Employee employee = new Employee();
+            employee.setEmployeeId(rs.getInt("employee_id"));
+            employee.setUsername(rs.getString("username"));
+            employee.setEmail(rs.getString("email"));
+            String roleStr = rs.getString("role");
+            if (roleStr != null) {
+                employee.setRole(EmployeeRole.fromDisplayName(roleStr));
+            }
+            return employee;
+        }, projectId, projectId);
+    }
+
+    public List<Employee> getAvailableEmployeesToAdd(long projectId) {
+        String sql = "SELECT e.employee_id, e.username, e.email, e.role " +
+                "FROM employee e " +
+                "WHERE e.employee_id NOT IN (" +
+                "    SELECT DISTINCT p.employee_id FROM project p WHERE p.project_id = ? " +
+                "    UNION " +
+                "    SELECT DISTINCT pe.employee_id FROM project_employee pe WHERE pe.project_id = ?" +
+                ")";
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Employee employee = new Employee();
+            employee.setEmployeeId(rs.getInt("employee_id"));
+            employee.setUsername(rs.getString("username"));
+            employee.setEmail(rs.getString("email"));
+            String roleStr = rs.getString("role");
+            if (roleStr != null) {
+                employee.setRole(EmployeeRole.fromDisplayName(roleStr));
+            }
+            return employee;
+        }, projectId, projectId);
+    }
+
+    public void addEmployeeToProject(int employeeId, long projectId) {
+        String sql = "INSERT INTO project_employee (employee_id, project_id) VALUES (?, ?)";
+        jdbcTemplate.update(sql, employeeId, projectId);
+    }
+
+
+    public void removeEmployeeFromProject(int employeeId, long projectId) {
+        String sql = "DELETE FROM project_employee WHERE project_id = ? AND employee_id = ?";
+        jdbcTemplate.update(sql, projectId, employeeId);
+    }
 }
 
