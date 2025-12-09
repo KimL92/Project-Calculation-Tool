@@ -1,5 +1,6 @@
 package com.example.pkveksamen.controller;
 
+import com.example.pkveksamen.model.AlphaRole;
 import com.example.pkveksamen.model.Employee;
 import com.example.pkveksamen.model.EmployeeRole;
 import com.example.pkveksamen.service.EmployeeService;
@@ -32,6 +33,7 @@ public class EmployeeController {
     public String createEmployee(Model model) {
         model.addAttribute("employee", new Employee());
         model.addAttribute("roles", EmployeeRole.values());
+        model.addAttribute("skills", AlphaRole.values());
         return "create-employee";
     }
 

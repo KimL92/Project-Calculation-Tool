@@ -49,6 +49,23 @@
         </a>
     </div>
 
+    <!-- Kontrol bar med knap til at se medlemmer -->
+    <div class="all-members-control-bar">
+        <a th:if="${employeeRole != null
+                                and employeeRole == T(com.example.pkveksamen.model.EmployeeRole).PROJECT_MANAGER}"
+           th:href="@{/project/all-employees}"
+           class="all-employees-button"> View all employees
+
+            <!-- avatar-ikon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="7" r="4"></circle>
+                <path d="M5.5 20c1.5-4 5-6 6.5-6s5 2 6.5 6"></path>
+            </svg>
+
+        </a>
+    </div>
+
     <!-- Tabel der viser alle projekter -->
     <table class="project-table">
         <thead>
@@ -60,6 +77,7 @@
             <th>Deadline</th>
             <th>Duration</th>
             <th>Actions</th>
+            <th>View members</th>
         </tr>
         </thead>
         <tbody>
@@ -97,6 +115,10 @@
                        class="view-subproject-button">View subproject</a>
 
                 </div>
+            </td>
+            <td>
+                <a th:href="@{/project/employees}"
+                   class="view-project-members">View project members</a>
             </td>
         </tr>
         </tbody>

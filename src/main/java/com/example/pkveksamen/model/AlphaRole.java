@@ -29,4 +29,13 @@ public enum AlphaRole {
     public String getDisplayName() {
         return displayName;
     }
+
+    public static AlphaRole fromDisplayName(String displayName) {
+        for (AlphaRole role : AlphaRole.values()) {
+            if (role.getDisplayName().equalsIgnoreCase(displayName)) {
+                return role;
+            }
+        }
+        throw new IllegalArgumentException("No enum constant with display name " + displayName);
+    }
 }
