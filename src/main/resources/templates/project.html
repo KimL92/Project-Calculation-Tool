@@ -77,7 +77,11 @@
             <th>Deadline</th>
             <th>Duration</th>
             <th>Actions</th>
-            <th>View members</th>
+            <th th:if="${employeeRole != null
+           and employeeRole == T(com.example.pkveksamen.model.EmployeeRole).PROJECT_MANAGER}">
+                View members
+            </th>
+
         </tr>
         </thead>
         <tbody>
@@ -117,7 +121,9 @@
                 </div>
             </td>
             <td>
-                <a th:href="@{/project/employees/{employeeId}/{projectId}(employeeId=${currentEmployeeId}, projectId=${project.projectID})}"
+                <a th:if="${employeeRole != null
+                   and employeeRole == T(com.example.pkveksamen.model.EmployeeRole).PROJECT_MANAGER}"
+                   th:href="@{/project/employees/{employeeId}/{projectId}(employeeId=${currentEmployeeId}, projectId=${project.projectID})}"
                    class="view-project-members">View project members</a>
             </td>
         </tr>

@@ -283,32 +283,4 @@ public class ProjectController {
         projectService.editSubProject(subProject);
         return "redirect:/project/subproject/list/" + projectId + "?employeeId=" + employeeId;
     }
-
-
-//    @GetMapping("/assign/{employeeId}/{projectId}")
-//    public String showAssignMemberForm(@PathVariable int employeeId,
-//                                       @PathVariable long projectId,
-//                                       Model model) {
-//
-//        Project project = projectService.getProjectById(projectId);
-//        List<Employee> teamMembers = projectService.getAllTeamMembers();
-//
-//        model.addAttribute("projectId", projectId);
-//        model.addAttribute("teamMembers", teamMembers);
-//        model.addAttribute("currentEmployeeId", employeeId);
-//
-//        return "assign-member";
-//    }
-//
-//
-//    @PostMapping("/assign/{employeeId}/{projectId}")
-//    public String assignMember(@PathVariable int employeeId,
-//                               @PathVariable long projectId,
-//                               @RequestParam int selectedEmployeeId) {
-//
-//        projectService.assignEmployeeToProject(selectedEmployeeId, projectId);
-//
-//        return "redirect:/project/edit/" + employeeId + "/" + projectId;
-//    }
-
 }
