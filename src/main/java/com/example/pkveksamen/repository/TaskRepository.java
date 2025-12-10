@@ -281,6 +281,11 @@ public class TaskRepository {
         jdbcTemplate.update(sql, subTaskStatus, subTaskId);
     }
 
+    public void updateSubTaskNote(long subTaskId, String subTaskNote) {
+        String sql = "UPDATE sub_task SET sub_task_note = ? WHERE sub_task_id = ?";
+        jdbcTemplate.update(sql, subTaskNote, subTaskId);
+    }
+
     public void updateSubTaskPriority(long subTaskId, String subTaskPriority) {
         String sql = "UPDATE sub_task SET sub_task_priority = ? WHERE sub_task_id = ?";
         jdbcTemplate.update(sql, subTaskPriority, subTaskId);

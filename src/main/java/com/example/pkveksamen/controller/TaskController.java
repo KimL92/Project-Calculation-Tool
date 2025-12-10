@@ -501,6 +501,44 @@ public class TaskController {
 
         return "redirect:/project/subtask/liste/" + projectId + "/" + subProjectId + "/" + taskId + "/" + employeeId;
     }
+
+    @GetMapping("/project/subtask/note/{employeeId}/{projectId}/{subProjectId}/{subTaskId}")
+    public String showSubTaskNoteForm(@PathVariable int employeeId,
+                                      @PathVariable long projectId,
+                                      @PathVariable long subProjectId,
+                                      @PathVariable long subTaskId,
+                                      @RequestParam("taskId") long taskId,
+                                      Model model) {
+
+        SubTask subTask = taskService.getSubTaskById(subTaskId);
+
+        model.addAttribute("subTask", subTask);
+        model.addAttribute("currentEmployeeId", employeeId);
+        model.addAttribute("currentProjectId", projectId);
+        model.addAttribute("currentSubProjectId", subProjectId);
+        model.addAttribute("currentTaskId", taskId);
+
+        Employee employee = employeeService.getEmployeeById(employeeId);
+        if (employee != null) {
+            model.addAttribute("username", employee.getUsername());
+            model.addAttribute("employeeRole", employee.getRole());
+        }
+
+        return "subtask-note";
+    }
+
+    @PostMapping("/project/subtask/note/{employeeId}/{projectId}/{subProjectId}/{subTaskId}")
+    public String saveSubTaskNote(@PathVariable int employeeId,
+                                  @PathVariable long projectId,
+                                  @PathVariable long subProjectId,
+                                  @PathVariable long subTaskId,
+                                  @RequestParam("taskId") long taskId,
+                                  @RequestParam("subTaskNote") String subTaskNote) {
+
+        taskService.updateSubTaskNote(subTaskId, subTaskNote);
+
+        return "redirect:/project/subtask/liste/" + projectId + "/" + subProjectId + "/" + taskId + "/" + employeeId;
+    }
 }
 
 

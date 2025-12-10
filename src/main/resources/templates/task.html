@@ -146,13 +146,18 @@
 
             <!-- NOTE -->
             <td>
+                <div class="note-wrapper">
+                    <span th:if="${task.taskNote == null or #strings.isEmpty(task.taskNote)}" class="text-muted">No note</span>
+                    <span th:if="${task.taskNote != null and !#strings.isEmpty(task.taskNote)}"
+                          th:text="${task.taskNote}"></span>
+                </div>
                 <a th:if="${employeeRole == T(com.example.pkveksamen.model.EmployeeRole).TEAM_MEMBER}"
                    th:href="@{/project/task/note/{employeeId}/{projectId}/{subProjectId}/{taskId}(
                             employeeId=${currentEmployeeId},
                             projectId=${currentProjectId},
                             subProjectId=${currentSubProjectId},
                             taskId=${task.taskID})}"
-                   class="note-button">Add note</a>
+                   class="note-button">Add/Edit note</a>
             </td>
 
             <td>
