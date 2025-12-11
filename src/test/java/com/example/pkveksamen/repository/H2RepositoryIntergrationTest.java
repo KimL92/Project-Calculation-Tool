@@ -99,5 +99,82 @@ class H2RepositoryIntegrationTest {
             Integer invalidId = employeeRepository.validateLogin("mohamed.ali", "wrong_password");
             assertThat(invalidId).isEqualTo(0);
         }
+        @Nested
+        @DisplayName("Project Repository Tests")
+        class ProjectRepositoryTests {
+
+            @Test
+            @DisplayName("Skal oprette projekt")
+            void shouldCreateProject() {
+                Integer employeeId = createTestEmployee();
+
+                projectRepository.createProject(
+                        "E-commerce Platform",
+                        "Build online shop",
+                        LocalDate.of(2024, 1, 1),
+                        LocalDate.of(2024, 12, 31),
+                        "Acme Corp",
+                        employeeId
+                );
+
+                List<Project> projects = projectRepository.showProjectsByEmployeeId(employeeId);
+                assertThat(projects).hasSize(1);
+                assertThat(projects.get(0).getProjectName()).isEqualTo("E-commerce Platform");
+            }
+
+            @Test
+            @DisplayName("Skal finde projekt by ID")
+            void shouldFindProjectById() {
+                Integer employeeId = createTestEmployee();
+                projectRepository.createProject(
+                        "Test Project", "Description",
+                        LocalDate.now(), LocalDate.now().plusDays(30),
+                        "Customer", employeeId
+                );
+
+                List<Project> projects = projectRepository.showProjectsByEmployeeId(employeeId);
+                long projectId = projects.get(0).getProjectID();
+
+                Project project = projectRepository.getProjectById(projectId);
+
+                assertThat(project).isNotNull();
+                assertThat(project.getProjectName()).isEqualTo("Test Project");
+            }
+
+            // ... (resten af Project tests)
+        }
+
+        @Nested
+        @DisplayName("SubProject Repository Tests")
+        class SubProjectRepositoryTests {
+
+            @Test
+            @DisplayName("Skal oprette subproject")
+            void shouldCreateSubProject() {
+                long projectId = createTestProject();
+
+                SubProject subProject = new SubProject();
+                subProject.setSubProjectName("Authentication Module");
+                subProject.setSubProjectDescription("User login system");
+                subProject.setSubProjectStartDate(LocalDate.of(2024, 2, 1));
+                subProject.setSubProjectDeadline(LocalDate.of(2024, 3, 31));
+                subProject.setSubProjectDuration(40);
+
+                projectRepository.saveSubProject(subProject, projectId);
+
+                List<SubProject> subProjects = projectRepository.showSubProjectsByProjectId(projectId);
+                assertThat(subProjects).hasSize(1);
+                assertThat(subProjects.get(0).getSubProjectName()).isEqualTo("Authentication Module");
+            }
+
+            // ... (resten af SubProject tests)
+        }
+
+
+
+
     }
+
+
 }
+
