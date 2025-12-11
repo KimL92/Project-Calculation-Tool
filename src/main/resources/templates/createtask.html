@@ -12,6 +12,7 @@
 </div>
 
 <div class="form-container">
+    <div th:if="${error}" class="error-banner" th:text="${error}"></div>
     <form th:action="@{/project/task/createtask/{employeeId}/{projectId}/{subProjectId}(employeeId=${currentEmployeeId}, projectId=${currentProjectId}, subProjectId=${currentSubProjectId})}"
           th:object="${task}" method="post" class="project-form" id="taskForm">
         <div class="form-group">
