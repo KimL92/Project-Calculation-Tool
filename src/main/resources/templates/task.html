@@ -146,13 +146,19 @@
 
             <!-- NOTE -->
             <td>
+                <!-- Team member: Vis knap til at redigere note -->
                 <a th:if="${employeeRole == T(com.example.pkveksamen.model.EmployeeRole).TEAM_MEMBER}"
                    th:href="@{/project/task/note/{employeeId}/{projectId}/{subProjectId}/{taskId}(
-                            employeeId=${currentEmployeeId},
-                            projectId=${currentProjectId},
-                            subProjectId=${currentSubProjectId},
-                            taskId=${task.taskID})}"
-                   class="note-button">Add note</a>
+                employeeId=${currentEmployeeId},
+                projectId=${currentProjectId},
+                subProjectId=${currentSubProjectId},
+                taskId=${task.taskID})}"
+                   class="note-button">Add/edit note</a>
+
+                <!-- Project manager: Vis noten som læsevenlig tekst -->
+                <span th:if="${employeeRole == T(com.example.pkveksamen.model.EmployeeRole).PROJECT_MANAGER}"
+                      th:text="${task.taskNote != null and task.taskNote != '' ? task.taskNote : 'No note'}">
+    </span>
             </td>
 
             <td>

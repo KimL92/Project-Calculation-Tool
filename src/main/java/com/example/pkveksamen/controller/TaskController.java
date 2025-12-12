@@ -133,65 +133,42 @@ public class TaskController {
 
         Project project = projectService.getProjectById(projectId);
         SubProject subProject = projectService.getSubProjectBySubProjectID(subProjectId);
-        if (project != null && task.getTaskStartDate() != null && project.getProjectStartDate() != null &&
-                task.getTaskStartDate().isBefore(project.getProjectStartDate())) {
-            model.addAttribute("error", "Task start date must be within project period");
-            model.addAttribute("task", task);
-            List<Employee> projectMembers = projectService.getProjectMembers(projectId);
-            for (Employee member : projectMembers) {
-                member.setAlphaRoles(employeeService.getEmployeeById(member.getEmployeeId()).getAlphaRoles());
-            }
-            model.addAttribute("teamMembers", projectMembers);
-            model.addAttribute("currentEmployeeId", employeeId);
-            model.addAttribute("currentProjectId", projectId);
-            model.addAttribute("currentSubProjectId", subProjectId);
-            return "createtask";
-        }
-        if (project != null && task.getTaskDeadline() != null && project.getProjectDeadline() != null &&
-                task.getTaskDeadline().isAfter(project.getProjectDeadline())) {
-            model.addAttribute("error", "Task deadline must be within project period");
-            model.addAttribute("task", task);
-            List<Employee> projectMembers = projectService.getProjectMembers(projectId);
-            for (Employee member : projectMembers) {
-                member.setAlphaRoles(employeeService.getEmployeeById(member.getEmployeeId()).getAlphaRoles());
-            }
-            model.addAttribute("teamMembers", projectMembers);
-            model.addAttribute("currentEmployeeId", employeeId);
-            model.addAttribute("currentProjectId", projectId);
-            model.addAttribute("currentSubProjectId", subProjectId);
-            return "createtask";
-        }
-        if (subProject != null && task.getTaskStartDate() != null && subProject.getSubProjectStartDate() != null &&
-                task.getTaskStartDate().isBefore(subProject.getSubProjectStartDate())) {
-            model.addAttribute("error", "Task start date must be within subproject period (set in the subproject)");
-            model.addAttribute("task", task);
-            List<Employee> projectMembers = projectService.getProjectMembers(projectId);
-            for (Employee member : projectMembers) {
-                member.setAlphaRoles(employeeService.getEmployeeById(member.getEmployeeId()).getAlphaRoles());
-            }
-            model.addAttribute("teamMembers", projectMembers);
-            model.addAttribute("currentEmployeeId", employeeId);
-            model.addAttribute("currentProjectId", projectId);
-            model.addAttribute("currentSubProjectId", subProjectId);
-            return "createtask";
-        }
-        if (subProject != null && task.getTaskDeadline() != null && subProject.getSubProjectDeadline() != null &&
-                task.getTaskDeadline().isAfter(subProject.getSubProjectDeadline())) {
-            model.addAttribute("error", "Task deadline must be within subproject period (set in the subproject)");
-            model.addAttribute("task", task);
-            List<Employee> projectMembers = projectService.getProjectMembers(projectId);
-            for (Employee member : projectMembers) {
-                member.setAlphaRoles(employeeService.getEmployeeById(member.getEmployeeId()).getAlphaRoles());
-            }
-            model.addAttribute("teamMembers", projectMembers);
-            model.addAttribute("currentEmployeeId", employeeId);
-            model.addAttribute("currentProjectId", projectId);
-            model.addAttribute("currentSubProjectId", subProjectId);
-            return "createtask";
-        }
+
+// Debug - fjern denne linje efter test
+        System.out.println("DEBUG - SubProjectId: " + subProjectId + ", SubProject: " + subProject);
+
+        String error = null;
+
+// Valider deadline ikke er før start date FØRST
         if (task.getTaskStartDate() != null && task.getTaskDeadline() != null &&
                 task.getTaskDeadline().isBefore(task.getTaskStartDate())) {
-            model.addAttribute("error", "Task deadline cannot be before start date");
+            error = "Task deadline cannot be before start date";
+        }
+// Hvis subProjectId er sat (større end 0) OG vi har et subProject object
+        else if (subProjectId > 0 && subProject != null) {
+            // Valider kun mod subproject
+            if (task.getTaskStartDate() != null && subProject.getSubProjectStartDate() != null &&
+                    task.getTaskStartDate().isBefore(subProject.getSubProjectStartDate())) {
+                error = "Task start date must be within subproject period (set in the subproject)";
+            } else if (task.getTaskDeadline() != null && subProject.getSubProjectDeadline() != null &&
+                    task.getTaskDeadline().isAfter(subProject.getSubProjectDeadline())) {
+                error = "Task deadline must be within subproject period (set in the subproject)";
+            }
+        }
+// Ellers valider mod project (kun hvis IKKE i subproject)
+        else if (subProjectId <= 0 || subProject == null) {
+            if (project != null && task.getTaskStartDate() != null && project.getProjectStartDate() != null &&
+                    task.getTaskStartDate().isBefore(project.getProjectStartDate())) {
+                error = "Task start date must be within project period";
+            } else if (project != null && task.getTaskDeadline() != null && project.getProjectDeadline() != null &&
+                    task.getTaskDeadline().isAfter(project.getProjectDeadline())) {
+                error = "Task deadline must be within project period";
+            }
+        }
+
+// Hvis der er en fejl, forbered error view
+        if (error != null) {
+            model.addAttribute("error", error);
             model.addAttribute("task", task);
             List<Employee> projectMembers = projectService.getProjectMembers(projectId);
             for (Employee member : projectMembers) {

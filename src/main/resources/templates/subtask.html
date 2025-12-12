@@ -143,8 +143,7 @@
             <td>
                 <div class="note-wrapper">
                     <span th:if="${subTask.subTaskNote == null or #strings.isEmpty(subTask.subTaskNote)}" class="text-muted">No note</span>
-                    <span th:if="${subTask.subTaskNote != null and !#strings.isEmpty(subTask.subTaskNote)}"
-                          th:text="${subTask.subTaskNote}"></span>
+                    <span th:if="${subTask.subTaskNote != null and !#strings.isEmpty(subTask.subTaskNote)}"></span>
                 </div>
                 <a th:if="${employeeRole == T(com.example.pkveksamen.model.EmployeeRole).TEAM_MEMBER}"
                    th:href="@{/project/subtask/note/{employeeId}/{projectId}/{subProjectId}/{subTaskId}(
