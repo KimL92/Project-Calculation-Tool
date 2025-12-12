@@ -7,7 +7,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -170,11 +169,122 @@ class H2RepositoryIntegrationTest {
             // ... (resten af SubProject tests)
         }
 
+        @Nested
+        @DisplayName("Task Repository Tests")
+        class TaskRepositoryTests {
 
+            @Test
+            @DisplayName("Skal oprette task")
+            void shouldCreateTask() {
+                Integer employeeId = createTeamMember();
+                long subProjectId = createTestSubProject();
 
+                taskRepository.createTask(
+                        employeeId,
+                        subProjectId,
+                        "Implement Login",
+                        "Create login endpoint",
+                        Status.NOT_STARTED,
+                        LocalDate.now(),
+                        LocalDate.now().plusDays(7),
+                        10,
+                        Priority.HIGH,
+                        "Use JWT tokens"
+                );
 
+                List<Task> tasks = taskRepository.showTasksBySubProjectId(subProjectId);
+                assertThat(tasks).hasSize(1);
+                assertThat(tasks.get(0).getTaskName()).isEqualTo("Implement Login");
+            }
+
+            // ... (resten af Task tests)
+        }
+
+        @Nested
+        @DisplayName("SubTask Repository Tests")
+        class SubTaskRepositoryTests {
+
+            @Test
+            @DisplayName("Skal oprette subtask")
+            void shouldCreateSubTask() {
+                long taskId = createTestTask();
+
+                taskRepository.createSubTask(
+                        taskId,
+                        "Write unit tests",
+                        "Create tests for login",
+                        Status.NOT_STARTED.getDisplayName(),
+                        LocalDate.now(),
+                        LocalDate.now().plusDays(2),
+                        3,
+                        Priority.MEDIUM.getDisplayName(),
+                        "Use JUnit"
+                );
+
+                List<SubTask> subTasks = taskRepository.showSubTasksByTaskId(taskId);
+                assertThat(subTasks).hasSize(1);
+                assertThat(subTasks.get(0).getSubTaskName()).isEqualTo("Write unit tests");
+            }
+
+            // ... (resten af SubTask tests)
+        }
+
+// Helper metoder
+
+        private Integer createTestEmployee() {
+            employeeRepository.createEmployee(
+                    "allan.manager",
+                    "password123",
+                    "allan@alphasolutions.dk",
+                    EmployeeRole.PROJECT_MANAGER.getDisplayName(),
+                    AlphaRole.ProjectManager.getDisplayName()
+            );
+            return employeeRepository.getAllEmployees().get(0).getEmployeeId();
+        }
+
+        private Integer createTeamMember() {
+            employeeRepository.createEmployee(
+                    "mohamed.dev",
+                    "password123",
+                    "mohamed@alphasolutions.dk",
+                    EmployeeRole.TEAM_MEMBER.getDisplayName(),
+                    AlphaRole.FullstackDeveloper.getDisplayName()
+            );
+            return employeeRepository.getAllTeamMembers().get(0).getEmployeeId();
+        }
+
+        private long createTestProject() {
+            Integer employeeId = createTestEmployee();
+            projectRepository.createProject(
+                    "Test Project", "Description",
+                    LocalDate.now(), LocalDate.now().plusDays(90),
+                    "Test Customer", employeeId
+            );
+            return projectRepository.showProjectsByEmployeeId(employeeId).get(0).getProjectID();
+        }
+
+        private long createTestSubProject() {
+            long projectId = createTestProject();
+            SubProject sp = new SubProject();
+            sp.setSubProjectName("Test SubProject");
+            sp.setSubProjectDescription("Description");
+            sp.setSubProjectStartDate(LocalDate.now());
+            sp.setSubProjectDeadline(LocalDate.now().plusDays(30));
+            sp.setSubProjectDuration(20);
+            projectRepository.saveSubProject(sp, projectId);
+            return projectRepository.showSubProjectsByProjectId(projectId).get(0).getSubProjectID();
+        }
+
+        private long createTestTask() {
+            Integer employeeId = createTeamMember();
+            long subProjectId = createTestSubProject();
+            taskRepository.createTask(
+                    employeeId, subProjectId, "Test Task", "Description",
+                    Status.NOT_STARTED, LocalDate.now(), LocalDate.now().plusDays(7),
+                    5, Priority.MEDIUM, "Test note"
+            );
+            return taskRepository.showTasksBySubProjectId(subProjectId).get(0).getTaskID();
+        }
     }
-
-
 }
 
