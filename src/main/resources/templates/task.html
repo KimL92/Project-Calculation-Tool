@@ -155,10 +155,17 @@
                 taskId=${task.taskID})}"
                    class="note-button">Add/edit note</a>
 
-                <!-- Project manager: Vis noten som læsevenlig tekst -->
-                <span th:if="${employeeRole == T(com.example.pkveksamen.model.EmployeeRole).PROJECT_MANAGER}"
-                      th:text="${task.taskNote != null and task.taskNote != '' ? task.taskNote : 'No note'}">
-    </span>
+                <!-- Project manager: Vis noten som læsevenlig tekst med auto-update -->
+                <div th:if="${employeeRole == T(com.example.pkveksamen.model.EmployeeRole).PROJECT_MANAGER}"
+                     class="note-wrapper"
+                     th:attr="data-task-id=${task.taskID}"
+                     data-note-type="task">
+                    <span class="note-display">
+                        <span th:if="${task.taskNote == null or #strings.isEmpty(task.taskNote)}" class="text-muted">No note</span>
+                        <span th:if="${task.taskNote != null and !#strings.isEmpty(task.taskNote)}"
+                              th:text="${task.taskNote}"></span>
+                    </span>
+                </div>
             </td>
 
             <td>

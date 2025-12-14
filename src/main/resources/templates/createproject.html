@@ -62,17 +62,6 @@
     </div>
     -->
 
-        <div class="form-group">
-            <h3>Assign to</h3>
-            <label for="selectedEmployeeId">Choose team member:</label>
-            <select id="selectedEmployeeId" name="selectedEmployeeId">
-                <option th:each="member : ${teamMembers}"
-                        th:value="${member.employeeId}"
-                        th:text="${member.username}">
-                    Member
-                </option>
-            </select>
-        </div>
 
     <button type="submit">Create project</button>
 

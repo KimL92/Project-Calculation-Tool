@@ -5,11 +5,19 @@ import com.example.pkveksamen.repository.TaskRepository;
 import com.example.pkveksamen.service.EmployeeService;
 import com.example.pkveksamen.service.ProjectService;
 import com.example.pkveksamen.service.TaskService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import jakarta.servlet.http.HttpSession;
+import jakarta.annotation.PostConstruct;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.time.temporal.ChronoUnit;
 
 @Controller
@@ -19,6 +27,10 @@ public class TaskController {
     private final EmployeeService employeeService;
     private final ProjectService projectService;
     private final TaskRepository taskRepository;
+    
+    // Shared cache for updated notes across all sessions
+    private static final Set<Long> updatedTaskNotes = ConcurrentHashMap.newKeySet();
+    private static final Set<Long> updatedSubTaskNotes = ConcurrentHashMap.newKeySet();
 
     public TaskController(TaskService taskService, EmployeeService employeeService, ProjectService projectService, TaskRepository taskRepository) {
         this.taskService = taskService;
@@ -48,16 +60,40 @@ public class TaskController {
     public String showTaskByEmployeeId(@PathVariable int employeeId,
                                        @PathVariable long projectId,
                                        @PathVariable long subProjectId,
-                                       Model model) {
+                                       Model model,
+                                       HttpSession session) {
         Employee currentEmployee = employeeService.getEmployeeById(employeeId);
         List<Task> taskList;
-
+        
         if (isManager(currentEmployee)) {
             taskList = taskService.showTasksBySubProjectId(subProjectId);
+            
+            // Check for updated notes in shared cache and refresh those tasks
+            // Store which notes we've seen in this session
+            @SuppressWarnings("unchecked")
+            Set<Long> seenTaskNotes = (Set<Long>) session.getAttribute("seenTaskNotes");
+            if (seenTaskNotes == null) {
+                seenTaskNotes = new HashSet<>();
+                session.setAttribute("seenTaskNotes", seenTaskNotes);
+            }
+            
+            // Refresh tasks that have been updated
+            for (Task task : taskList) {
+                long taskId = task.getTaskID();
+                if (updatedTaskNotes.contains(taskId)) {
+                    // Refresh task from database to get latest note
+                    Task updatedTask = taskService.getTaskById(taskId);
+                    task.setTaskNote(updatedTask.getTaskNote());
+                    seenTaskNotes.add(taskId);
+                }
+            }
+            
+            // Remove seen notes from the shared cache
+            updatedTaskNotes.removeAll(seenTaskNotes);
         } else {
             taskList = taskService.showTaskByEmployeeId(employeeId);
         }
-
+        
         model.addAttribute("taskList", taskList);
         model.addAttribute("currentProjectId", projectId);
         model.addAttribute("currentSubProjectId", subProjectId);
@@ -381,10 +417,37 @@ public class TaskController {
                                        @PathVariable long projectId,
                                        @PathVariable long subProjectId,
                                        @PathVariable long taskId,
-                                       Model model) {
+                                       Model model,
+                                       HttpSession session) {
 
         // Ret dette: Hent subtasks for den specifikke task, ikke alle employee's subtasks
         List<SubTask> subTaskList = taskService.showSubTasksByTaskId(taskId);
+
+        Employee employee = employeeService.getEmployeeById(employeeId);
+        if (employee != null && isManager(employee)) {
+            // Check for updated notes in shared cache and refresh those subtasks
+            // Store which notes we've seen in this session
+            @SuppressWarnings("unchecked")
+            Set<Long> seenSubTaskNotes = (Set<Long>) session.getAttribute("seenSubTaskNotes");
+            if (seenSubTaskNotes == null) {
+                seenSubTaskNotes = new HashSet<>();
+                session.setAttribute("seenSubTaskNotes", seenSubTaskNotes);
+            }
+            
+            // Refresh subtasks that have been updated
+            for (SubTask subTask : subTaskList) {
+                long subTaskId = subTask.getSubTaskId();
+                if (updatedSubTaskNotes.contains(subTaskId)) {
+                    // Refresh subtask from database to get latest note
+                    SubTask updatedSubTask = taskService.getSubTaskById(subTaskId);
+                    subTask.setSubTaskNote(updatedSubTask.getSubTaskNote());
+                    seenSubTaskNotes.add(subTaskId);
+                }
+            }
+            
+            // Remove seen notes from the shared cache
+            updatedSubTaskNotes.removeAll(seenSubTaskNotes);
+        }
 
         model.addAttribute("subTaskList", subTaskList);
         model.addAttribute("currentProjectId", projectId);
@@ -393,7 +456,6 @@ public class TaskController {
         model.addAttribute("currentTaskId", taskId);
 
         // Add employee details for the header
-        Employee employee = employeeService.getEmployeeById(employeeId);
         if (employee != null) {
             model.addAttribute("username", employee.getUsername());
             model.addAttribute("employeeRole", employee.getRole());
@@ -673,6 +735,9 @@ public class TaskController {
 
         taskService.updateSubTaskNote(subTaskId, subTaskNote);
 
+        // Mark subtask note as updated in shared cache for all project managers to see
+        updatedSubTaskNotes.add(subTaskId);
+
         return "redirect:/project/subtask/liste/" + projectId + "/" + subProjectId + "/" + taskId + "/" + employeeId;
     }
 
@@ -708,7 +773,10 @@ public class TaskController {
 
         Task task = taskService.getTaskById(taskId);
         task.setTaskNote(taskNote);
-        taskService.updateTaskNote(taskId, taskNote); // du har allerede en edit-metode
+        taskService.updateTaskNote(taskId, taskNote);
+
+        // Mark task note as updated in shared cache for all project managers to see
+        updatedTaskNotes.add(taskId);
 
         return "redirect:/project/task/liste/" + projectId + "/" + subProjectId + "/" + employeeId;
     }
@@ -770,6 +838,7 @@ public class TaskController {
 
         return "redirect:/project/subtask/liste/" + projectId + "/" + subProjectId + "/" + taskId + "/" + employeeId;
     }
+
 }
 
 
