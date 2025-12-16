@@ -173,7 +173,7 @@ class ProjectControllerTest {
         when(employeeService.getAllEmployees()).thenReturn(employees);
 
         // Act
-        String viewName = projectController.showAllEmployees(1,model);
+        String viewName = projectController.showAllEmployees(1, model);
 
         // Assert
         assertEquals("view-all-employees", viewName);
