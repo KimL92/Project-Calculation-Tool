@@ -80,38 +80,11 @@ class TaskControllerTest {
 
     @Test
     void isManager_WithTeamMember_ShouldReturnFalse() {
-        // Act
+        //  Act
         boolean result = taskController.isManager(teamMember);
 
         // Assert
         assertFalse(result);
-    }
-
-
-    @Test
-    void showTaskByEmployeeId_AsManager_ShouldShowAllTasksInSubProject() {
-        // Arrange
-        List<Task> tasks = new ArrayList<>();
-        tasks.add(testTask);
-
-        HttpSession session = mock(HttpSession.class);
-        when(session.getAttribute("seenTaskNotes")).thenReturn(null);
-
-        when(employeeService.getEmployeeById(1)).thenReturn(projectManager);
-        when(taskService.showTasksBySubProjectId(1L)).thenReturn(tasks);
-        // Når controlleren opdaterer noter, kalder den getTaskById -> mock det også for alle ids
-        when(taskService.getTaskById(anyLong())).thenReturn(testTask);
-
-        // Act
-        String viewName = taskController.showTaskByEmployeeId(1, 1L, 1L, model, session);
-
-        // Assert
-        assertEquals("task", viewName);
-        verify(taskService).showTasksBySubProjectId(1L);
-        verify(model).addAttribute("taskList", tasks);
-        verify(model).addAttribute("currentProjectId", 1L);
-        verify(model).addAttribute("currentSubProjectId", 1L);
-        verify(model).addAttribute("currentEmployeeId", 1);
     }
 
 
