@@ -73,8 +73,9 @@ cd projektmappen
 
 ---
 
-## Direkte link:
-:project-calculationstool-egg6b5aphbgecyh4.norwayeast-01.azurewebsites.net
+## Live version
+[Project Calculation Tool](https://project-calculationstool-egg6b5aphbgecyh4.norwayeast-01.azurewebsites.net)
+
 
 ## 👥 Contributors 
 
