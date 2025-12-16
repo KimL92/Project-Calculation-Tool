@@ -1,56 +1,89 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
+# ------------------------------------------------------------
+# GitHub Actions workflow
+# Formål: Bygge en Java (Maven) JAR og deploye den til Azure Web App
+# Projekt: project-calculationstool
+# ------------------------------------------------------------
 
+# Navnet på workflowet (vises i GitHub Actions)
 name: Build and deploy JAR app to Azure Web App - project-calculationstool
 
+# Definerer hvornår workflowet skal køre
 on:
+  # Kører automatisk ved push til main-branch
   push:
     branches:
       - main
+
+  # Gør det muligt at starte workflowet manuelt fra GitHub UI
   workflow_dispatch:
 
+# Jobs-sektionen indeholder alle jobs i workflowet
 jobs:
+
+  # ----------------------------------------------------------
+  # JOB 1: BUILD
+  # Ansvar: Bygge JAR-filen og uploade den som artifact
+  # ----------------------------------------------------------
   build:
+    # Operativsystem for GitHub runner
     runs-on: ubuntu-latest
+
+    # Rettigheder – nødvendigt for at læse repository-indhold
     permissions:
-      contents: read #This is required for actions/checkout
+      contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      # Henter kildekoden fra GitHub-repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
+      # Installerer og konfigurerer Java 17
       - name: Set up Java version
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'microsoft'
 
+      # Bygger projektet med Maven
+      # Tests springes over for hurtigere deployment
       - name: Build with Maven (skip tests for deploy)
         env:
-          PROD_USERNAME: ${{secrets.PROD_USERNAME}}
-          PROD_PASSWORD: ${{secrets.PROD_PASSWORD}}
-          PROD_DATABASE_URL: ${{secrets.PROD_DATABASE_URL}}
-          
+          # Miljøvariabler hentes sikkert fra GitHub Secrets
+          PROD_USERNAME: ${{ secrets.PROD_USERNAME }}
+          PROD_PASSWORD: ${{ secrets.PROD_PASSWORD }}
+          PROD_DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
         run: mvn -B -DskipTests package
 
+      # Gemmer den genererede JAR-fil som artifact
+      # Artifact bruges i deploy-jobbet
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: java-app
           path: '${{ github.workspace }}/target/*.jar'
 
+  # ----------------------------------------------------------
+  # JOB 2: DEPLOY
+  # Ansvar: Deploye JAR-filen til Azure Web App
+  # ----------------------------------------------------------
   deploy:
-    runs-on: ubuntu-latest
+    # Kører først når build-jobbet er færdigt
     needs: build
+    runs-on: ubuntu-latest
+
+    # Rettigheder til Azure login via OIDC (JWT)
     permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
-  
+      id-token: write
+      contents: read
+
     steps:
+      # Downloader JAR-artifact fra build-jobbet
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: java-app
-      
+
+      # Logger ind i Azure ved hjælp af secrets
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -58,12 +91,16 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_EF290FCE3F674DF796AC792659E27401 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_A9A3C6117F0345ACAB28E282DD82298D }}
 
+      # Deployer JAR-filen til Azure Web App
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
+          # Navnet på Azure Web App
           app-name: 'project-calculationstool'
-          slot-name: 'Production'
-          package: '*.jar'
 
-          
+          # Deployment slot (Production)
+          slot-name: 'Production'
+
+          # JAR-filen der skal deployes
+          package: '*.jar'

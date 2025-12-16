@@ -1,28 +1,59 @@
+# ------------------------------------------------------------
+# GitHub Actions workflow
+# Formål: Køre statisk kodeanalyse med JetBrains Qodana
+# ------------------------------------------------------------
+
+# Navnet på workflowet (vises i GitHub Actions)
 name: Qodana
+
+# Definerer hvornår workflowet skal køre
 on:
+  # Gør det muligt at starte analysen manuelt
   workflow_dispatch:
+
+  # Kører automatisk ved pull requests
   pull_request:
+
+  # Kører ved push til main og release-branches
   push:
     branches:
       - main
       - 'releases/*'
 
+# Jobs-sektionen indeholder alle jobs i workflowet
 jobs:
+
+  # ----------------------------------------------------------
+  # JOB: QODANA
+  # Ansvar: Køre statisk kodeanalyse og rapportere resultater
+  # ----------------------------------------------------------
   qodana:
+    # Operativsystem for GitHub runner
     runs-on: ubuntu-latest
+
+    # Rettigheder som Qodana bruger til at rapportere resultater
     permissions:
-      contents: write
-      pull-requests: write
-      checks: write
+      contents: write        # Kan opdatere repo-indhold (fx annotations)
+      pull-requests: write   # Kan kommentere på pull requests
+      checks: write          # Kan oprette status checks i GitHub
+
     steps:
-      - uses: actions/checkout@v3
+      # Henter hele Git-repository (inkl. historik)
+      # fetch-depth: 0 er nødvendigt for korrekt analyse
+      - name: Checkout repository
+        uses: actions/checkout@v3
         with:
+          # Sikrer at den korrekte commit analyseres ved pull requests
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
 
+      # Kører Qodana statisk kodeanalyse
       - name: Qodana Scan
         uses: JetBrains/qodana-action@v2025.2
         with:
+          # pr-mode: false betyder at analysen kører på hele projektet
+          # og ikke kun ændringer i pull request
           pr-mode: false
         env:
+          # Token til autentificering mod Qodana Cloud
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
