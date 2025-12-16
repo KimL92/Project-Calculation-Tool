@@ -63,14 +63,19 @@ Når teammedlem ændrer en task-status, bliver ændringen gemt i databasen og ka
 
 ---
 
-## 📦 Installation & Kørsel
+## 📦 Installation
 
-### 1. Klon projektet
+### 1. Klon projektet eller kør den
 ``bash
 git clone https://github.com/KimL92/Project-Calculation-Tool.git
 cd projektmappen
 
+
 ---
+
+## Live version
+[Project Calculation Tool](https://project-calculationstool-egg6b5aphbgecyh4.norwayeast-01.azurewebsites.net)
+
 
 ## 👥 Contributors 
 
