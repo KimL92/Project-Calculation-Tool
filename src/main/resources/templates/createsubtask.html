@@ -15,7 +15,7 @@
         <h1>Create new subtask</h1>
 
         <div class="user-info">
-            <span th:text="${username != null ? username : 'User'} + ' (' + (employeeRole != null ? employeeRole.displayName : '') + ')'"></span>
+            <span th:text="${username} + ' (' + ${employeeRole.displayName} + ')'"></span>
 
             <form th:action="@{/logout}" method="post">
                 <button type="submit" class="logout-button">

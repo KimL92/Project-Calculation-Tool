@@ -795,7 +795,7 @@ public class TaskController {
         return "redirect:/project/task/liste/" + projectId + "/" + subProjectId + "/" + employeeId;
     }
 
-    @PostMapping("/project/task/updatepriority/{taskId}")
+    @PostMapping("/project/task/updatetaskpriority/{taskId}")
     public String updateTaskPriority(
             @PathVariable long taskId,
             @RequestParam("taskPriority") String taskPriority,
