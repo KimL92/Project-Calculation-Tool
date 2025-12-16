@@ -1,5 +1,6 @@
-package com.example.pkveksamen.e2e;
+package com.example.pkveksamen.end2end;
 
+import com.example.pkveksamen.model.AlphaRole;
 import com.example.pkveksamen.model.Employee;
 import com.example.pkveksamen.model.EmployeeRole;
 import com.example.pkveksamen.model.Project;
@@ -14,7 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -40,6 +46,7 @@ class ProjectFlowE2ETest {
     private int port;
 
     private final TestRestTemplate restTemplate;
+    private final JdbcTemplate jdbcTemplate;
     private final EmployeeRepository employeeRepository;
     private final ProjectRepository projectRepository;
     private final TaskRepository taskRepository;
@@ -49,10 +56,12 @@ class ProjectFlowE2ETest {
      */
     @Autowired
     public ProjectFlowE2ETest(TestRestTemplate restTemplate,
+                              JdbcTemplate jdbcTemplate,
                               EmployeeRepository employeeRepository,
                               ProjectRepository projectRepository,
                               TaskRepository taskRepository) {
         this.restTemplate = restTemplate;
+        this.jdbcTemplate = jdbcTemplate;
         this.employeeRepository = employeeRepository;
         this.projectRepository = projectRepository;
         this.taskRepository = taskRepository;
@@ -60,14 +69,24 @@ class ProjectFlowE2ETest {
 
     @BeforeEach
     void cleanDb() {
-        // Hvis I har "deleteAll()" metoder, så brug dem.
-        // Ellers kan I rydde med simple SQL-calls i repositories.
-        taskRepository.deleteAllSubTasks();
-        taskRepository.deleteAllTasks();
-        projectRepository.deleteAllSubProjects();
-        projectRepository.deleteAllProjectEmployees();
-        projectRepository.deleteAllProjects();
-        employeeRepository.deleteAllEmployees();
+        // Rydder alle tabeller så testen starter fra et kendt nulpunkt
+        jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY FALSE");
+        jdbcTemplate.execute("TRUNCATE TABLE sub_task");
+        jdbcTemplate.execute("TRUNCATE TABLE task");
+        jdbcTemplate.execute("TRUNCATE TABLE sub_project");
+        jdbcTemplate.execute("TRUNCATE TABLE project_employee");
+        jdbcTemplate.execute("TRUNCATE TABLE project");
+        jdbcTemplate.execute("TRUNCATE TABLE employee_role");
+        jdbcTemplate.execute("TRUNCATE TABLE employee");
+        jdbcTemplate.execute("TRUNCATE TABLE role");
+        jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY TRUE");
+
+        jdbcTemplate.execute("ALTER TABLE employee ALTER COLUMN employee_id RESTART WITH 1");
+        jdbcTemplate.execute("ALTER TABLE role ALTER COLUMN role_id RESTART WITH 1");
+        jdbcTemplate.execute("ALTER TABLE project ALTER COLUMN project_id RESTART WITH 1");
+        jdbcTemplate.execute("ALTER TABLE sub_project ALTER COLUMN sub_project_id RESTART WITH 1");
+        jdbcTemplate.execute("ALTER TABLE task ALTER COLUMN task_id RESTART WITH 1");
+        jdbcTemplate.execute("ALTER TABLE sub_task ALTER COLUMN sub_task_id RESTART WITH 1");
     }
 
     @Test
@@ -77,13 +96,11 @@ class ProjectFlowE2ETest {
         // 1) Arrange: opret brugere direkte i DB (hurtigt og stabilt)
         //    (Login/session er ikke en del af jeres usecase her)
         // ---------------------------------------------------------
-        long pmId = employeeRepository.createEmployee(
-                "allan", "pw", "allan@mail.dk", EmployeeRole.PROJECT_MANAGER.name(), "Backend Dev"
-        );
+        long pmId = createEmployee("allan", "pw", "allan@mail.dk",
+                EmployeeRole.PROJECT_MANAGER, AlphaRole.ProjectManager);
 
-        long tmId = employeeRepository.createEmployee(
-                "mohamed", "pw", "mohamed@mail.dk", EmployeeRole.TEAM_MEMBER.name(), "UI/UX Designer"
-        );
+        long tmId = createEmployee("mohamed", "pw", "mohamed@mail.dk",
+                EmployeeRole.TEAM_MEMBER, AlphaRole.UXDesigner);
 
         // ---------------------------------------------------------
         // 2) PM opretter projekt via HTTP (POST)
@@ -131,7 +148,7 @@ class ProjectFlowE2ETest {
         // 3) Tilføj team member til projekt (DB relation project_employee)
         //    (Hvis I har endpoint til det, kan det også gøres via HTTP)
         // ---------------------------------------------------------
-        projectRepository.addEmployeeToProject(projectId, tmId);
+        projectRepository.addEmployeeToProject((int) tmId, projectId);
 
         // ---------------------------------------------------------
         // 4) PM opretter subproject via HTTP
@@ -211,7 +228,11 @@ class ProjectFlowE2ETest {
         // 6) TEAM MEMBER opdaterer status via HTTP
         //    I har form action: /project/task/updatestatus/{taskId}
         // ---------------------------------------------------------
-        String updateStatusBody = "taskStatus=IN_PROGRESS";
+        String updateStatusBody =
+                "taskStatus=IN_PROGRESS" +
+                        "&employeeId=" + tmId +
+                        "&projectId=" + projectId +
+                        "&subProjectId=" + subProjectId;
 
         ResponseEntity<String> updateStatusResp = restTemplate.exchange(
                 baseUrl("/project/task/updatestatus/" + taskId),
@@ -251,9 +272,9 @@ class ProjectFlowE2ETest {
         // ---------------------------------------------------------
         // 8) Afslut: simple sanity checks på relationer
         // ---------------------------------------------------------
-        assertEquals(1, projectRepository.countProjects());
-        assertEquals(1, projectRepository.countSubProjects());
-        assertEquals(1, taskRepository.countTasks());
+        assertEquals(1, projectRepository.showProjectsByEmployeeId((int) pmId).size());
+        assertEquals(1, projectRepository.showSubProjectsByProjectId(projectId).size());
+        assertEquals(1, taskRepository.showTasksBySubProjectId(subProjectId).size());
     }
 
     private String baseUrl(String path) {
@@ -265,5 +286,24 @@ class ProjectFlowE2ETest {
         // Hvis I vil gøre det helt korrekt, kan I bruge UriUtils.encodeQueryParam,
         // men denne er ok til simple strenge.
         return s == null ? "" : s.replace(" ", "%20");
+    }
+
+    private long createEmployee(String username,
+                                String password,
+                                String email,
+                                EmployeeRole role,
+                                AlphaRole alphaRole) {
+        employeeRepository.createEmployee(
+                username,
+                password,
+                email,
+                role.getDisplayName(),
+                alphaRole.getDisplayName()
+        );
+        return jdbcTemplate.queryForObject(
+                "SELECT employee_id FROM employee WHERE username = ?",
+                Long.class,
+                username
+        );
     }
 }
