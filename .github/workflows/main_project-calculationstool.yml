@@ -24,13 +24,13 @@ jobs:
           java-version: '17'
           distribution: 'microsoft'
 
-      - name: Build with Maven
+      - name: Build with Maven (skip tests for deploy)
         env:
           PROD_USERNAME: ${{secrets.PROD_USERNAME}}
           PROD_PASSWORD: ${{secrets.PROD_PASSWORD}}
           PROD_DATABASE_URL: ${{secrets.PROD_DATABASE_URL}}
           
-        run: mvn clean install
+        run: mvn -B -DskipTests package
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4

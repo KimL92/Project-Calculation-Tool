@@ -81,9 +81,11 @@ public class TaskController {
             for (Task task : taskList) {
                 long taskId = task.getTaskID();
                 if (updatedTaskNotes.contains(taskId)) {
-                    // Refresh task from database to get latest note
+                    // Refresh task from database to get latest note – beskyttelse mod null
                     Task updatedTask = taskService.getTaskById(taskId);
-                    task.setTaskNote(updatedTask.getTaskNote());
+                    if (updatedTask != null) {
+                        task.setTaskNote(updatedTask.getTaskNote());
+                    }
                     seenTaskNotes.add(taskId);
                 }
             }
