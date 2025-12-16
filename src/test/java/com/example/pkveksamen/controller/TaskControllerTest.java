@@ -99,6 +99,8 @@ class TaskControllerTest {
 
         when(employeeService.getEmployeeById(1)).thenReturn(projectManager);
         when(taskService.showTasksBySubProjectId(1L)).thenReturn(tasks);
+        // Når controlleren opdaterer noter, kalder den getTaskById -> mock det også
+        when(taskService.getTaskById(1L)).thenReturn(testTask);
 
         // Act
         String viewName = taskController.showTaskByEmployeeId(1, 1L, 1L, model, session);
