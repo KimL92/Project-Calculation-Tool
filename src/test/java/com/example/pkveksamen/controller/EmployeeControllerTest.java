@@ -48,7 +48,7 @@ class EmployeeControllerTest {
 
     @Test
     void createEmployeePost_Success_ShouldRedirectToLogin() {
-        // Arrange
+
         when(employeeService.createEmployee(
                 testEmployee.getUsername(),
                 testEmployee.getPassword(),
@@ -57,10 +57,10 @@ class EmployeeControllerTest {
                 testEmployee.getSkill().getDisplayName()
         )).thenReturn(true);
 
-        // Act
+
         String viewName = employeeController.createEmployeePost(testEmployee, model);
 
-        // Assert
+
         assertEquals("redirect:/login", viewName);
         verify(employeeService).createEmployee(
                 testEmployee.getUsername(),
@@ -73,13 +73,11 @@ class EmployeeControllerTest {
 
     @Test
     void createEmployeePost_NoSkillSelected_ShouldReturnErrorMessage() {
-        // Arrange
+
         testEmployee.setSkill(null);
 
-        // Act
         String viewName = employeeController.createEmployeePost(testEmployee, model);
 
-        // Assert
         assertEquals("create-employee", viewName);
         verify(model).addAttribute("error", "Vælg venligst en Alpha Role");
         verify(model).addAttribute("employee", testEmployee);
@@ -91,13 +89,10 @@ class EmployeeControllerTest {
 
     @Test
     void validateLogin_Success_ShouldRedirectToProjectList() {
-        // Arrange
         when(employeeService.validateLogin("testuser", "password123")).thenReturn(1);
 
-        // Act
         String viewName = employeeController.validateLogin("testuser", "password123", model);
 
-        // Assert
         assertEquals("redirect:/project/list/1", viewName);
         verify(employeeService).validateLogin("testuser", "password123");
         verify(model, never()).addAttribute(anyString(), anyString());
@@ -107,23 +102,18 @@ class EmployeeControllerTest {
 
     @Test
     void validateLogin_IdIsZero_ShouldReturnLoginViewWithError() {
-        // Arrange
         when(employeeService.validateLogin("testuser", "wrongpass")).thenReturn(0);
 
-        // Act
         String viewName = employeeController.validateLogin("testuser", "wrongpass", model);
 
-        // Assert
         assertEquals("login", viewName);
         verify(model).addAttribute("error", "Brugernavn eller adgangskoden er forkert. Prøv igen!");
     }
 
     @Test
     void logout_ShouldInvalidateSessionAndRedirectToLogin() {
-        // Act
         String viewName = employeeController.logout(session);
 
-        // Assert
         assertEquals("redirect:/login", viewName);
         verify(session).invalidate();
     }

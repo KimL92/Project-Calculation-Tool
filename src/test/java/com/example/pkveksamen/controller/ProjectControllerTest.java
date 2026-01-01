@@ -69,17 +69,14 @@ class ProjectControllerTest {
 
     @Test
     void showProjectsByEmployeeId_ShouldReturnProjectView() {
-        // Arrange
         List<Project> projects = new ArrayList<>();
         projects.add(testProject);
 
         when(projectService.showProjectsByEmployeeId(1)).thenReturn(projects);
         when(employeeService.getEmployeeById(1)).thenReturn(projectManager);
 
-        // Act
         String viewName = projectController.showProjectsByEmployeeId(1, model);
 
-        // Assert
         assertEquals("project", viewName);
         verify(model).addAttribute("projectList", projects);
         verify(model).addAttribute("currentEmployeeId", 1);
@@ -89,17 +86,14 @@ class ProjectControllerTest {
 
     @Test
     void showSubprojectByProjectId_ShouldReturnSubprojectView() {
-        // Arrange
         List<SubProject> subProjects = new ArrayList<>();
         subProjects.add(testSubProject);
 
         when(projectService.showSubProjectsByProjectId(1L)).thenReturn(subProjects);
         when(employeeService.getEmployeeById(1)).thenReturn(projectManager);
 
-        // Act
         String viewName = projectController.showSubprojectByProjectId(1, 1L, model);
 
-        // Assert
         assertEquals("subproject", viewName);
         verify(model).addAttribute("subProjectList", subProjects);
         verify(model).addAttribute("currentProjectId", 1L);
@@ -110,13 +104,10 @@ class ProjectControllerTest {
 
     @Test
     void showCreateSubProjectForm_ShouldReturnCreateSubProjectView() {
-        // Arrange
         SubProject subProject = new SubProject();
 
-        // Act
         String viewName = projectController.showCreateSubProjectForm(1, 1L, subProject, model);
 
-        // Assert
         assertEquals("createsubproject", viewName);
         verify(model).addAttribute(eq("subProject"), any(SubProject.class));
         verify(model).addAttribute("currentEmployeeId", 1);
@@ -127,14 +118,11 @@ class ProjectControllerTest {
 
     @Test
     void showEditForm_ShouldReturnEditProjectView() {
-        // Arrange
         when(projectService.getProjectById(1L)).thenReturn(testProject);
         when(employeeService.getEmployeeById(1)).thenReturn(projectManager);
 
-        // Act
         String viewName = projectController.showEditForm(1, 1L, model);
 
-        // Assert
         assertEquals("edit-project", viewName);
         verify(model).addAttribute("project", testProject);
         verify(model).addAttribute("currentEmployeeId", 1);
@@ -143,7 +131,6 @@ class ProjectControllerTest {
 
     @Test
     void showProjectMembers_ShouldReturnViewProjectMembersView() {
-        // Arrange
         List<Employee> projectMembers = new ArrayList<>();
         projectMembers.add(teamMember);
         List<Employee> availableEmployees = new ArrayList<>();
@@ -153,10 +140,8 @@ class ProjectControllerTest {
         when(projectService.getAvailableEmployeesToAdd(1L)).thenReturn(availableEmployees);
         when(employeeService.getEmployeeById(1)).thenReturn(projectManager);
 
-        // Act
         String viewName = projectController.showProjectMembers(1, 1L, model);
 
-        // Assert
         assertEquals("view-project-members", viewName);
         verify(model).addAttribute("project", testProject);
         verify(model).addAttribute("projectMembers", projectMembers);
@@ -165,30 +150,24 @@ class ProjectControllerTest {
 
     @Test
     void showAllEmployees_ShouldReturnViewAllEmployeesView() {
-        // Arrange
         List<Employee> employees = new ArrayList<>();
         employees.add(projectManager);
         employees.add(teamMember);
 
         when(employeeService.getAllEmployees()).thenReturn(employees);
 
-        // Act
         String viewName = projectController.showAllEmployees(1, model);
 
-        // Assert
         assertEquals("view-all-employees", viewName);
         verify(model).addAttribute("employees", employees);
     }
 
     @Test
     void createProject_WithInvalidStartDateYear_ShouldReturnError() {
-        // Arrange
         testProject.setProjectStartDate(LocalDate.of(1999, 1, 1));
 
-        // Act
         String viewName = projectController.createProject(1, testProject, model);
 
-        // Assert
         assertEquals("createproject", viewName);
         verify(model).addAttribute("error", "Start date year must be between 2000 and 2100");
         verify(projectService, never()).createProject(anyString(), anyString(), any(), any(), anyString(), anyInt());
@@ -196,14 +175,11 @@ class ProjectControllerTest {
 
     @Test
     void createProject_WithInvalidDeadlineYear_ShouldReturnError() {
-        // Arrange
         testProject.setProjectStartDate(LocalDate.of(2025, 1, 1));
         testProject.setProjectDeadline(LocalDate.of(2101, 1, 1));
 
-        // Act
         String viewName = projectController.createProject(1, testProject, model);
 
-        // Assert
         assertEquals("createproject", viewName);
         verify(model).addAttribute("error", "Deadline year must be between 2000 and 2100");
         verify(projectService, never()).createProject(anyString(), anyString(), any(), any(), anyString(), anyInt());
@@ -211,14 +187,11 @@ class ProjectControllerTest {
 
     @Test
     void createProject_WithValidDates_ShouldRedirectToProjectList() {
-        // Arrange
         testProject.setProjectStartDate(LocalDate.of(2025, 1, 1));
         testProject.setProjectDeadline(LocalDate.of(2025, 12, 31));
 
-        // Act
         String viewName = projectController.createProject(1, testProject, model);
 
-        // Assert
         assertEquals("redirect:/project/list/1", viewName);
         verify(projectService).createProject(
                 testProject.getProjectName(),
