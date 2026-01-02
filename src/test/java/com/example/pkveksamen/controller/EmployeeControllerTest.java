@@ -57,9 +57,7 @@ class EmployeeControllerTest {
                 testEmployee.getSkill().getDisplayName()
         )).thenReturn(true);
 
-
         String viewName = employeeController.createEmployeePost(testEmployee, model);
-
 
         assertEquals("redirect:/login", viewName);
         verify(employeeService).createEmployee(
