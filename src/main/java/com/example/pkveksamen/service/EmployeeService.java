@@ -19,14 +19,11 @@ public class EmployeeService {
     public boolean createEmployee(String username, String password, String email, String role, String alphaRoleDisplayName) {
         try {
             employeeRepository.createEmployee(username, password, email, role, alphaRoleDisplayName);
-            System.out.println("Bruger oprettet: " + username + " " + email + " med alphaRole: " + alphaRoleDisplayName);
             return true;
         } catch (DataIntegrityViolationException e) {
-            System.out.println("Email allerede i brug: " + email);
             e.printStackTrace();
             return false;
         } catch (Exception e) {
-            System.out.println("Uventet fejl ved oprettelse af bruger: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -38,10 +35,6 @@ public class EmployeeService {
 
     public Employee getEmployeeById(int employeeId) {
         return employeeRepository.findEmployeeById(employeeId);
-    }
-
-    public List<Employee> getAllTeamMembers() {
-        return employeeRepository.getAllTeamMembers();
     }
 
     public List<Employee> getAllEmployees() {

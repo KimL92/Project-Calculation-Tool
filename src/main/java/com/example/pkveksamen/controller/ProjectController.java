@@ -21,17 +21,6 @@ public class ProjectController {
         this.employeeService = employeeService;
     }
 
-    /* VI BRUGER DEN IKKE
-    // her laver vi metoderene på hvad de forskellig bruger skal kunne.
-    public boolean isManager(Employee employee){
-        return employee != null && employee.getRole() == EmployeeRole.PROJECT_MANAGER;
-    }
-
-    public boolean isTeamMember(Employee employee){
-        return employee != null && employee.getRole() == EmployeeRole.TEAM_MEMBER;
-    }
-    */
-
     @GetMapping("/employees/{employeeId}/{projectId}")
     public String showProjectMembers(@PathVariable int employeeId,
                                      @PathVariable long projectId,

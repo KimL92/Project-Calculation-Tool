@@ -27,8 +27,7 @@ public class TaskController {
     private final EmployeeService employeeService;
     private final ProjectService projectService;
     private final TaskRepository taskRepository;
-    
-    // Shared cache for updated notes across all sessions
+
     private static final Set<Long> updatedTaskNotes = ConcurrentHashMap.newKeySet();
     private static final Set<Long> updatedSubTaskNotes = ConcurrentHashMap.newKeySet();
 
@@ -47,7 +46,6 @@ public class TaskController {
         }
     }
 
-    // her laver vi metoderene på hvad de forskellig bruger skal kunne.
     public boolean isManager(Employee employee) {
         return employee != null && employee.getRole() == EmployeeRole.PROJECT_MANAGER;
     }
@@ -67,17 +65,14 @@ public class TaskController {
         
         if (isManager(currentEmployee)) {
             taskList = taskService.showTasksBySubProjectId(subProjectId);
-            
-            // Check for updated notes in shared cache and refresh those tasks
-            // Store which notes we've seen in this session
+
             @SuppressWarnings("unchecked")
             Set<Long> seenTaskNotes = (Set<Long>) session.getAttribute("seenTaskNotes");
             if (seenTaskNotes == null) {
                 seenTaskNotes = new HashSet<>();
                 session.setAttribute("seenTaskNotes", seenTaskNotes);
             }
-            
-            // Refresh tasks that have been updated
+
             for (Task task : taskList) {
                 long taskId = task.getTaskID();
                 if (updatedTaskNotes.contains(taskId)) {
@@ -89,7 +84,7 @@ public class TaskController {
                     seenTaskNotes.add(taskId);
                 }
             }
-            
+
             // Remove seen notes from the shared cache
             updatedTaskNotes.removeAll(seenTaskNotes);
         } else {
@@ -172,9 +167,6 @@ public class TaskController {
         Project project = projectService.getProjectById(projectId);
         SubProject subProject = projectService.getSubProjectBySubProjectID(subProjectId);
 
-// Debug - fjern denne linje efter test
-        System.out.println("DEBUG - SubProjectId: " + subProjectId + ", SubProject: " + subProject);
-
         String error = null;
 
 // Valider deadline ikke er før start date FØRST
@@ -182,6 +174,7 @@ public class TaskController {
                 task.getTaskDeadline().isBefore(task.getTaskStartDate())) {
             error = "Task deadline cannot be before start date";
         }
+
 // Hvis subProjectId er sat (større end 0) OG vi har et subProject object
         else if (subProjectId > 0 && subProject != null) {
             // Valider kun mod subproject
@@ -478,12 +471,9 @@ public class TaskController {
         try {
             Task parentTask = taskService.getTaskById(taskId);
             if (parentTask == null) {
-                System.out.println("ERROR - Task findes ikke: taskId=" + taskId);
                 return "redirect:/project/task/liste/" + projectId + "/" + subProjectId + "/" + employeeId;
             }
         } catch (Exception e) {
-            System.out.println("ERROR - Task findes ikke i databasen: taskId=" + taskId);
-            System.out.println("Tjek din task.html - linket sender forkert taskId!");
             return "redirect:/project/task/liste/" + projectId + "/" + subProjectId + "/" + employeeId;
         }
 
@@ -583,20 +573,6 @@ public class TaskController {
 
         return "redirect:/project/subtask/liste/" + projectId + "/" + subProjectId + "/" + taskId + "/" + employeeId;
     }
-
-//    @PostMapping("/subtask/save/{employeeId}/{projectId}/{subProjectId}/{taskId}/{subTaskId}")
-//    public String saveSubTask(@PathVariable int employeeId,
-//                              @PathVariable long projectId,
-//                              @PathVariable long subProjectId,
-//                              @PathVariable long taskId,
-//                              @PathVariable long subTaskId,
-//                              @ModelAttribute SubTask subTask) {
-//        taskService.saveSubTask(subTask, subTaskId);
-//        subTask.recalculateDuration();
-//
-//
-//        return "redirect:/project/task/subtask/liste/" + projectId + "/" + subProjectId + "/" + taskId + "/" + employeeId;
-//    }
 
     @PostMapping("/subtask/delete/{employeeId}/{projectId}/{subProjectId}/{taskId}/{subTaskId}")
     public String deleteSubTask(@PathVariable int employeeId,

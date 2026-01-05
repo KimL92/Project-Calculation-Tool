@@ -100,20 +100,15 @@ public class ProjectRepository {
                 "VALUES (?,?,?,?,?,?)";
 
         jdbcTemplate.update(sql,
-                projectID,                             // project_id
-                subProject.getSubProjectName(),        // sub_project_title
-                subProject.getSubProjectDescription(), // sub_project_description
-                subProject.getSubProjectStartDate(),             // sub_project_start_date
-                subProject.getSubProjectDeadline(),               // sub_project_deadline
-                subProject.getSubProjectDuration()     // sub_project_duration
+                projectID,
+                subProject.getSubProjectName(),
+                subProject.getSubProjectDescription(),
+                subProject.getSubProjectStartDate(),
+                subProject.getSubProjectDeadline(),
+                subProject.getSubProjectDuration()
         );
     }
 
-    /*
-    public void deleteProject(long projectID) {
-        jdbcTemplate.update("DELETE FROM project WHERE project_id = ?", projectID);
-    }
-    */
 
     public void deleteProject(long projectID) {
         // First delete all subtasks related to tasks in subprojects of this project
