@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
-@ActiveProfiles("test")
+@ActiveProfiles("h2")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class H2RepositoryIntegrationTest {
 

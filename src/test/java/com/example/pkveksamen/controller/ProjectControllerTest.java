@@ -77,7 +77,7 @@ class ProjectControllerTest {
 
         String viewName = projectController.showProjectsByEmployeeId(1, model);
 
-        assertEquals("project", viewName);
+            assertEquals("project", viewName);
         verify(model).addAttribute("projectList", projects);
         verify(model).addAttribute("currentEmployeeId", 1);
         verify(model).addAttribute("username", "projektleder");
