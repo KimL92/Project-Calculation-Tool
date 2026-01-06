@@ -114,8 +114,6 @@ public class ProjectController {
     public String showCreateProjectForm(@PathVariable int employeeId, Model model) {
         model.addAttribute("project", new Project());
         model.addAttribute("currentEmployeeId", employeeId);
-//        List<Employee> teamMembers = projectService.getAllTeamMembers();
-//        model.addAttribute("teamMembers", teamMembers);
         return "createproject";
     }
 
@@ -129,9 +127,7 @@ public class ProjectController {
         if (subProject.getSubProjectStartDate() != null) {
             int year = subProject.getSubProjectStartDate().getYear();
             if (year < 2000 || year > 2100) {
-                // her kunne du fx sætte en fejlbesked i model og vise formen igen
                 model.addAttribute("error", "Start date year must be between 2000 and 2100");
-                // husk at lægge de samme model-attributter på som i GET-metoden
                 return "createsubproject";
             }
         }
@@ -150,7 +146,6 @@ public class ProjectController {
         return "createsubproject";
     }
 
-    // TODO: Vurder om denne kan slettes (kan nok godt)
     @PostMapping("/create/{employeeId}")
     public String createProject(@PathVariable int employeeId,
                                 @ModelAttribute Project project,
@@ -161,9 +156,8 @@ public class ProjectController {
         if (project.getProjectStartDate() != null) {
             int year = project.getProjectStartDate().getYear();
             if (year < 2000 || year > 2100) {
-                // her kunne du fx sætte en fejlbesked i model og vise formen igen
+
                 model.addAttribute("error", "Start date year must be between 2000 and 2100");
-                // husk at lægge de samme model-attributter på som i GET-metoden
                 return "createproject";
             }
         }
@@ -193,7 +187,6 @@ public class ProjectController {
                               @ModelAttribute Project project) {
         project.recalculateDuration();
         projectService.saveProject(project, employeeId);
-//        projectService.assignEmployeeToProject(selectedEmployeeId, project.getProjectID());
         return "redirect:/project/list/" + employeeId;
     }
 
@@ -243,8 +236,6 @@ public class ProjectController {
         return "redirect:/project/list/" + employeeId;
     }
 
-    // TODO DELETE TIL SUBPROJECT - kig på den Aden har lavet den
-    // TODO: KIG OGSÅ PÅ LINJE 123 EFTER PROJECTID
     @PostMapping("/subproject/delete/{employeeId}/{projectId}/{subProjectId}")
     public String deleteSubProject(@PathVariable int employeeId,
                                    @PathVariable long projectId,
@@ -302,10 +293,10 @@ public class ProjectController {
     @PostMapping("/subproject/edit/{employeeId}/{projectId}/{subProjectId}")
     public String editSubProject(@PathVariable int employeeId,
                                  @PathVariable long projectId,
-                                 @PathVariable long subProjectId, // lowercase i URL
+                                 @PathVariable long subProjectId,
                                  @ModelAttribute SubProject subProject,
                                  Model model) {
-        subProject.setSubProjectID(subProjectId); // Bruger setter-metoden fra model klassen
+        subProject.setSubProjectID(subProjectId);
         subProject.recalculateDuration();
 
         Project project = projectService.getProjectById(projectId);

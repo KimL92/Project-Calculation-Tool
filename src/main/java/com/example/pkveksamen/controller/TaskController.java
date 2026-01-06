@@ -197,7 +197,6 @@ public class TaskController {
             }
         }
 
-// Hvis der er en fejl, forbered error view
         if (error != null) {
             model.addAttribute("error", error);
             model.addAttribute("task", task);
@@ -297,6 +296,7 @@ public class TaskController {
             assignedEmployee.setEmployeeId(assignedToEmployeeId);
             task.setAssignedEmployee(assignedEmployee);
         }
+
         if (task.getTaskStartDate() != null && task.getTaskDeadline() != null) {
             long days = ChronoUnit.DAYS.between(task.getTaskStartDate(), task.getTaskDeadline());
             task.setTaskDuration((int) days + 1);
@@ -306,6 +306,7 @@ public class TaskController {
 
         Project project = projectService.getProjectById(projectId);
         SubProject subProject = projectService.getSubProjectBySubProjectID(subProjectId);
+
         if (project != null && task.getTaskStartDate() != null && project.getProjectStartDate() != null &&
                 task.getTaskStartDate().isBefore(project.getProjectStartDate())) {
             model.addAttribute("error", "Task start date must be within project period");
@@ -321,6 +322,7 @@ public class TaskController {
             addEmployeeHeader(model, employeeId);
             return "edit-task";
         }
+
         if (project != null && task.getTaskDeadline() != null && project.getProjectDeadline() != null &&
                 task.getTaskDeadline().isAfter(project.getProjectDeadline())) {
             model.addAttribute("error", "Task deadline must be within project period");
@@ -336,6 +338,7 @@ public class TaskController {
             addEmployeeHeader(model, employeeId);
             return "edit-task";
         }
+
         if (subProject != null && task.getTaskStartDate() != null && subProject.getSubProjectStartDate() != null &&
                 task.getTaskStartDate().isBefore(subProject.getSubProjectStartDate())) {
             model.addAttribute("error", "Task start date must be within subproject period (set in the subproject)");
@@ -351,6 +354,7 @@ public class TaskController {
             addEmployeeHeader(model, employeeId);
             return "edit-task";
         }
+
         if (subProject != null && task.getTaskDeadline() != null && subProject.getSubProjectDeadline() != null &&
                 task.getTaskDeadline().isAfter(subProject.getSubProjectDeadline())) {
             model.addAttribute("error", "Task deadline must be within subproject period (set in the subproject)");
@@ -366,6 +370,7 @@ public class TaskController {
             addEmployeeHeader(model, employeeId);
             return "edit-task";
         }
+
         if (task.getTaskStartDate() != null && task.getTaskDeadline() != null &&
                 task.getTaskDeadline().isBefore(task.getTaskStartDate())) {
             model.addAttribute("error", "Task deadline cannot be before start date");
@@ -415,25 +420,20 @@ public class TaskController {
                                        Model model,
                                        HttpSession session) {
 
-        // Ret dette: Hent subtasks for den specifikke task, ikke alle employee's subtasks
         List<SubTask> subTaskList = taskService.showSubTasksByTaskId(taskId);
 
         Employee employee = employeeService.getEmployeeById(employeeId);
         if (employee != null && isManager(employee)) {
-            // Check for updated notes in shared cache and refresh those subtasks
-            // Store which notes we've seen in this session
             @SuppressWarnings("unchecked")
             Set<Long> seenSubTaskNotes = (Set<Long>) session.getAttribute("seenSubTaskNotes");
             if (seenSubTaskNotes == null) {
                 seenSubTaskNotes = new HashSet<>();
                 session.setAttribute("seenSubTaskNotes", seenSubTaskNotes);
             }
-            
-            // Refresh subtasks that have been updated
+
             for (SubTask subTask : subTaskList) {
                 long subTaskId = subTask.getSubTaskId();
                 if (updatedSubTaskNotes.contains(subTaskId)) {
-                    // Refresh subtask from database to get latest note
                     SubTask updatedSubTask = taskService.getSubTaskById(subTaskId);
                     subTask.setSubTaskNote(updatedSubTask.getSubTaskNote());
                     seenSubTaskNotes.add(subTaskId);
@@ -450,7 +450,6 @@ public class TaskController {
         model.addAttribute("currentEmployeeId", employeeId);
         model.addAttribute("currentTaskId", taskId);
 
-        // Add employee details for the header
         if (employee != null) {
             model.addAttribute("username", employee.getUsername());
             model.addAttribute("employeeRole", employee.getRole());
@@ -467,7 +466,6 @@ public class TaskController {
                                 @ModelAttribute SubTask subTask,
                                 Model model) {
 
-        // TILFØJ DENNE TRY-CATCH
         try {
             Task parentTask = taskService.getTaskById(taskId);
             if (parentTask == null) {
@@ -485,13 +483,11 @@ public class TaskController {
             subTask.setSubTaskDuration(0);
         }
 
-        // Simpel range-check
         if (subTask.getSubTaskStartDate() != null) {
             int year = subTask.getSubTaskStartDate().getYear();
             if (year < 2000 || year > 2100) {
-                // her kunne du fx sætte en fejlbesked i model og vise formen igen
+
                 model.addAttribute("error", "Start date year must be between 2000 and 2100");
-                // husk at lægge de samme model-attributter på som i GET-metoden
                 return "createsubtask";
             }
         }
@@ -504,7 +500,6 @@ public class TaskController {
             }
         }
 
-        // default status & priority hvis de er null
         if (subTask.getSubTaskStatus() == null) {
             subTask.setSubTaskStatus(Status.NOT_STARTED);
         }
@@ -607,7 +602,7 @@ public class TaskController {
             model.addAttribute("employeeRole", employee.getRole());
         }
 
-        return "edit-subtask"; // Thymeleaf HTML-fil
+        return "edit-subtask";
     }
 
 
@@ -713,7 +708,6 @@ public class TaskController {
 
         taskService.updateSubTaskNote(subTaskId, subTaskNote);
 
-        // Mark subtask note as updated in shared cache for all project managers to see
         updatedSubTaskNotes.add(subTaskId);
 
         return "redirect:/project/subtask/liste/" + projectId + "/" + subProjectId + "/" + taskId + "/" + employeeId;
@@ -732,14 +726,13 @@ public class TaskController {
         model.addAttribute("currentProjectId", projectId);
         model.addAttribute("currentSubProjectId", subProjectId);
 
-        // Til header
         Employee employee = employeeService.getEmployeeById(employeeId);
         if (employee != null) {
             model.addAttribute("username", employee.getUsername());
             model.addAttribute("employeeRole", employee.getRole());
         }
 
-        return "task-note"; // ny Thymeleaf-template
+        return "task-note";
     }
 
     @PostMapping("/project/task/note/{employeeId}/{projectId}/{subProjectId}/{taskId}")
@@ -753,7 +746,6 @@ public class TaskController {
         task.setTaskNote(taskNote);
         taskService.updateTaskNote(taskId, taskNote);
 
-        // Mark task note as updated in shared cache for all project managers to see
         updatedTaskNotes.add(taskId);
 
         return "redirect:/project/task/liste/" + projectId + "/" + subProjectId + "/" + employeeId;

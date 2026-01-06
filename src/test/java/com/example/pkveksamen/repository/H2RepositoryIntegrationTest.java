@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
-@ActiveProfiles("h2")
+@ActiveProfiles("test")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class H2RepositoryIntegrationTest {
 
@@ -139,8 +139,6 @@ class H2RepositoryIntegrationTest {
                 assertThat(project).isNotNull();
                 assertThat(project.getProjectName()).isEqualTo("Test Project");
             }
-
-            // ... (resten af Project tests)
         }
 
         @Nested
@@ -166,7 +164,6 @@ class H2RepositoryIntegrationTest {
                 assertThat(subProjects.get(0).getSubProjectName()).isEqualTo("Authentication Module");
             }
 
-            // ... (resten af SubProject tests)
         }
 
         @Nested
@@ -197,7 +194,6 @@ class H2RepositoryIntegrationTest {
                 assertThat(tasks.get(0).getTaskName()).isEqualTo("Implement Login");
             }
 
-            // ... (resten af Task tests)
         }
 
         @Nested
@@ -226,10 +222,8 @@ class H2RepositoryIntegrationTest {
                 assertThat(subTasks.get(0).getSubTaskName()).isEqualTo("Write unit tests");
             }
 
-            // ... (resten af SubTask tests)
         }
 
-// Helper metoder
 
         private Integer createTestEmployee() {
             employeeRepository.createEmployee(
